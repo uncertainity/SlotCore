@@ -1,0 +1,1845 @@
+[OK] Folder found: ./specs/game_rules
+[OK] Optional folder found: ./specs/math_models
+[OK] Optional folder found: ./checks/oracle
+[OK] File found: ./AGENTS.md
+[OK] Folder found: ./reference/cpp
+[ERROR] Folder is empty: ./reference/numba
+
+[PASSED] All required inputs are present.
+[2026-06-14 20:20:16] Running stage: planner
+OpenAI Codex v0.139.0
+--------
+workdir: /home/arka/projects/Slot_Lib/SlotCore
+model: gpt-5.5
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: none
+reasoning summaries: none
+session id: 019ec7ca-cdc5-7b20-a730-254bd6a0c2e6
+--------
+user
+Read:
+
+./summary.md
+./AGENTS.md
+./skills/game_specification.md
+
+Run only the Planner stage.
+
+Generate:
+
+./artifacts/plan/game_flow.md
+./artifacts/plan/game_flow.json
+
+Update:
+
+./summary.md
+warning: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+codex
+I’ll load only the requested project files and the stage skill, then check whether the Planner inputs are present before attempting the requested artifacts. The workspace is currently read-only, so I’ll verify what can be done and call out any write blocker explicitly.
+exec
+/bin/bash -lc 'pwd && ls -la summary.md AGENTS.md skills/game_specification.md artifacts/plan 2>/dev/null' in /home/arka/projects/Slot_Lib/SlotCore
+ succeeded in 0ms:
+/home/arka/projects/Slot_Lib/SlotCore
+-rw-r--r-- 1 arka arka 4827 Jun 14 08:18 AGENTS.md
+-rw-r--r-- 1 arka arka 7114 Jun 14 04:19 skills/game_specification.md
+-rw-r--r-- 1 arka arka    0 Jun 13 23:43 summary.md
+
+artifacts/plan:
+total 8
+drwxr-xr-x 2 arka arka 4096 Jun 13 22:58 .
+drwxr-xr-x 7 arka arka 4096 Jun 13 22:58 ..
+
+exec
+/bin/bash -lc "sed -n '1,260p' AGENTS.md" in /home/arka/projects/Slot_Lib/SlotCore
+ succeeded in 0ms:
+# AGENTS.md
+
+# SlotCore
+
+## Purpose
+
+SlotCore is a staged orchestration pipeline for converting slot-game specifications into:
+
+* Validated game specifications
+* Simulator architectures
+* Implementation contracts
+* Tested C++ implementations
+* Trace-verifiable execution flows
+* Mathematical analysis and tuning artifacts
+
+The repository is organized around explicit contracts and validation gates.
+
+Agents should operate only on the artifacts required for the current stage.
+
+---
+
+# Core Principles
+
+1. Never invent game mechanics.
+2. Never invent mathematics.
+3. Never invent missing paytables, reel strips, probabilities, or symbols.
+4. Escalate uncertainty rather than guessing.
+5. Baseline correctness precedes optimization.
+6. Contracts are authoritative.
+7. Validation is mandatory.
+8. Human review overrides assumptions.
+9. Every stage must produce explicit artifacts.
+10. A fresh session must be able to continue using repository files alone.
+
+---
+
+# Fresh Session Startup
+
+At the start of every new session:
+
+1. Read `./summary.md`
+2. Read `./AGENTS.md`
+3. Identify the current stage.
+4. Read the corresponding skill file.
+5. Verify required inputs exist.
+6. Continue only from the current stage.
+
+Do not rely on previous chat history.
+
+---
+
+# Repository Structure
+
+
+.
+├── AGENTS.md
+├── summary.md
+│
+├── specs/
+│   ├── game_rules/
+│   └── math_models/
+│
+├── reference/
+│   ├── cpp/
+│   ├── numba/
+│   └── examples/
+│
+├── artifacts/
+│   ├── plan/
+│   ├── contract/
+│   ├── implementation/
+│   ├── optimized/
+│   └── demo/
+│
+├── checks/
+│   ├── oracle/
+│   ├── generated_tests/
+│   ├── traces/
+│   ├── reports/
+│   └── human_review/
+│
+├── math/
+│
+├── logs/
+│
+├── skills/
+│
+└── agentprompts/
+
+---
+
+# Summary Contract
+
+`summary.md` is the project state file.
+
+It must be updated after every major stage.
+
+Suggested structure:
+
+
+# SlotCore Summary
+
+## Current Stage
+
+## Completed Stages
+
+## Pending Stages
+
+## Important Decisions
+
+## Known Issues
+
+## Active Blockers
+
+## Generated Artifacts
+
+## Human Review Notes
+
+## Next Recommended Action
+
+
+---
+
+# Context Policy
+
+Agents must minimize context usage.
+
+Read only:
+
+1. `./summary.md`
+2. `./AGENTS.md`
+3. The current skill file
+4. Required inputs listed in the skill
+
+Do not recursively inspect unrelated directories.
+
+Do not load raw specifications unless the skill explicitly requires them.
+
+---
+
+# Artifact Authority
+
+When conflicts occur, use the following authority order.
+
+Level 1:
+summary.md
+
+Level 2:
+artifacts/contract/
+
+Level 3:
+checks/reports/
+checks/traces/
+
+Level 4:
+artifacts/plan/
+
+Level 5:
+specs/
+
+If multiple sources disagree:
+
+* Do not silently resolve conflicts.
+* Write an escalation entry.
+* Record the conflict in reports.
+
+---
+
+# Escalation Policy
+
+Escalations must be written to:
+
+./checks/reports/escalation.md
+
+Allowed diagnostics:
+
+[WARNING]
+[AMBIGUITY]
+[BLOCKER]
+
+Examples:
+
+[WARNING] Optional probability table missing.
+
+[AMBIGUITY] Symbol SCAT and SCATTER both appear.
+
+[BLOCKER] Paytable values missing.
+
+Agents must not invent information to bypass a blocker.
+
+---
+
+# Pipeline Topology
+
+Default pipeline:
+
+
+Game Specification
+→ Specification Validation
+→ Simulator Design
+→ Contract Refinement
+→ Implementation Generation
+→ Test Generation
+→ Trace Generation
+→ Trace Validation
+→ Math Validation
+
+
+Stages may be executed individually when explicitly requested.
+
+---
+
+# Human Review Gates
+
+The repository includes explicit human-review checkpoints.
+
+Examples:
+
+
+planner_verification_loop
+simulator_human_gate
+interactive_pass
+consensus_loop
+
+Human review may:
+
+* Resolve blockers
+* Clarify requirements
+* Accept corrected traces
+* Refine contracts
+
+Human decisions should be recorded in:
+
+
+checks/human_review/
+
+---
+
+# Completion Rules
+
+A stage is complete only if:
+
+* Required outputs exist.
+* Required outputs are non-empty.
+* Escalations are recorded.
+* Summary is updated.
+* Downstream inputs are available.
+
+---
+
+# Logging Policy
+
+Pipeline execution generates:
+
+logs/pipeline_*.log
+
+Complete execution log.
+
+logs/summary_*.log
+
+
+exec
+/bin/bash -lc "sed -n '1,260p' skills/game_specification.md" in /home/arka/projects/Slot_Lib/SlotCore
+ succeeded in 0ms:
+# <Skill Planner>
+
+## 1. Task Description
+
+You are the planner agent in the Slot pipeline.
+
+Your responsibility is to understand a slot game specification and convert it into a complete implementation-independent game flow description.
+
+You are the first reasoning stage of the pipeline.
+
+You do not write code.
+
+You do not generate simulator architectures.
+
+You do not optimize mathematics.
+
+You do not invent missing mechanics.
+
+Your sole purpose is to understand how the game works and communicate that understanding to downstream agents.
+
+
+### Responsibilities
+
+This skill must:
+
+Given:
+
+* Game rule documents
+* Math model documents
+* Existing simulator references (optional)
+* Supporting design documents
+
+construct a complete and internally consistent description of the game.
+
+The output should describe:
+
+* What happens during a spin
+* What states exist in the game
+* How players transition between states
+* How wins are evaluated
+* How features are triggered
+* How payouts are accumulated
+* How the game terminates
+
+This skill acts as the authoritative interpreter of the game specification.
+
+
+### Non-Responsibilities
+
+This skill must not:
+
+* Write source code
+* Produce C++
+* Produce Python
+* Produce simulator pseudocode
+* Produce RTP tuning recommendations
+* Modify mathematical assumptions
+* Fill missing information using guesses
+* Create paylines
+* Create paytables
+* Create reel strips
+* Create game mechanics
+
+If information is missing, report it.
+
+Never hallucinate.
+
+---
+
+## 2. Inputs
+
+### 2.1 Required Inputs
+
+The planner may receive one or more files from:
+
+./specs/game_rules/
+./specs/math_models/
+
+Documents may be:
+
+* PDF
+* DOCX
+* TXT
+* XLSX
+* JSON
+* Existing simulator code
+* Mixed formats
+
+Information may be distributed across multiple files.
+
+Information may be duplicated.
+
+Information may be contradictory.
+
+Information may be incomplete.
+
+The planner must reconcile information whenever possible.
+
+
+### 2.2 Optional Inputs
+
+None.
+
+---
+
+## 3. Input Invariants
+
+The following conditions must hold before this skill executes.
+
+exists and non empty: ./specs/game_rules/
+exists and non empty: ./specs/math_models/
+
+absent_pattern: ./checks/reports/escalation.md :: \[BLOCKER\]
+
+---
+
+## 4. Output Files to be Made
+
+./artifacts/plan/game_features.md
+./artifacts/plan/game_flow.md
+./artifacts/plan/game_flow.json
+
+---
+
+## 5. Outputs
+
+Describe what each output must contain.
+
+### Output 1
+
+./artifacts/plan/game_features.md
+./artifacts/plan/game_flow.md
+
+Purpose: Human-readable description of the game. USE HV1,HV2,...LV1,LV2,. symbols instead of A,B,C,D or the actual symbol names. You can mention the map of HV@->actual symbol name or LV@-> actual symbol name in the output files.
+
+Expected contents:
+
+### Output 2
+
+./artifacts/plan/game_flow.json
+
+Purpose: Machine-readable representation that will be used in future for creating architecture and creating a coding contract.
+The json should contain informations like the Reelsets, Paytable, Payline so that they can be extracted easily in future by a coding agent. 
+
+Expected contents:
+
+The JSON should contain:
+
+* States
+* Transitions
+* Features
+* Symbols
+* Evaluation Rules
+* Assumptions
+* Missing Information
+
+---
+
+## 6. Process / Flow
+
+### Game Overview
+
+Produce a high-level summary of:
+
+* Game name
+* Reel layout
+* Pay mechanism
+* Major features
+* Bonus systems
+* Special symbols
+
+---
+
+### Symbol Inventory
+
+Identify:
+
+* Standard symbols
+* Wild symbols
+* Scatter symbols
+* Bonus symbols
+* Jackpot symbols
+* Multipliers
+* Collect symbols
+* Feature symbols
+
+For each symbol describe:
+
+* Purpose
+* Behavior
+* Restrictions
+* Interactions
+
+---
+
+### Bet Configuration
+
+Identify:
+
+* Minimum bet
+* Maximum bet
+* Coin value
+* Denomination
+* Line bet rules
+* Ways bet rules
+* Feature buy rules
+
+---
+
+### Base Game Flow
+
+Describe the lifecycle of a standard wager.
+
+Example:
+
+Player places wager
+→ Generate reel outcome
+→ Construct visible window
+→ Evaluate paylines
+→ Evaluate ways
+→ Evaluate scatters
+→ Apply multipliers
+→ Accumulate win
+→ Trigger features if eligible
+→ Final payout
+
+
+The actual flow must be derived from the game specification.
+
+---
+
+### Feature Flow
+
+For every feature:
+
+* Trigger conditions
+* Entry conditions
+* Internal logic
+* Exit conditions
+* Rewards
+
+Examples:
+
+* Free Spins
+* Hold and Spin
+* Pick Bonus
+* Respin Features
+* Progressive Features
+* Feature Buy
+
+Each feature should be documented separately.
+
+---
+
+### State Machine Construction
+
+Construct a state transition diagram.
+
+Example:
+
+
+exec
+/bin/bash -lc "sed -n '1,220p' summary.md" in /home/arka/projects/Slot_Lib/SlotCore
+ succeeded in 0ms:
+codex
+The initial read shows `summary.md` is empty, and the Planner skill requires non-empty `specs/game_rules/` and `specs/math_models/`. I’m reading the rest of the skill and checking only those required inputs next.
+exec
+/bin/bash -lc "sed -n '261,520p' skills/game_specification.md" in /home/arka/projects/Slot_Lib/SlotCore
+ succeeded in 0ms:
+
+Idle
+→ BetPlaced
+→ SpinStarted
+→ WindowGenerated
+→ WinEvaluated
+→ FeatureTriggered
+→ FeatureResolved
+→ PayoutComplete
+→ Idle
+
+
+The actual states must come from the specification.
+
+---
+
+### Win Evaluation Logic
+
+Identify:
+
+* Payline evaluation
+* Ways evaluation
+* Scatter evaluation
+* Cluster evaluation
+* Multiplier evaluation
+* Feature payouts
+* Jackpot evaluation
+
+Document evaluation order whenever available.
+
+---
+
+### Mathematical Dependencies
+
+Identify information that affects:
+
+* RTP
+* Hit rate
+* Volatility
+* Feature frequency
+* Jackpot frequency
+
+Do not perform optimization.
+
+Only identify dependencies.
+
+---
+
+### Assumptions
+
+Every assumption must be explicitly listed.
+
+Example:
+
+ASSUMPTION:
+Payline evaluation appears to occur before scatter evaluation.
+Reason:
+Rule document implies this ordering but does not state it explicitly.
+
+### Ambiguity Handling
+
+When ambiguity exists:
+
+
+[AMBIGUOUS]
+Description
+
+Evidence A:
+...
+
+Evidence B:
+...
+
+Do not resolve ambiguity unless evidence strongly supports one interpretation.
+
+---
+
+### Missing Information Handling
+
+When critical information is missing:
+
+
+[MISSING]
+Paytable
+
+[MISSING]
+Reel Strips
+
+[MISSING]
+Wild Substitution Rules
+
+
+All missing information must also be written to:
+The planner should continue whenever possible.
+
+
+
+---
+
+## 7. Escalation
+
+If required information is missing, contradictory, unverifiable, or incomplete, append an entry to
+./checks/reports/escalation.md
+
+Allowed tags:
+
+[WARNING]
+[AMBIGUITY]
+[BLOCKER]
+
+Examples:
+
+[WARNING] Optional input file was not provided.
+
+[AMBIGUITY] Symbol SCAT and SCATTER appear in different documents.
+
+[BLOCKER] Required paytable values are missing.
+
+Note that the [BLOCKER] will immediately stop the execution into the next stage. So, do not use [BLOCKER] until aboslutely necessery.
+Example cases of using [BLOCKER] will be "missing paytable" or "missing payline information in a line game." i.e when you can't implement a major portion of the game without a certain information.  
+
+---
+
+## 8. Success Criteria
+
+The skill succeeds when another agent can fully understand the game without reading the original rule documents.
+
+* All required inputs were processed.
+* All required outputs were generated.
+* Output files satisfy their contract.
+
+---
+
+## 9. Failure Criteria
+
+The skill fails if:
+
+* Important mechanics are omitted
+* Missing information is hidden
+* Ambiguities are ignored
+* New mechanics are invented
+* Implementation details are mixed into the plan
+
+
+---
+
+## 10. Notes
+
+Accuracy is more important than completeness.
+Never hallucinate game mechanics.
+
+exec
+/bin/bash -lc "test -f checks/reports/escalation.md && sed -n '1,220p' checks/reports/escalation.md || true" in /home/arka/projects/Slot_Lib/SlotCore
+ succeeded in 0ms:
+exec
+/bin/bash -lc "find specs/game_rules specs/math_models -maxdepth 1 -type f -printf '%p\\t%s bytes\\n' 2>/dev/null | sort" in /home/arka/projects/Slot_Lib/SlotCore
+ succeeded in 0ms:
+specs/game_rules/Parsheet_Vegas_Blitz.xlsx	52832 bytes
+specs/game_rules/Vegas_Blitz_Game_Rules_UKGC_V1.docx	104362 bytes
+specs/math_models/Parsheet_Vegas_Blitz.xlsx	52832 bytes
+
+exec
+/bin/bash -lc "find specs/game_rules specs/math_models -maxdepth 1 -mindepth 0 -type d -printf '%p\\n' 2>/dev/null | sort" in /home/arka/projects/Slot_Lib/SlotCore
+ succeeded in 0ms:
+specs/game_rules
+specs/math_models
+
+codex
+The required input directories exist and contain the Vegas Blitz rule and parsheet files; there is no existing `[BLOCKER]` escalation file. I’m extracting the DOCX/XLSX content with structured readers so the Planner output is based on the source artifacts, not inferred mechanics.
+exec
+/bin/bash -lc "python3 - <<'PY'
+from zipfile import ZipFile
+from pathlib import Path
+import re, xml.etree.ElementTree as ET
+p=Path('specs/game_rules/Vegas_Blitz_Game_Rules_UKGC_V1.docx')
+with ZipFile(p) as z:
+    xml=z.read('word/document.xml')
+root=ET.fromstring(xml)
+ns={'w':'http://schemas.openxmlformats.org/wordprocessingml/2006/main'}
+paras=[]
+for para in root.findall('.//w:p',ns):
+    texts=[t.text or '' for t in para.findall('.//w:t',ns)]
+    s=''.join(texts).strip()
+    if s:
+        paras.append(s)
+for i,s in enumerate(paras[:260],1):
+    print(f'{i}: {s}')
+print('PARA_COUNT', len(paras))
+PY" in /home/arka/projects/Slot_Lib/SlotCore
+exec
+/bin/bash -lc "python3 - <<'PY'
+from pathlib import Path
+try:
+ import openpyxl
+except Exception as e:
+ print('OPENPYXL_ERROR', repr(e)); raise SystemExit
+for p in [Path('specs/game_rules/Parsheet_Vegas_Blitz.xlsx'), Path('specs/math_models/Parsheet_Vegas_Blitz.xlsx')]:
+ wb=openpyxl.load_workbook(p, data_only=False, read_only=True)
+ print('WORKBOOK', p)
+ print('SHEETS', wb.sheetnames)
+ for ws in wb.worksheets:
+  print('SHEET', ws.title, 'max', ws.max_row, ws.max_column)
+  rows=[]
+  for row in ws.iter_rows(min_row=1, max_row=min(ws.max_row,40), values_only=True):
+   vals=[v for v in row if v is not None]
+   if vals:
+    print('ROW', row)
+  print('---')
+PY" in /home/arka/projects/Slot_Lib/SlotCore
+ succeeded in 0ms:
+OPENPYXL_ERROR ModuleNotFoundError("No module named 'openpyxl'")
+
+ succeeded in 114ms:
+1: Vegas Blitz Game Rules
+2: By playing our games, you agree that you do not find them offensive, unfair or indecent.
+3: How to Play Slots:
+4: Choose the amount you would like to bet with. Control the bet amount by tapping the bet icon.
+5: Winnings are automatically added to the account balance. Total Win is displayed under the WIN section of the screen after each win.
+6: Game Rules:
+7: The game is played with 4096 ways in the main game and Free Spins.
+8: Each game costs a minimum of 20 fixed coins.
+9: Wins are paid according to the Paytable.
+10: All symbols pay from leftmost reel to right in consecutive order, except the Scatter symbol.
+11: Each symbol can be used once per winning combination.
+12: Wild symbol substitutes for all symbols, except Scatter, Coin and Collect symbol.
+13: Wilds can appear only on reels 2-6 in the base game.
+14: Malfunction voids all pays and plays.
+15: For this game, the long term expected payback is 94.11%.
+16: Collect:
+17: The Coin symbol (COR) awards the value they bear only when screen also has a Collect symbol.
+18: Collect symbol can land only on 1st and/or 6th reel.
+19: Jackpot can be won only via the Collect feature.
+20: The Jackpot values are: - Mini – 10x total bet - Minor – 25x total bet - Major – 250x total bet - Grand – 2000x total bet
+21: Each Collect symbol will individually and independently accumulate all the Coins (CORs) that are on the screen. If Coins are carrying a Jackpot on them, they will also get collected in the same manner.
+22: The Collect feature is active only in the base game and the Blitz spins feature.
+23: Scatter:
+24: 3 or more Scatter symbols in the base game show the feature selection screen.
+25: Player gets 2 options to choose from
+26: Option 1 – 3, 4, 5 and 6 Scatters award 8, 12, 20 and 30 free spins, respectively.
+27: Option 2 – 3, 4, 5 and 6 Scatters award 3, 4, 6 and 8 Blitz spins, respectively.
+28: Free Spins:
+29: Free Spins feature can be retriggered with 2, 3, 4, 5 and 6 Scatters, awarding additional 5, 8, 12, 20 and 30 free spins, respectively.
+30: Wilds can appear only on reels 2-4 in free spins.
+31: Wild always carry a multiplier (2x, 3x or 5x) in each free spin.
+32: If more than one Wild lands, all the Wild multipliers are multiplied, and the total Wild multiplier is applied to the win.
+33: The total Wild multiplier is applied to the win regardless of whether it participates in the winning combination or not.
+34: Wild multiplier is not applied to the Scatter wins.
+35: Coin and Collect symbols cannot appear during free spins.
+36: Blitz Spins:
+37: - Only Coins (CORs), Jackpot and Collect symbols can land on the screen.
+38: - Each Blitz spin guarantees at least 1 Coin (COR) and at least 1 Collect symbol.
+39: Game Controls:
+40: This section lists the different buttons found in the game and describes their functions.
+41: Buttons
+42: Function
+43: Tap to open menu
+44: Tap to open the PAYTABLE
+45: Tap to open the RULES
+46: Tap to open the SETTINGS
+47: Tap to turn on/off sounds
+48: Tap on the toggle button to turn on/off game sounds
+49: Tap on the toggle button to turn on/off music
+50: Tap to view game HISTORY
+51: Tap to spin
+52: Tap to open bet panel
+53: Tap to return to the game
+54: All games are tested to level 3 standards in accordance with the UKGC Testing Strategy for Compliance with the Remote Gambling and Software Technical Standards.
+55: If the game is interrupted due to connection loss during Free Spins or Bonus Rounds, the game will resume the remaining Free Spins or the pending Bonus Round upon re-opening.
+56: Additional Information:
+57: Guidance on RTP/Ways/Bonus Feature/Wild/Free Spins is covered under the Paytable section of respective games. You can access this by tapping the Paytable button.
+58: Any stakes placed are non-refundable, unless a system malfunction occurs, in which case, all stakes placed on the game being played at the time of the malfunction will be refunded. We have no obligation to repay players who abuse these occurrences, and therefore, an alternative action may be deemed suitable depending on the individual circumstances.
+59: If a query arises as a result of a gaming session, where there is a mismatch between your records and the data recorded by our servers, the latter will be considered correct.
+60: In the event of any disagreement between yourself and this website, the management's decision will be considered final.
+61: If the game is interrupted due to connection loss, Balance and Win information can be viewed using Game Logs.
+62: In the event of malfunction of gaming hardware/software, all affected game bets and payouts are rendered void and all affected bets are refunded.
+PARA_COUNT 62
+
+codex
+The DOCX gives the main flow and feature rules. The Python environment lacks `openpyxl`, so I’m reading the XLSX XML directly from the archive to extract sheets, paytable, reels, and configuration without installing anything.
+exec
+/bin/bash -lc "python3 - <<'PY'
+from zipfile import ZipFile
+from pathlib import Path
+import xml.etree.ElementTree as ET
+p=Path('specs/math_models/Parsheet_Vegas_Blitz.xlsx')
+with ZipFile(p) as z:
+ print('\\n'.join(z.namelist()))
+PY" in /home/arka/projects/Slot_Lib/SlotCore
+ succeeded in 0ms:
+[Content_Types].xml
+_rels/.rels
+xl/_rels/workbook.xml.rels
+xl/workbook.xml
+xl/worksheets/sheet4.xml
+xl/worksheets/sheet2.xml
+xl/worksheets/sheet3.xml
+xl/sharedStrings.xml
+xl/worksheets/sheet1.xml
+xl/theme/theme1.xml
+xl/styles.xml
+xl/worksheets/sheet5.xml
+xl/calcChain.xml
+docProps/custom.xml
+customXml/_rels/item1.xml.rels
+customXml/_rels/item3.xml.rels
+customXml/_rels/item2.xml.rels
+docProps/core.xml
+customXml/itemProps3.xml
+customXml/item1.xml
+customXml/itemProps1.xml
+customXml/item2.xml
+customXml/itemProps2.xml
+customXml/item3.xml
+docProps/app.xml
+
+exec
+/bin/bash -lc "python3 - <<'PY'
+from zipfile import ZipFile
+from pathlib import Path
+import xml.etree.ElementTree as ET
+p=Path('specs/math_models/Parsheet_Vegas_Blitz.xlsx')
+NS={'a':'http://schemas.openxmlformats.org/spreadsheetml/2006/main','r':'http://schemas.openxmlformats.org/officeDocument/2006/relationships'}
+with ZipFile(p) as z:
+ wb=ET.fromstring(z.read('xl/workbook.xml'))
+ rels=ET.fromstring(z.read('xl/_rels/workbook.xml.rels'))
+ relmap={rel.attrib['Id']: rel.attrib['Target'] for rel in rels}
+ for s in wb.find('a:sheets',NS):
+  print(s.attrib.get('name'), s.attrib.get('{http://schemas.openxmlformats.org/officeDocument/2006/relationships}id'), relmap.get(s.attrib.get('{http://schemas.openxmlformats.org/officeDocument/2006/relationships}id')))
+PY" in /home/arka/projects/Slot_Lib/SlotCore
+ succeeded in 0ms:
+Game Rules rId1 worksheets/sheet1.xml
+Implementation rId2 worksheets/sheet2.xml
+Reelsets rId3 worksheets/sheet3.xml
+Buy Bonus FG rId4 worksheets/sheet4.xml
+Buy Bonus BF rId5 worksheets/sheet5.xml
+
+codex
+I found five workbook sheets: `Game Rules`, `Implementation`, `Reelsets`, `Buy Bonus FG`, and `Buy Bonus BF`. I’m now dumping the populated cells so I can build the Planner JSON around the actual paytable, reelsets, and feature parameters.
+exec
+/bin/bash -lc "python3 - <<'PY'
+from zipfile import ZipFile
+from pathlib import Path
+import xml.etree.ElementTree as ET
+import re
+p=Path('specs/math_models/Parsheet_Vegas_Blitz.xlsx')
+NS={'a':'http://schemas.openxmlformats.org/spreadsheetml/2006/main','r':'http://schemas.openxmlformats.org/officeDocument/2006/relationships'}
+
+def colrow(ref):
+ m=re.match(r'([A-Z]+)([0-9]+)', ref)
+ col=0
+ for ch in m.group(1): col=col*26+ord(ch)-64
+ return col, int(m.group(2))
+
+def read_shared(z):
+ root=ET.fromstring(z.read('xl/sharedStrings.xml'))
+ out=[]
+ for si in root.findall('a:si',NS):
+  texts=[]
+  for t in si.findall('.//a:t',NS): texts.append(t.text or '')
+  out.append(''.join(texts))
+ return out
+
+def cell_value(c, shared):
+ t=c.attrib.get('t')
+ f=c.find('a:f',NS)
+ v=c.find('a:v',NS)
+ val=None
+ if v is not None:
+  val=v.text
+  if t=='s': val=shared[int(val)]
+  elif t=='b': val=bool(int(val))
+  else:
+   try:
+    fv=float(val)
+    val=int(fv) if fv.is_integer() else fv
+   except Exception: pass
+ if f is not None:
+  return f'={f.text}' + (f' -> {val}' if val is not None else '')
+ return val
+with ZipFile(p) as z:
+ shared=read_shared(z)
+ wb=ET.fromstring(z.read('xl/workbook.xml'))
+ rels=ET.fromstring(z.read('xl/_rels/workbook.xml.rels'))
+ relmap={rel.attrib['Id']: rel.attrib['Target'] for rel in rels}
+ for s in wb.find('a:sheets',NS):
+  name=s.attrib['name']; rid=s.attrib['{http://schemas.openxmlformats.org/officeDocument/2006/relationships}id']
+  target='xl/'+relmap[rid]
+  root=ET.fromstring(z.read(target))
+  print('\\n### SHEET', name)
+  rows=[]
+  for row in root.findall('.//a:sheetData/a:row',NS):
+   entries=[]
+   for c in row.findall('a:c',NS):
+    val=cell_value(c, shared)
+    if val is not None:
+     entries.append((c.attrib['r'], val))
+   if entries:
+    print(' | '.join(f'{ref}={val}' for ref,val in entries))
+PY" in /home/arka/projects/Slot_Lib/SlotCore
+ succeeded in 0ms:
+
+### SHEET Game Rules
+D1=Grid | E1=4x6 | F1=4096 ways
+B2=Bet = 20 | J2=This is a 6x4 window ways game with 4096 ways with all symbols paying left to right, except Scatter.
+B3=Symbols | J3=Wild Symbols appears on reel 2-6 in base game and reels 2-4 in Free spins (FS).
+B4=5 HV | J4=Wild substitutes for all but special symbols.
+B5=6 LV | J5=Collect symbol can appear on Reel 1 and Reel 6 onli in base game and VB spins only.
+B6=Special symbols -  | J6=3 or more Scatter symbols trigger feature and a feature selection window is prompted.
+B7=Wild | C7=appears on reel 2-6 in base game and 2-4 in FS | J7=The multipliers on WILDs multiply individually to the win whether WILD is in the participating win or not.
+B8=Scatter | J8=Scatter wins are not multiplied by the Wild multiplier.
+B9=COR and 4 JP | C9=cash symbols
+B10=Collect | C10=appears on reel 1 and 6 in base game and CB spins | J10=Scat count | K10=Option 1 | L10=Option 2
+J11=3 | K11=8 FS | L11=3 VB spins
+J12=4 | K12=12 FS | L12=4 VB spins
+B13=Symbols Paytable | J13=5 | K13=20 FS | L13=6 VB spins
+B14=of a Kind | C14=2 | D14=3 | E14=4 | F14=5 | G14=6 | J14=6 | K14=30 FS | L14=8 VB spins
+A15=A | B15=PIC 1 | C15=20 | D15=30 | E15=40 | F15=50 | G15=100
+A16=B | B16=PIC 2 | C16=10 | D16=20 | E16=30 | F16=40 | G16=50 | J16=Collect feature
+A17=C | B17=PIC 3 | C17=10 | D17=20 | E17=30 | F17=40 | G17=50 | J17=Land a Collect symbol to trigger this feature.
+A18=D | B18=PIC 4 | C18=4 | D18=16 | E18=24 | F18=30 | G18=40 | J18=Every Collect symbol independently awards all landed CORs and Jackpots.
+A19=E | B19=PIC 5 | C19=4 | D19=16 | E19=24 | F19=30 | G19=40 | J19=COR, JP and Collect don't appear in FS. 
+A20=F | B20=Ace | D20=10 | E20=20 | F20=24 | G20=30 | J20=CORs are multiplied by the total bet and have values between 0.5x - 2000x, including Jackpots.
+A21=G | B21=King | D21=10 | E21=20 | F21=24 | G21=30
+A22=H | B22=Queen | D22=8 | E22=16 | F22=20 | G22=24 | J22=Free Spins (FS)
+A23=I | B23=Jack | D23=8 | E23=16 | F23=20 | G23=24 | J23=2,3,4,5 or 6 Scatter awards 5,8,12,20,30 additional FS.
+A24=J | B24=Ten | D24=6 | E24=10 | F24=16 | G24=20 | J24=A multiplier of 2, 3 or 5 is awarded per Wild symbol in any win, except the scatter win.
+A25=K | B25=Nine | D25=6 | E25=10 | F25=16 | G25=20 | J25=Scatter wins are not multiplied by the Wild multiplier.
+A26=S | B26=Scatter | D26=20 | E26=40 | F26=60 | G26=100 | H26=pays anywhere | J26=Special symbols besides Wild and Bonus do not appear in FS.
+J28=Vegas Blitz spins (VB spins)
+F29=new | J29=Only COR, JP and Collect symbol appear in the game.
+C30=Jackpot  | D30=Prize (xBet) | J30=Collect Feature is guaranteed in each spin.
+C31=Grand | D31=2000 | J31=There are No retriggers.
+C32=Major | D32=250
+C33=Minor | D33=25
+C34=Mini | D34=10
+B39=Bet | C39=20
+B40=Base RTP | C40=0.60990273 | F40=Buy Bonus | G40=Cost | H40=RTP | J40=STD.
+B41=Feature Hit Rate | C41=230.206075875002 | H41=Blitz feature | I41=FG feature | J41=Blitz feature | K41=FG feature
+B42=Blitz feature RTP | C42=0.3311736812986 | F42=4 scat | G42=80x | H42=0.943185 | I42=0.943199523875 | J42=97.89377403 | K42=121.728076220326
+B43=Free Spins RTP | C43=0.331161831097145 | F43=5 scat | G43=95x | H43=0.941795534526316 | I43=0.941789473684211 | J43=94.87303046 | K43=126.461340228941
+D44=STD | F44=6 scat | G44=110x | H44=0.943345681818182 | I44=0.943342247909091 | J44=93.2211697 | K44=139.119266464562
+B45=Game RTP (blitz feature) | C45=0.9410764112986 | D45=11.0840367134361
+B46=Game RTP (free spins) | C46=0.941068966082725 | D46=10.1507966524209
+
+### SHEET Implementation
+A2=Base game
+A4=Step 1 | B4=6x4 window is generated from base game reelsets B1 and B2 using weights from below table.
+A5=Step 2 | B5=Trigger for additional COR is checked and if true, CORs are added anywhere on the screen except on Collect, Wild and Scatter based on below tables.
+B7=Reelsets | C7=Weights | E7=Trigger | F7=Weights | H7=# of CORs | I7=Weights
+B8=B1 | C8=58 | E8=Yes | F8=1 | H8=1 | I8=240
+B9=B2 | C9=42 | E9=No | F9=9 | H9=2 | I9=200
+H10=3 | I10=150
+H11=4 | I11=100
+H12=5 | I12=80
+A14=Step 3 | B14=This will be the final window. Check for left to right ways wins and anywhere Scatter wins.
+A15=Step 4 | B15=Check for Collect symbol appearance on Reel 1 and Reel 6. If Collect is there, collect the CORs present on the screen for each Collect individually.
+B16=COR value table for base game | Q16=Mini | S16=Minor | V16=Major | X16=Grand
+B17=COR (xBet) | C17=0.5 | D17=1 | E17=1.5 | F17=2 | G17=2.5 | H17=3 | I17=3.5 | J17=4 | K17=5 | L17=6 | M17=7 | N17=7.5 | O17=8 | P17=9 | Q17=10 | R17=12.5 | S17=25 | T17=50 | U17=125 | V17=250 | W17=500 | X17=2000
+B18=Weights | C18=7000 | D18=6000 | E18=6000 | F18=5000 | G18=3000 | H18=3000 | I18=2500 | J18=2000 | K18=1000 | L18=1000 | M18=1000 | N18=100 | O18=100 | P18=50 | Q18=50 | R18=50 | S18=30 | T18=20 | U18=10 | V18=10 | W18=5 | X18=1 | Y18==SUMPRODUCT(C18:X18,C17:X17)/SUM(C18:X18) -> 2.4488477561567263
+A20=Step 5 | B20=Collected CORs are multiplied by the total bet. Three wins are to be displayed - line wins, scatter wins and COR wins.
+A21=Step 6 | B21=If 3 or more Scatters appear on the Base game window, feature will be triggered.
+A23=Features
+A24=Feature Option 1: | C24=Free Games Feature
+A26=Step 1 | B26=Depending on the number of Scatters, 8, 12, 20 and 30 Free games are awarded for 3, 4, 5 and 6 Scatters, respectively.
+A27=Step 2 | B27=Use Reelset F1 to create the window. Assign multipliers to WILDs with below weights.
+B28=The multipliers on WILDs multiply individually to the win whether WILD is in the participating win or not.
+B30=Multiplier Value | C30=Weights
+B31=1 | C31=0
+B32=2 | C32=480
+B33=3 | C33=545
+B34=5 | C34=360
+A36=Step 3 | B36=Calculate left to right ways wins and left to right Scatter wins. Collect and CORs will not appear in this feature option.
+A37=Step 4 | B37=Check for retriggers where 2, 3, 4, 5 or 6 Scatters awards 5, 8, 12, 20, 30 additional Free games.
+A38=Step 5 | B38=Same reelset as used on the feature trigger time will be used for additional spins too.
+A39=Step 6 | B39=Once all free games exhaust, exit the feature.
+A42=Feature Option 2: | C42=Blitz Feature
+A44=Step 1 | B44=Depending on the number of Scatters, 3, 4, 6 and 8 Blitz spins are awarded by 3, 4, 5 and 6 Scatters, respectively.
+A45=Step 2 | B45=Using the weights, we will decide whether 1 or 2 Collect symbols will appear on the window on Reels 1 and 6. 
+B46=1 Reel can have a maximum of 1 Collect symbol and the entire window will contain a minimum of 1 Collect symbol in this feature.
+B48=# of Collect | C48=Weights
+B49=1 | C49=75
+B50=2 | C50=25
+A52=Step 3 | B52=For all positions besides the ones occupied by the Collect, we will check for potential occurrence of CORs.
+B54=COR occurrence | C54=Weights
+B55=Yes | C55=26
+B56=No | C56=74
+A58=Step 4 | B58=If no COR appears on the screen, add 1 COR. (Forcing condition)
+A59=Step 5 | B59=Assign the values from below tables. Good table will be used exactly for one COR per each spin and Bad table will be used for all other CORs.
+Q60=Mini | S60=Minor | V60=Major | X60=Grand
+B61=COR values (xBet) | C61=0.5 | D61=1 | E61=1.5 | F61=2 | G61=2.5 | H61=3 | I61=3.5 | J61=4 | K61=5 | L61=6 | M61=7 | N61=7.5 | O61=8 | P61=9 | Q61=10 | R61=12.5 | S61=25 | T61=50 | U61=125 | V61=250 | W61=500 | X61=2000
+B62=Good table weights | C62=0 | D62=0 | E62=0 | F62=0 | G62=0 | H62=0 | I62=0 | J62=606 | K62=893 | L62=600 | M62=600 | N62=500 | O62=500 | P62=500 | Q62=500 | R62=400 | S62=300 | T62=100 | U62=30 | V62=10 | W62=10 | X62=3 | Y62==SUMPRODUCT(C62:X62,$C$61:$X$61)/SUM(C62:X62) -> 12.01170749279539
+B63=Bad table weights | C63=17500 | D63=7000 | E63=3000 | F63=2500 | G63=2000 | H63=2000 | I63=1500 | J63=1000 | K63=1000 | L63=500 | M63=500 | N63=100 | O63=100 | P63=50 | Q63=50 | R63=50 | S63=30 | T63=20 | U63=10 | V63=0 | W63=0 | X63=0 | Y63==SUMPRODUCT(C63:X63,$C$61:$X$61)/SUM(C63:X63) -> 1.6223335903366745
+A65=Step 6 | B65=Each Collect will collect the CORs on the screen. COR values are multiplied by the total bet.
+A66=Step 7 | B66=Screen resets on every spin.
+A67=Step 8  | B67=When all the Spins exhaust, exit the feature.
+
+### SHEET Reelsets
+B2=Base game Reelset B1 | J2=Base game Reelset B2 | R2=Free game Reelset F1
+B3=Reel 1 | C3=Reel 2 | D3=Reel 3 | E3=Reel 4 | F3=Reel 5 | G3=Reel 6 | J3=Reel 1 | K3=Reel 2 | L3=Reel 3 | M3=Reel 4 | N3=Reel 5 | O3=Reel 6 | R3=Reel 1 | S3=Reel 2 | T3=Reel 3 | U3=Reel 4 | V3=Reel 5 | W3=Reel 6
+A4=1 | B4=KING | C4=PIC5 | D4=JACK | E4=PIC1 | F4=KING | G4=COIN | I4=1 | J4=PIC1 | K4=PIC2 | L4=ACE | M4=PIC2 | N4=PIC1 | O4=PIC2 | Q4=1 | R4=PIC2 | S4=ACE | T4=JACK | U4=PIC1 | V4=KING | W4=PIC4
+A5=2 | B5=JACK | C5=ACE | D5=PIC2 | E5=PIC1 | F5=KING | G5=QUEEN | I5=2 | J5=ACE | K5=QUEEN | L5=KING | M5=QUEEN | N5=ACE | O5=QUEEN | Q5=2 | R5=KING | S5=NINE | T5=PIC5 | U5=PIC3 | V5=PIC2 | W5=QUEEN
+A6=3 | B6=QUEEN | C6=NINE | D6=PIC4 | E6=PIC1 | F6=PIC5 | G6=COLLECT | I6=3 | J6=KING | K6=KING | L6=JACK | M6=KING | N6=KING | O6=KING | Q6=3 | R6=QUEEN | S6=ACE | T6=QUEEN | U6=NINE | V6=PIC5 | W6=PIC2
+A7=4 | B7=PIC2 | C7=PIC1 | D7=JACK | E7=KING | F7=PIC3 | G7=PIC4 | I7=4 | J7=JACK | K7=KING | L7=ACE | M7=KING | N7=JACK | O7=KING | Q7=4 | R7=PIC3 | S7=TEN | T7=JACK | U7=TEN | V7=PIC3 | W7=ACE
+A8=5 | B8=PIC1 | C8=PIC1 | D8=JACK | E8=TEN | F8=PIC3 | G8=PIC3 | I8=5 | J8=ACE | K8=TEN | L8=PIC3 | M8=TEN | N8=ACE | O8=TEN | Q8=5 | R8=PIC1 | S8=SCAT | T8=NINE | U8=PIC1 | V8=QUEEN | W8=PIC3
+A9=6 | B9=KING | C9=PIC1 | D9=PIC2 | E9=KING | F9=QUEEN | G9=PIC5 | I9=6 | J9=PIC3 | K9=PIC2 | L9=NINE | M9=PIC2 | N9=PIC3 | O9=PIC2 | Q9=6 | R9=KING | S9=ACE | T9=WILD | U9=PIC5 | V9=PIC1 | W9=PIC5
+A10=7 | B10=JACK | C10=TEN | D10=TEN | E10=QUEEN | F10=QUEEN | G10=TEN | I10=7 | J10=NINE | K10=PIC4 | L10=NINE | M10=PIC4 | N10=NINE | O10=PIC4 | Q10=7 | R10=PIC4 | S10=JACK | T10=KING | U10=TEN | V10=ACE | W10=TEN
+A11=8 | B11=KING | C11=PIC5 | D11=TEN | E11=TEN | F11=ACE | G11=COIN | I11=8 | J11=NINE | K11=PIC5 | L11=PIC3 | M11=PIC5 | N11=NINE | O11=PIC5 | Q11=8 | R11=PIC3 | S11=PIC1 | T11=QUEEN | U11=SCAT | V11=PIC4 | W11=PIC1
+A12=9 | B12=QUEEN | C12=PIC5 | D12=PIC3 | E12=ACE | F12=PIC4 | G12=COIN | I12=9 | J12=PIC3 | K12=QUEEN | L12=JACK | M12=QUEEN | N12=PIC3 | O12=QUEEN | Q12=9 | R12=JACK | S12=ACE | T12=JACK | U12=PIC1 | V12=SCAT | W12=PIC3
+A13=10 | B13=JACK | C13=QUEEN | D13=JACK | E13=WILD | F13=PIC3 | G13=PIC2 | I13=10 | J13=JACK | K13=TEN | L13=PIC1 | M13=TEN | N13=JACK | O13=TEN | Q13=10 | R13=KING | S13=JACK | T13=PIC4 | U13=PIC2 | V13=TEN | W13=PIC2
+A14=11 | B14=NINE | C14=ACE | D14=NINE | E14=TEN | F14=TEN | G14=PIC2 | I14=11 | J14=PIC1 | K14=PIC4 | L14=NINE | M14=PIC4 | N14=PIC1 | O14=PIC4 | Q14=11 | R14=QUEEN | S14=ACE | T14=PIC1 | U14=PIC4 | V14=JACK | W14=PIC2
+A15=12 | B15=COLLECT | C15=COIN | D15=TEN | E15=KING | F15=TEN | G15=TEN | I15=12 | J15=NINE | K15=PIC5 | L15=PIC5 | M15=PIC5 | N15=NINE | O15=PIC5 | Q15=12 | R15=PIC3 | S15=WILD | T15=JACK | U15=PIC3 | V15=PIC1 | W15=TEN
+A16=13 | B16=KING | C16=COIN | D16=TEN | E16=TEN | F16=TEN | G16=QUEEN | I16=13 | J16=PIC5 | K16=ACE | L16=PIC1 | M16=PIC1 | N16=PIC5 | O16=PIC1 | Q16=13 | R16=JACK | S16=TEN | T16=PIC5 | U16=TEN | V16=PIC3 | W16=QUEEN
+A17=14 | B17=QUEEN | C17=PIC3 | D17=QUEEN | E17=QUEEN | F17=WILD | G17=COLLECT | I17=14 | J17=PIC1 | K17=JACK | L17=ACE | M17=ACE | N17=PIC1 | O17=ACE | Q17=14 | R17=PIC2 | S17=ACE | T17=SCAT | U17=PIC5 | V17=PIC2 | W17=NINE
+A18=15 | B18=PIC3 | C18=ACE | D18=SCAT | E18=NINE | F18=PIC2 | G18=PIC3 | I18=15 | J18=ACE | K18=PIC2 | L18=PIC2 | M18=JACK | N18=ACE | O18=JACK | Q18=15 | R18=KING | S18=JACK | T18=PIC3 | U18=PIC4 | V18=PIC2 | W18=PIC3
+A19=16 | B19=KING | C19=QUEEN | D19=JACK | E19=NINE | F19=PIC2 | G19=QUEEN | I19=16 | J19=JACK | K19=QUEEN | L19=JACK | M19=PIC2 | N19=PIC2 | O19=PIC2 | Q19=16 | R19=JACK | S19=KING | T19=PIC2 | U19=PIC2 | V19=PIC1 | W19=QUEEN
+A20=17 | B20=QUEEN | C20=PIC2 | D20=TEN | E20=TEN | F20=PIC3 | G20=TEN | I20=17 | J20=ACE | K20=KING | L20=ACE | M20=QUEEN | N20=JACK | O20=QUEEN | Q20=17 | R20=QUEEN | S20=JACK | T20=JACK | U20=NINE | V20=ACE | W20=TEN
+A21=18 | B21=PIC1 | C21=PIC3 | D21=PIC1 | E21=QUEEN | F21=ACE | G21=PIC3 | I21=18 | J21=PIC3 | K21=KING | L21=PIC3 | M21=KING | N21=ACE | O21=KING | Q21=18 | R21=PIC3 | S21=PIC2 | T21=NINE | U21=TEN | V21=KING | W21=PIC3
+A22=19 | B22=JACK | C22=JACK | D22=PIC4 | E22=TEN | F22=ACE | G22=PIC1 | I22=19 | J22=QUEEN | K22=TEN | L22=QUEEN | M22=PIC3 | N22=PIC3 | O22=PIC3 | Q22=19 | R22=PIC2 | S22=PIC4 | T22=PIC4 | U22=JACK | V22=JACK | W22=PIC1
+A23=20 | B23=KING | C23=PIC5 | D23=TEN | E23=KING | F23=JACK | G23=PIC5 | I23=20 | J23=NINE | K23=NINE | L23=NINE | M23=KING | N23=QUEEN | O23=KING | Q23=20 | R23=KING | S23=PIC2 | T23=PIC4 | U23=WILD | V23=PIC5 | W23=PIC5
+A24=21 | B24=KING | C24=TEN | D24=NINE | E24=PIC1 | F24=PIC5 | G24=PIC4 | I24=21 | J24=NINE | K24=PIC2 | L24=NINE | M24=TEN | N24=NINE | O24=TEN | Q24=21 | R24=ACE | S24=NINE | T24=PIC4 | U24=QUEEN | V24=PIC1 | W24=PIC4
+A25=22 | B25=PIC2 | C25=ACE | D25=TEN | E25=NINE | F25=NINE | G25=PIC3 | I25=22 | J25=PIC4 | K25=PIC4 | L25=PIC4 | M25=NINE | N25=NINE | O25=NINE | Q25=22 | R25=NINE | S25=JACK | T25=TEN | U25=ACE | V25=PIC5 | W25=PIC3
+A26=23 | B26=JACK | C26=PIC5 | D26=TEN | E26=QUEEN | F26=PIC1 | G26=SCAT | I26=23 | J26=PIC3 | K26=PIC5 | L26=PIC3 | M26=PIC2 | N26=PIC4 | O26=PIC2 | Q26=23 | R26=QUEEN | S26=PIC4 | T26=PIC1 | U26=JACK | V26=PIC4 | W26=ACE
+A27=24 | B27=PIC1 | C27=PIC2 | D27=PIC4 | E27=TEN | F27=ACE | G27=PIC4 | I27=24 | J27=JACK | K27=QUEEN | L27=JACK | M27=PIC4 | N27=PIC3 | O27=PIC4 | Q27=24 | R27=JACK | S27=PIC1 | T27=PIC2 | U27=ACE | V27=PIC3 | W27=PIC2
+A28=25 | B28=KING | C28=ACE | D28=PIC1 | E28=PIC1 | F28=ACE | G28=ACE | I28=25 | J28=PIC1 | K28=TEN | L28=PIC1 | M28=PIC5 | N28=JACK | O28=PIC5 | Q28=25 | R28=PIC1 | S28=PIC5 | T28=TEN | U28=ACE | V28=TEN | W28=ACE
+A29=26 | B29=JACK | C29=PIC5 | D29=SCAT | E29=PIC5 | F29=QUEEN | G29=PIC5 | I29=26 | J29=TEN | L29=TEN | M29=QUEEN | N29=PIC1 | O29=QUEEN | Q29=26 | R29=PIC2 | S29=QUEEN | T29=JACK | U29=SCAT | V29=PIC1 | W29=PIC5
+A30=27 | B30=QUEEN | C30=TEN | D30=TEN | E30=PIC4 | F30=KING | G30=PIC4 | I30=27 | M30=TEN | N30=TEN | O30=TEN | Q30=27 | R30=PIC3 | S30=QUEEN | T30=TEN | U30=PIC4 | V30=SCAT | W30=PIC3
+A31=28 | B31=JACK | C31=WILD | D31=JACK | E31=PIC3 | F31=PIC4 | G31=PIC4 | Q31=28 | R31=PIC4 | S31=ACE | T31=JACK | U31=ACE | V31=PIC2 | W31=PIC4
+A32=29 | B32=SCAT | C32=ACE | D32=PIC3 | E32=PIC3 | F32=PIC5 | G32=ACE | Q32=29 | R32=TEN | S32=TEN | T32=NINE | U32=JACK | V32=ACE | W32=ACE
+A33=30 | B33=KING | C33=PIC5 | D33=JACK | E33=SCAT | F33=ACE | G33=SCAT | Q33=30 | R33=KING | S33=WILD | T33=TEN | U33=PIC1 | V33=PIC5 | W33=NINE
+A34=31 | B34=PIC4 | C34=PIC5 | D34=PIC4 | E34=PIC3 | F34=SCAT | G34=ACE | Q34=31 | R34=JACK | S34=JACK | T34=QUEEN | U34=PIC5 | V34=PIC1 | W34=ACE
+A35=32 | B35=QUEEN | C35=TEN | D35=TEN | E35=PIC3 | F35=TEN | G35=PIC4 | Q35=32 | R35=QUEEN | S35=ACE | T35=PIC4 | U35=ACE | V35=PIC4 | W35=PIC4
+A36=33 | B36=PIC5 | C36=ACE | D36=JACK | E36=TEN | F36=TEN | G36=PIC5 | Q36=33 | R36=PIC1 | S36=TEN | T36=TEN | U36=PIC2 | V36=PIC2 | W36=PIC5
+A37=34 | B37=JACK | C37=PIC4 | D37=PIC4 | E37=TEN | F37=PIC1 | G37=KING | Q37=34 | R37=PIC2 | S37=PIC1 | T37=PIC4 | U37=KING | V37=PIC3 | W37=SCAT
+A38=35 | B38=TEN | C38=PIC5 | D38=TEN | E38=PIC2 | F38=PIC4 | G38=PIC3 | Q38=35 | R38=PIC5 | S38=NINE | T38=QUEEN | U38=QUEEN | V38=QUEEN | W38=PIC3
+A39=36 | B39=PIC5 | C39=TEN | D39=PIC4 | E39=TEN | F39=PIC4 | G39=PIC3 | Q39=36 | R39=KING | S39=PIC5 | T39=PIC3 | U39=NINE | V39=TEN | W39=PIC5
+A40=37 | B40=QUEEN | C40=ACE | D40=TEN | E40=TEN | F40=TEN | G40=PIC5 | Q40=37 | R40=JACK | S40=SCAT | T40=PIC4 | U40=WILD | V40=PIC3 | W40=TEN
+A41=38 | B41=PIC1 | C41=PIC5 | D41=PIC4 | E41=PIC3 | F41=PIC4 | G41=TEN | Q41=38 | R41=QUEEN | S41=PIC1 | T41=KING | U41=KING | V41=PIC1 | W41=PIC1
+A42=39 | B42=NINE | C42=KING | D42=PIC4 | E42=ACE | F42=PIC3 | G42=PIC1 | Q42=39 | R42=KING | S42=ACE | T42=PIC1 | U42=ACE | V42=ACE | W42=PIC2
+A43=40 | B43=KING | C43=PIC5 | D43=QUEEN | E43=TEN | F43=ACE | G43=PIC1 | Q43=40 | R43=NINE | S43=PIC3 | T43=TEN | U43=TEN | V43=PIC5 | W43=PIC4
+A44=41 | B44=JACK | C44=TEN | D44=TEN | E44=ACE | F44=ACE | G44=PIC1 | Q44=41 | R44=PIC2 | S44=PIC2 | T44=QUEEN | U44=PIC1 | V44=PIC2 | W44=PIC3
+A45=42 | B45=QUEEN | C45=SCAT | D45=TEN | E45=JACK | F45=PIC5 | G45=KING | Q45=42 | R45=JACK | S45=ACE | T45=TEN | U45=ACE | V45=PIC3 | W45=ACE
+A46=43 | B46=JACK | C46=ACE | D46=PIC4 | E46=PIC1 | F46=PIC4 | G46=PIC3 | Q46=43 | R46=QUEEN | S46=ACE | T46=PIC4 | U46=PIC3 | V46=ACE | W46=TEN
+A47=44 | B47=JACK | C47=TEN | D47=TEN | E47=ACE | F47=PIC4 | G47=ACE | Q47=44 | R47=JACK | S47=PIC1 | T47=TEN | U47=PIC4 | V47=JACK | W47=PIC1
+A48=45 | B48=PIC1 | C48=TEN | D48=WILD | E48=ACE | F48=PIC5 | G48=TEN | Q48=45 | R48=PIC1 | S48=ACE | T48=PIC2 | U48=TEN | V48=NINE | W48=ACE
+A49=46 | B49=KING | C49=PIC5 | D49=JACK | E49=TEN | F49=PIC3 | G49=NINE | Q49=46 | R49=KING | S49=PIC5 | T49=PIC1 | U49=PIC2 | V49=KING | W49=JACK
+A50=47 | B50=PIC3 | C50=TEN | D50=PIC4 | E50=ACE | F50=QUEEN | G50=ACE | Q50=47 | R50=PIC2 | S50=ACE | T50=PIC4 | U50=JACK | V50=PIC1 | W50=PIC2
+A51=48 | B51=QUEEN | C51=WILD | D51=TEN | E51=WILD | F51=TEN | G51=JACK | Q51=48 | R51=ACE | S51=PIC4 | T51=JACK | U51=PIC1 | V51=JACK | W51=PIC3
+A52=49 | B52=KING | C52=TEN | D52=PIC4 | E52=TEN | F52=PIC3 | G52=WILD | Q52=49 | R52=QUEEN | S52=PIC2 | T52=PIC3 | U52=PIC3 | V52=PIC2 | W52=PIC4
+A53=50 | B53=PIC1 | C53=ACE | D53=NINE | E53=ACE | F53=PIC1 | G53=PIC3 | Q53=50 | R53=JACK | S53=ACE | T53=JACK | U53=PIC4 | V53=KING | W53=ACE
+A54=51 | B54=QUEEN | C54=PIC5 | D54=ACE | E54=ACE | F54=ACE | G54=PIC4 | Q54=51 | R54=PIC1 | S54=PIC5 | T54=NINE | U54=PIC5 | V54=JACK | W54=TEN
+A55=52 | B55=JACK | C55=TEN | D55=TEN | E55=TEN | F55=PIC5 | G55=ACE | Q55=52 | R55=KING | S55=PIC2 | T55=KING | U55=ACE | V55=PIC5 | W55=PIC1
+A56=53 | B56=QUEEN | C56=TEN | D56=TEN | E56=PIC3 | F56=PIC2 | G56=TEN | Q56=53 | R56=QUEEN | S56=PIC1 | T56=SCAT | U56=TEN | V56=QUEEN | W56=ACE
+A57=54 | B57=JACK | C57=ACE | D57=PIC4 | E57=ACE | F57=PIC3 | G57=PIC1 | Q57=54 | R57=PIC5 | S57=PIC3 | T57=PIC4 | U57=JACK | V57=PIC4 | W57=PIC4
+A58=55 | B58=PIC1 | C58=TEN | D58=PIC4 | E58=ACE | F58=ACE | G58=ACE | Q58=55 | R58=KING | S58=PIC4 | T58=KING | U58=NINE | V58=PIC1 | W58=NINE
+A59=56 | B59=KING | C59=PIC4 | D59=PIC2 | E59=PIC1 | F59=JACK | G59=PIC4 | Q59=56 | R59=QUEEN | S59=PIC2 | T59=QUEEN | U59=WILD | V59=KING | W59=ACE
+A60=57 | B60=PIC4 | C60=TEN | D60=PIC4 | E60=TEN | F60=PIC1 | G60=PIC1 | Q60=57 | R60=PIC2 | S60=TEN | T60=TEN | U60=ACE | V60=KING | W60=ACE
+A61=58 | B61=KING | C61=PIC5 | D61=QUEEN | E61=PIC2 | F61=PIC1 | G61=ACE | Q61=58 | R61=JACK | S61=TEN | T61=WILD | U61=JACK | V61=PIC5 | W61=PIC3
+A62=59 | B62=QUEEN | C62=ACE | D62=QUEEN | E62=KING | F62=PIC1 | G62=ACE | Q62=59 | R62=KING | S62=PIC4 | T62=NINE | U62=TEN | V62=QUEEN | W62=PIC3
+A63=60 | B63=JACK | C63=PIC5 | D63=PIC1 | E63=PIC3 | F63=JACK | G63=PIC3 | Q63=60 | R63=NINE | S63=PIC2 | T63=KING | U63=NINE | V63=PIC2 | W63=PIC3
+A64=61 | B64=PIC1 | C64=PIC5 | D64=KING | E64=QUEEN | F64=PIC2 | G64=PIC3 | Q64=61 | R64=QUEEN | S64=PIC1 | T64=TEN | V64=PIC2 | W64=ACE
+A65=62 | B65=KING | C65=ACE | D65=PIC4 | E65=COIN | F65=KING | G65=PIC3 | Q65=62 | R65=JACK | S65=JACK | T65=PIC4 | V65=TEN | W65=PIC1
+A66=63 | B66=QUEEN | C66=TEN | D66=PIC5 | E66=COIN | F66=JACK | G66=ACE | Q66=63 | R66=KING | S66=PIC4 | T66=ACE | V66=TEN | W66=ACE
+A67=64 | B67=KING | C67=ACE | D67=NINE | E67=COIN | F67=PIC5 | G67=PIC1 | Q67=64 | R67=PIC3 | S67=JACK | T67=PIC3 | V67=PIC4 | W67=TEN
+A68=65 | B68=JACK | C68=PIC3 | D68=JACK | E68=ACE | F68=QUEEN | G68=ACE | Q68=65 | R68=KING | S68=PIC5 | T68=JACK | V68=PIC1 | W68=PIC2
+A69=66 | B69=QUEEN | C69=PIC2 | D69=PIC2 | F69=PIC1 | G69=TEN | Q69=66 | R69=QUEEN | S69=QUEEN | T69=PIC5 | V69=TEN | W69=JACK
+A70=67 | B70=PIC1 | C70=ACE | D70=PIC4 | F70=WILD | G70=PIC2 | Q70=67 | R70=NINE | S70=PIC1 | T70=PIC4 | V70=TEN | W70=ACE
+A71=68 | B71=JACK | C71=TEN | D71=JACK | F71=KING | G71=JACK | Q71=68 | R71=JACK | S71=ACE | T71=JACK | V71=TEN | W71=PIC5
+A72=69 | B72=KING | C72=ACE | D72=JACK | F72=KING | G72=ACE | Q72=69 | R72=QUEEN | S72=TEN | T72=PIC2 | V72=JACK | W72=PIC1
+A73=70 | B73=SCAT | C73=TEN | D73=PIC2 | F73=PIC5 | G73=PIC5 | Q73=70 | R73=PIC2 | S73=QUEEN | T73=JACK | V73=PIC3 | W73=PIC5
+A74=71 | B74=QUEEN | C74=PIC5 | D74=TEN | F74=QUEEN | G74=PIC1 | Q74=71 | R74=JACK | S74=WILD | T74=PIC4 | V74=QUEEN | W74=ACE
+A75=72 | B75=JACK | C75=ACE | D75=TEN | F75=PIC2 | G75=NINE | Q75=72 | R75=JACK | S75=ACE | T75=PIC1 | V75=QUEEN | W75=ACE
+A76=73 | B76=NINE | C76=PIC1 | D76=SCAT | F76=PIC2 | G76=KING | Q76=73 | R76=PIC4 | S76=PIC4 | T76=JACK | V76=PIC4 | W76=ACE
+A77=74 | B77=QUEEN | C77=ACE | D77=PIC3 | F77=TEN | G77=KING | Q77=74 | R77=QUEEN | S77=TEN | T77=PIC5 | V77=KING | W77=PIC3
+A78=75 | B78=KING | C78=TEN | D78=JACK | F78=TEN | G78=KING | Q78=75 | R78=KING | S78=PIC1 | T78=PIC2 | V78=PIC1 | W78=PIC2
+A79=76 | B79=QUEEN | C79=ACE | D79=NINE | F79=PIC4 | G79=PIC3 | Q79=76 | R79=QUEEN | S79=PIC5 | T79=PIC3 | V79=PIC1 | W79=ACE
+A80=77 | B80=PIC1 | C80=PIC5 | D80=TEN | F80=PIC3 | G80=PIC2 | Q80=77 | R80=NINE | S80=PIC4 | T80=PIC2 | V80=KING | W80=ACE
+A81=78 | B81=PIC1 | C81=TEN | D81=TEN | F81=PIC5 | G81=ACE | Q81=78 | R81=JACK | S81=PIC1 | T81=JACK | V81=QUEEN | W81=ACE
+A82=79 | B82=PIC1 | C82=TEN | D82=QUEEN | F82=KING | G82=WILD | Q82=79 | R82=QUEEN | S82=SCAT | T82=PIC1 | V82=PIC3 | W82=PIC1
+A83=80 | B83=PIC2 | C83=ACE | D83=PIC1 | F83=KING | G83=QUEEN | Q83=80 | R83=PIC5 | S83=PIC3 | T83=NINE | V83=QUEEN | W83=PIC5
+A84=81 | B84=QUEEN | C84=TEN | D84=PIC1 | F84=COIN | G84=KING | Q84=81 | R84=QUEEN | S84=PIC2 | T84=KING | V84=PIC2 | W84=TEN
+A85=82 | B85=JACK | C85=PIC5 | D85=PIC1 | F85=COIN | G85=PIC5 | Q85=82 | R85=JACK | S85=ACE | T85=TEN | V85=PIC5 | W85=PIC4
+A86=83 | B86=KING | D86=PIC4 | F86=COIN | Q86=83 | R86=KING | S86=ACE | T86=WILD | V86=QUEEN | W86=JACK
+A87=84 | B87=TEN | D87=TEN | Q87=84 | R87=JACK | S87=PIC1 | T87=ACE | V87=SCAT | W87=PIC5
+A88=85 | B88=PIC1 | D88=SCAT | Q88=85 | R88=QUEEN | S88=ACE | T88=JACK | V88=PIC2 | W88=ACE
+A89=86 | B89=ACE | D89=TEN | Q89=86 | R89=PIC2 | S89=PIC5 | T89=NINE | V89=PIC4 | W89=ACE
+A90=87 | B90=KING | D90=TEN | Q90=87 | R90=PIC1 | S90=ACE | T90=TEN | V90=PIC1 | W90=PIC1
+A91=88 | B91=COIN | D91=PIC4 | Q91=88 | R91=ACE | S91=PIC4 | T91=PIC1 | V91=PIC5 | W91=PIC3
+A92=89 | B92=COIN | D92=PIC1 | Q92=89 | R92=JACK | S92=JACK | T92=PIC2 | V92=PIC2 | W92=TEN
+A93=90 | D93=TEN | Q93=90 | R93=KING | S93=ACE | T93=PIC4 | V93=PIC5 | W93=PIC3
+A94=91 | D94=JACK | Q94=91 | R94=QUEEN | S94=PIC5 | T94=TEN | V94=PIC1 | W94=PIC1
+A95=92 | D95=PIC3 | Q95=92 | R95=JACK | T95=PIC4 | V95=PIC2 | W95=PIC5
+A96=93 | D96=JACK | Q96=93 | R96=PIC2 | T96=QUEEN | V96=QUEEN | W96=TEN
+A97=94 | D97=PIC4 | Q97=94 | R97=KING | T97=PIC3 | V97=TEN | W97=PIC3
+A98=95 | D98=TEN | Q98=95 | R98=KING | T98=PIC4 | V98=TEN | W98=PIC5
+A99=96 | D99=WILD | Q99=96 | R99=PIC3 | T99=KING | V99=PIC3 | W99=TEN
+A100=97 | D100=PIC4 | Q100=97 | R100=JACK | T100=PIC1 | V100=PIC1 | W100=PIC1
+A101=98 | D101=TEN | Q101=98 | R101=KING | T101=PIC1 | V101=PIC3 | W101=PIC5
+A102=99 | D102=PIC4 | Q102=99 | R102=QUEEN | T102=PIC4 | V102=QUEEN | W102=PIC3
+A103=100 | D103=TEN | Q103=100 | R103=PIC3 | T103=JACK | V103=PIC1 | W103=ACE
+A104=101 | D104=PIC4 | Q104=101 | R104=JACK | T104=PIC5 | V104=PIC2 | W104=NINE
+A105=102 | D105=PIC4 | Q105=102 | R105=KING | V105=QUEEN | W105=PIC3
+A106=103 | D106=QUEEN | Q106=103 | R106=PIC4 | V106=ACE | W106=PIC5
+A107=104 | D107=TEN | Q107=104 | R107=QUEEN | V107=PIC4 | W107=ACE
+A108=105 | D108=TEN | Q108=105 | R108=JACK | V108=PIC3 | W108=PIC3
+A109=106 | D109=PIC4 | Q109=106 | R109=PIC2 | V109=PIC1 | W109=PIC4
+A110=107 | D110=TEN | Q110=107 | R110=KING | V110=PIC3 | W110=PIC5
+A111=108 | D111=WILD | Q111=108 | R111=JACK | V111=PIC3 | W111=ACE
+A112=109 | D112=JACK | Q112=109 | R112=QUEEN | V112=KING | W112=PIC4
+A113=110 | D113=PIC4 | Q113=110 | R113=JACK | V113=PIC1 | W113=ACE
+A114=111 | D114=TEN | Q114=111 | R114=NINE | V114=NINE | W114=PIC5
+A115=112 | D115=PIC4 | Q115=112 | R115=KING | V115=ACE | W115=PIC4
+A116=113 | D116=NINE | Q116=113 | R116=ACE | V116=PIC5 | W116=PIC4
+A117=114 | D117=ACE | Q117=114 | R117=QUEEN | V117=PIC4 | W117=ACE
+A118=115 | D118=TEN | Q118=115 | R118=QUEEN | V118=TEN | W118=ACE
+A119=116 | D119=TEN | Q119=116 | R119=JACK | V119=QUEEN | W119=JACK
+A120=117 | D120=PIC4 | Q120=117 | R120=KING | V120=PIC1 | W120=PIC4
+A121=118 | D121=PIC4 | Q121=118 | R121=TEN | V121=PIC3 | W121=PIC5
+A122=119 | D122=PIC2 | Q122=119 | R122=PIC1 | V122=PIC2 | W122=SCAT
+A123=120 | D123=PIC4 | Q123=120 | R123=NINE | V123=PIC1 | W123=PIC3
+A124=121 | D124=QUEEN | Q124=121 | R124=TEN | V124=QUEEN | W124=PIC4
+A125=122 | D125=QUEEN | Q125=122 | R125=KING | V125=PIC5 | W125=NINE
+A126=123 | D126=PIC1 | Q126=123 | R126=JACK | V126=TEN | W126=PIC2
+A127=124 | D127=KING | Q127=124 | R127=QUEEN | V127=PIC4 | W127=PIC3
+A128=125 | D128=PIC4 | Q128=125 | R128=JACK | V128=TEN | W128=PIC4
+A129=126 | D129=PIC5 | Q129=126 | R129=PIC1 | V129=PIC4 | W129=PIC5
+A130=127 | D130=NINE | Q130=127 | R130=PIC2 | V130=TEN | W130=PIC3
+A131=128 | D131=COIN | Q131=128 | R131=JACK | V131=QUEEN | W131=PIC5
+A132=129 | D132=COIN | Q132=129 | R132=JACK | V132=PIC1 | W132=PIC4
+A133=130 | D133=COIN | Q133=130 | R133=KING | V133=PIC2 | W133=PIC2
+Q134=131 | R134=QUEEN | V134=QUEEN | W134=PIC3
+Q135=132 | R135=QUEEN | V135=PIC3 | W135=PIC5
+Q136=133 | R136=PIC1 | V136=PIC3 | W136=PIC4
+Q137=134 | R137=JACK | V137=KING | W137=PIC3
+Q138=135 | R138=KING | V138=PIC1 | W138=PIC1
+Q139=136 | R139=SCAT | V139=PIC5 | W139=PIC1
+Q140=137 | R140=QUEEN | V140=PIC2 | W140=PIC5
+Q141=138 | R141=JACK | V141=PIC3 | W141=ACE
+Q142=139 | R142=PIC1 | V142=PIC4 | W142=PIC3
+Q143=140 | R143=PIC3 | V143=PIC5 | W143=PIC5
+Q144=141 | R144=KING | V144=ACE | W144=PIC5
+Q145=142 | R145=QUEEN | V145=PIC1 | W145=PIC4
+Q146=143 | R146=PIC1 | V146=PIC2 | W146=PIC3
+Q147=144 | R147=SCAT | V147=PIC1 | W147=ACE
+Q148=145 | V148=TEN | W148=PIC4
+Q149=146 | V149=PIC3 | W149=PIC3
+Q150=147 | V150=KING | W150=KING
+Q151=148 | V151=NINE | W151=KING
+Q152=149 | V152=PIC4 | W152=PIC4
+Q153=150 | V153=TEN | W153=JACK
+Q154=151 | V154=PIC2 | W154=PIC5
+Q155=152 | V155=PIC5 | W155=ACE
+Q156=153 | V156=PIC1 | W156=PIC4
+Q157=154 | V157=PIC4 | W157=PIC3
+Q158=155 | V158=PIC2 | W158=KING
+Q159=156 | V159=PIC1 | W159=PIC4
+Q160=157 | V160=PIC1 | W160=PIC3
+Q161=158 | V161=PIC3 | W161=PIC5
+Q162=159 | V162=TEN | W162=PIC3
+Q163=160 | V163=KING | W163=PIC2
+Q164=161 | V164=TEN | W164=KING
+Q165=162 | V165=QUEEN | W165=PIC5
+Q166=163 | V166=PIC1 | W166=PIC4
+Q167=164 | V167=PIC2 | W167=SCAT
+Q168=165 | V168=QUEEN | W168=PIC3
+Q169=166 | V169=TEN | W169=PIC5
+Q170=167 | V170=PIC3 | W170=PIC5
+Q171=168 | W171=PIC4
+Q172=169 | W172=TEN
+Q173=170 | W173=PIC2
+Q174=171 | W174=PIC1
+Q175=172
+Q176=173
+Q177=174
+Q178=175
+Q179=176
+Q180=177
+Q181=178
+Q182=179
+Q183=180
+Q184=181
+Q185=182
+Q186=183
+Q187=184
+Q188=185
+Q189=186
+Q190=187
+Q191=188
+
+### SHEET Buy Bonus FG
+N1=Reelset BB F2 | U1=Reelset BB F3 | AB1=Reelset BB F4 | AJ1=Pseudo reelset to trigger the free game from base game
+A2=Buy Bonus Bet Details | N2=Reel 1 | O2=Reel 2 | P2=Reel 3 | Q2=Reel 4 | R2=Reel 5 | S2=Reel 6 | U2=Reel 1 | V2=Reel 2 | W2=Reel 3 | X2=Reel 4 | Y2=Reel 5 | Z2=Reel 6 | AB2=Reel 1 | AC2=Reel 2 | AD2=Reel 3 | AE2=Reel 4 | AF2=Reel 5 | AG2=Reel 6
+N3=PIC2 | O3=ACE | P3=PIC1 | Q3=PIC1 | R3=KING | S3=PIC4 | U3=PIC2 | V3=ACE | W3=PIC1 | X3=PIC1 | Y3=KING | Z3=PIC4 | AB3=PIC2 | AC3=ACE | AD3=PIC1 | AE3=PIC1 | AF3=KING | AG3=PIC4 | AJ3=BB reelset F1 (4 SCAT)
+B4=Scat count | C4=Bet (x game bet) | D4=Option 1 | E4=Option 2 | N4=KING | O4=NINE | P4=PIC5 | Q4=PIC3 | R4=PIC2 | S4=QUEEN | U4=KING | V4=NINE | W4=PIC5 | X4=PIC3 | Y4=PIC2 | Z4=QUEEN | AB4=KING | AC4=NINE | AD4=PIC5 | AE4=PIC3 | AF4=PIC2 | AG4=QUEEN | AJ4=Reel 1 | AK4=Reel 2 | AL4=Reel 3 | AM4=Reel 4 | AN4=Reel 5 | AO4=Reel 6
+A5=BB option 1 | B5=4 | C5=80 | D5=12 FS | E5=4 spins | N5=QUEEN | O5=ACE | P5=QUEEN | Q5=NINE | R5=PIC5 | S5=PIC2 | U5=QUEEN | V5=ACE | W5=QUEEN | X5=NINE | Y5=PIC5 | Z5=PIC2 | AB5=QUEEN | AC5=ACE | AD5=QUEEN | AE5=NINE | AF5=PIC5 | AG5=PIC2 | AJ5=KING | AK5=PIC5 | AL5=JACK | AM5=TEN | AN5=PIC5 | AO5=ACE
+A6=BB option 2 | B6=5 | C6=95 | D6=20 FS | E6=6 spins | N6=PIC3 | O6=TEN | P6=JACK | Q6=TEN | R6=PIC3 | S6=PIC1 | U6=PIC3 | V6=TEN | W6=JACK | X6=TEN | Y6=PIC3 | Z6=PIC1 | AB6=PIC3 | AC6=TEN | AD6=JACK | AE6=TEN | AF6=PIC3 | AG6=PIC1 | AJ6=PIC4 | AK6=ACE | AL6=PIC3 | AM6=SCAT | AN6=PIC3 | AO6=PIC4
+A7=BB option 3 | B7=6 | C7=110 | D7=30 FS | E7=8 spins | N7=JACK | O7=SCAT | P7=NINE | Q7=ACE | R7=QUEEN | S7=PIC3 | U7=JACK | V7=SCAT | W7=NINE | X7=ACE | Y7=QUEEN | Z7=PIC3 | AB7=JACK | AC7=ACE | AD7=NINE | AE7=ACE | AF7=QUEEN | AG7=PIC3 | AJ7=QUEEN | AK7=NINE | AL7=SCAT | AM7=PIC3 | AN7=KING | AO7=PIC3
+N8=KING | O8=ACE | P8=WILD | Q8=PIC5 | R8=JACK | S8=PIC5 | U8=KING | V8=ACE | W8=WILD | X8=PIC5 | Y8=JACK | Z8=PIC5 | AB8=KING | AC8=JACK | AD8=WILD | AE8=PIC5 | AF8=JACK | AG8=PIC5 | AJ8=SCAT | AK8=PIC1 | AL8=TEN | AM8=PIC3 | AN8=KING | AO8=SCAT
+N9=PIC4 | O9=JACK | P9=KING | Q9=TEN | R9=ACE | S9=TEN | U9=PIC4 | V9=JACK | W9=KING | X9=TEN | Y9=ACE | Z9=TEN | AB9=PIC4 | AC9=QUEEN | AD9=KING | AE9=TEN | AF9=ACE | AG9=TEN
+A10=Features | N10=PIC3 | O10=QUEEN | P10=QUEEN | Q10=SCAT | R10=PIC4 | S10=ACE | U10=PIC3 | V10=QUEEN | W10=QUEEN | X10=SCAT | Y10=PIC4 | Z10=ACE | AB10=PIC3 | AC10=TEN | AD10=QUEEN | AE10=SCAT | AF10=PIC4 | AG10=ACE | AJ10=BB reelset F2 (5 SCAT)
+A11=Feature Option 1: | C11=Free Games Feature | N11=JACK | O11=TEN | P11=JACK | Q11=JACK | R11=SCAT | S11=PIC3 | U11=JACK | V11=TEN | W11=JACK | X11=JACK | Y11=TEN | Z11=PIC3 | AB11=JACK | AC11=JACK | AD11=JACK | AE11=JACK | AF11=TEN | AG11=PIC3 | AJ11=Reel 1 | AK11=Reel 2 | AL11=Reel 3 | AM11=Reel 4 | AN11=Reel 5 | AO11=Reel 6
+N12=PIC1 | O12=JACK | P12=PIC4 | Q12=PIC2 | R12=TEN | S12=PIC2 | U12=PIC1 | V12=JACK | W12=PIC4 | X12=PIC2 | Y12=JACK | Z12=PIC2 | AB12=PIC1 | AC12=ACE | AD12=PIC4 | AE12=PIC2 | AF12=JACK | AG12=PIC2 | AJ12=QUEEN | AK12=NINE | AL12=PIC3 | AM12=TEN | AN12=TEN | AO12=PIC4
+A13=Step 1 | B13=Depending on the number of Scatters, 12, 20 and 30 Free games are awarded for 4, 5 and 6 Scatters, respectively. | N13=QUEEN | O13=ACE | P13=KING | Q13=PIC4 | R13=JACK | S13=PIC2 | U13=QUEEN | V13=ACE | W13=KING | X13=PIC4 | Y13=ACE | Z13=PIC2 | AB13=QUEEN | AC13=WILD | AD13=KING | AE13=PIC4 | AF13=ACE | AG13=PIC2 | AJ13=SCAT | AK13=PIC1 | AL13=SCAT | AM13=SCAT | AN13=TEN | AO13=PIC3
+A14=Step 2 | B14=Use Reel sets BB F2, BB F3 and BB F4 depending on the number of Scatters triggering the feature to create the window. | N14=PIC3 | O14=WILD | P14=JACK | Q14=PIC3 | R14=ACE | S14=TEN | U14=PIC3 | V14=WILD | W14=JACK | X14=PIC3 | Y14=PIC3 | Z14=TEN | AB14=PIC3 | AC14=TEN | AD14=JACK | AE14=PIC3 | AF14=PIC3 | AG14=TEN | AJ14=KING | AK14=PIC5 | AL14=TEN | AM14=PIC3 | AN14=PIC1 | AO14=SCAT
+N15=JACK | O15=TEN | P15=PIC5 | Q15=TEN | R15=PIC3 | S15=QUEEN | U15=JACK | V15=TEN | W15=PIC5 | X15=TEN | Y15=PIC2 | Z15=QUEEN | AB15=JACK | AC15=ACE | AD15=PIC5 | AE15=TEN | AF15=PIC2 | AG15=QUEEN | AJ15=PIC4 | AK15=ACE | AL15=JACK | AM15=PIC3 | AN15=SCAT | AO15=ACE
+B16=Reelset | C16=Scatters | N16=PIC2 | O16=ACE | P16=SCAT | Q16=PIC5 | R16=PIC2 | S16=NINE | U16=PIC2 | V16=ACE | W16=SCAT | X16=PIC5 | Y16=PIC2 | Z16=NINE | AB16=PIC2 | AC16=JACK | AD16=PIC3 | AE16=PIC5 | AF16=PIC2 | AG16=NINE
+B17=BB F2 | C17=4 | N17=PIC1 | O17=JACK | P17=PIC3 | Q17=PIC4 | R17=PIC2 | S17=PIC3 | U17=PIC1 | V17=JACK | W17=PIC3 | X17=PIC4 | Y17=PIC1 | Z17=PIC3 | AB17=PIC1 | AC17=KING | AD17=PIC2 | AE17=PIC4 | AF17=PIC1 | AG17=PIC3 | AJ17=BB reelset F3 (6 SCAT)
+B18=BB F3 | C18=5 | N18=JACK | O18=KING | P18=PIC2 | Q18=PIC2 | R18=PIC1 | S18=QUEEN | U18=JACK | V18=KING | W18=PIC2 | X18=PIC2 | Y18=ACE | Z18=QUEEN | AB18=JACK | AC18=JACK | AD18=JACK | AE18=PIC2 | AF18=ACE | AG18=QUEEN | AJ18=Reel 1 | AK18=Reel 2 | AL18=Reel 3 | AM18=Reel 4 | AN18=Reel 5 | AO18=Reel 6
+B19=BB F4 | C19=6 | N19=QUEEN | O19=JACK | P19=JACK | Q19=NINE | R19=ACE | S19=TEN | U19=QUEEN | V19=JACK | W19=JACK | X19=NINE | Y19=KING | Z19=TEN | AB19=QUEEN | AC19=PIC2 | AD19=NINE | AE19=NINE | AF19=KING | AG19=TEN | AJ19=QUEEN | AK19=TEN | AL19=PIC3 | AM19=PIC3 | AN19=PIC1 | AO19=ACE
+N20=PIC3 | O20=PIC2 | P20=NINE | Q20=TEN | R20=KING | S20=PIC3 | U20=PIC3 | V20=PIC2 | W20=NINE | X20=TEN | Y20=JACK | Z20=PIC3 | AB20=PIC3 | AC20=PIC4 | AD20=PIC4 | AE20=TEN | AF20=JACK | AG20=PIC3 | AJ20=SCAT | AK20=TEN | AL20=SCAT | AM20=PIC3 | AN20=SCAT | AO20=PIC4
+A21=Step 3 | B21=Assign values to each multiplier on the window based on the weights. The entire ways win will be multiplied by all the Wilds till that reel. | N21=NINE | O21=PIC4 | P21=PIC4 | Q21=JACK | R21=JACK | S21=PIC1 | U21=NINE | V21=PIC4 | W21=PIC4 | X21=JACK | Y21=PIC5 | Z21=PIC1 | AB21=NINE | AC21=TEN | AD21=PIC1 | AE21=JACK | AF21=PIC5 | AG21=PIC1 | AJ21=KING | AK21=SCAT | AL21=TEN | AM21=TEN | AN21=TEN | AO21=PIC3
+A22=Step 4 | B22=Calculate left to right ways wins and Scatter wins as in the game. Collect and CORs will not appear in this feature option. | N22=KING | O22=TEN | P22=PIC1 | Q22=WILD | R22=PIC5 | S22=PIC5 | U22=KING | V22=TEN | W22=PIC1 | X22=WILD | Y22=PIC1 | Z22=PIC5 | AB22=KING | AC22=NINE | AD22=PIC4 | AE22=WILD | AF22=PIC1 | AG22=PIC5 | AJ22=PIC4 | AK22=ACE | AL22=JACK | AM22=SCAT | AN22=TEN | AO22=SCAT
+A23=Step 5 | B23=Check for retriggers where 2, 3, 4, 5 or 6 Scatters awards 5, 8, 12, 20, 30 additional Free games. | N23=ACE | O23=NINE | P23=PIC4 | Q23=QUEEN | R23=PIC1 | S23=PIC4 | U23=ACE | V23=NINE | W23=PIC4 | X23=QUEEN | Y23=PIC5 | Z23=PIC4 | AB23=ACE | AC23=JACK | AD23=TEN | AE23=QUEEN | AF23=PIC5 | AG23=PIC4
+A24=Step 6 | B24=Same reelset as used on the feature trigger time will be used for additional spins too. | N24=NINE | O24=JACK | P24=TEN | Q24=ACE | R24=PIC5 | S24=PIC3 | U24=NINE | V24=JACK | W24=TEN | X24=ACE | Y24=PIC4 | Z24=PIC3 | AB24=NINE | AC24=PIC4 | AD24=PIC1 | AE24=ACE | AF24=PIC4 | AG24=PIC3
+A25=Step 7 | B25=Once all free games exhaust, exit the feature. | N25=QUEEN | O25=PIC4 | P25=PIC1 | Q25=JACK | R25=PIC4 | S25=ACE | U25=QUEEN | V25=PIC4 | W25=PIC1 | X25=JACK | Y25=PIC3 | Z25=ACE | AB25=QUEEN | AC25=PIC1 | AD25=PIC2 | AE25=JACK | AF25=PIC3 | AG25=ACE
+N26=JACK | O26=PIC1 | P26=PIC2 | Q26=ACE | R26=PIC3 | S26=PIC2 | U26=JACK | V26=PIC1 | W26=PIC2 | X26=ACE | Y26=TEN | Z26=PIC2 | AB26=JACK | AC26=PIC5 | AD26=TEN | AE26=ACE | AF26=TEN | AG26=PIC2
+C27=Weights | N27=PIC1 | O27=PIC5 | P27=TEN | Q27=ACE | R27=TEN | S27=ACE | U27=PIC1 | V27=PIC5 | W27=TEN | X27=ACE | Y27=PIC1 | Z27=ACE | AB27=PIC1 | AC27=PIC3 | AD27=JACK | AE27=ACE | AF27=PIC1 | AG27=ACE
+B28=Multiplier values | C28=4 Scat | D28=5 Scat | E28=6 Scat | N28=NINE | O28=PIC3 | P28=JACK | Q28=SCAT | R28=PIC1 | S28=PIC5 | U28=NINE | V28=PIC3 | W28=JACK | X28=SCAT | Y28=SCAT | Z28=PIC5 | AB28=NINE | AC28=QUEEN | AD28=TEN | AE28=SCAT | AF28=SCAT | AG28=PIC5
+B29=2 | C29=450 | D29=438 | E29=458 | N29=PIC3 | O29=QUEEN | P29=TEN | Q29=PIC4 | R29=SCAT | S29=PIC3 | U29=PIC3 | V29=QUEEN | W29=TEN | X29=PIC4 | Y29=PIC2 | Z29=PIC3 | AB29=PIC3 | AC29=ACE | AD29=JACK | AE29=PIC4 | AF29=PIC2 | AG29=PIC3
+B30=3 | C30=465 | D30=465 | E30=445 | N30=PIC4 | O30=ACE | P30=JACK | Q30=ACE | R30=PIC2 | S30=PIC4 | U30=PIC4 | V30=ACE | W30=JACK | X30=ACE | Y30=ACE | Z30=PIC4 | AB30=PIC4 | AC30=TEN | AD30=WILD | AE30=ACE | AF30=ACE | AG30=PIC4
+B31=5 | C31=300 | D31=312 | E31=312 | N31=TEN | O31=TEN | P31=WILD | Q31=JACK | R31=ACE | S31=ACE | U31=TEN | V31=TEN | W31=WILD | X31=JACK | Y31=PIC5 | Z31=ACE | AB31=TEN | AC31=WILD | AD31=TEN | AE31=JACK | AF31=PIC5 | AG31=ACE
+N32=KING | O32=WILD | P32=TEN | Q32=PIC1 | R32=PIC5 | S32=NINE | U32=KING | V32=WILD | W32=TEN | X32=PIC1 | Y32=PIC1 | Z32=NINE | AB32=KING | AC32=JACK | AD32=QUEEN | AE32=PIC1 | AF32=PIC1 | AG32=NINE
+N33=JACK | O33=JACK | P33=QUEEN | Q33=PIC5 | R33=PIC1 | S33=ACE | U33=JACK | V33=JACK | W33=QUEEN | X33=PIC5 | Y33=PIC4 | Z33=ACE | AB33=JACK | AC33=ACE | AD33=PIC4 | AE33=PIC5 | AF33=PIC4 | AG33=ACE
+N34=QUEEN | O34=ACE | P34=PIC4 | Q34=ACE | R34=PIC4 | S34=PIC4 | U34=QUEEN | V34=ACE | W34=PIC4 | X34=ACE | Y34=PIC2 | Z34=PIC4 | AB34=QUEEN | AC34=TEN | AD34=TEN | AE34=ACE | AF34=PIC2 | AG34=PIC4
+N35=PIC1 | O35=TEN | P35=TEN | Q35=PIC2 | R35=PIC2 | S35=PIC5 | U35=PIC1 | V35=TEN | W35=TEN | X35=PIC2 | Y35=PIC3 | Z35=PIC5 | AB35=PIC1 | AC35=PIC3 | AD35=PIC4 | AE35=PIC2 | AF35=PIC3 | AG35=PIC5
+N36=PIC2 | O36=PIC3 | P36=PIC4 | Q36=KING | R36=PIC3 | S36=SCAT | U36=PIC2 | V36=PIC3 | W36=PIC4 | X36=KING | Y36=QUEEN | Z36=SCAT | AB36=PIC2 | AC36=NINE | AD36=QUEEN | AE36=KING | AF36=QUEEN | AG36=SCAT
+N37=PIC5 | O37=NINE | P37=QUEEN | Q37=QUEEN | R37=QUEEN | S37=PIC3 | U37=PIC5 | V37=NINE | W37=QUEEN | X37=QUEEN | Y37=TEN | Z37=PIC3 | AB37=PIC5 | AC37=PIC5 | AD37=PIC3 | AE37=QUEEN | AF37=TEN | AG37=PIC3
+N38=KING | O38=PIC5 | P38=PIC3 | Q38=NINE | R38=TEN | S38=PIC5 | U38=KING | V38=PIC5 | W38=PIC3 | X38=NINE | Y38=PIC3 | Z38=PIC5 | AB38=KING | AC38=SCAT | AD38=PIC4 | AE38=NINE | AF38=PIC3 | AG38=PIC5
+N39=JACK | O39=SCAT | P39=PIC4 | Q39=WILD | R39=PIC3 | S39=TEN | U39=JACK | V39=SCAT | W39=PIC4 | X39=WILD | Y39=PIC1 | Z39=TEN | AB39=JACK | AC39=QUEEN | AD39=KING | AE39=WILD | AF39=PIC1 | AG39=TEN
+N40=QUEEN | O40=QUEEN | P40=KING | Q40=KING | R40=PIC1 | S40=PIC1 | U40=QUEEN | V40=QUEEN | W40=KING | X40=KING | Y40=ACE | Z40=PIC1 | AB40=QUEEN | AC40=ACE | AD40=PIC1 | AE40=KING | AF40=ACE | AG40=PIC1
+N41=KING | O41=ACE | P41=PIC1 | Q41=ACE | R41=ACE | S41=PIC2 | U41=KING | V41=ACE | W41=PIC1 | X41=ACE | Y41=PIC5 | Z41=PIC2 | AB41=KING | AC41=PIC3 | AD41=TEN | AE41=ACE | AF41=PIC5 | AG41=PIC2
+N42=NINE | O42=PIC3 | P42=TEN | Q42=TEN | R42=PIC5 | S42=PIC4 | U42=NINE | V42=PIC3 | W42=TEN | X42=TEN | Y42=PIC2 | Z42=PIC4 | AB42=NINE | AC42=PIC2 | AD42=QUEEN | AE42=TEN | AF42=PIC2 | AG42=PIC4
+N43=PIC2 | O43=PIC2 | P43=QUEEN | Q43=PIC1 | R43=PIC2 | S43=PIC3 | U43=PIC2 | V43=PIC2 | W43=QUEEN | X43=PIC1 | Y43=PIC3 | Z43=PIC3 | AB43=PIC2 | AC43=ACE | AD43=TEN | AE43=PIC1 | AF43=PIC3 | AG43=PIC3
+N44=JACK | O44=ACE | P44=TEN | Q44=ACE | R44=PIC3 | S44=ACE | U44=JACK | V44=ACE | W44=TEN | X44=ACE | Y44=ACE | Z44=ACE | AB44=JACK | AC44=ACE | AD44=PIC4 | AE44=ACE | AF44=ACE | AG44=ACE
+N45=QUEEN | O45=ACE | P45=PIC4 | Q45=PIC3 | R45=ACE | S45=TEN | U45=QUEEN | V45=ACE | W45=PIC4 | X45=PIC3 | Y45=JACK | Z45=TEN | AB45=QUEEN | AC45=PIC1 | AD45=TEN | AE45=PIC3 | AF45=JACK | AG45=TEN
+N46=JACK | O46=PIC1 | P46=TEN | Q46=PIC4 | R46=JACK | S46=PIC1 | U46=JACK | V46=PIC1 | W46=TEN | X46=PIC4 | Y46=NINE | Z46=PIC1 | AB46=JACK | AC46=ACE | AD46=PIC2 | AE46=PIC4 | AF46=NINE | AG46=PIC1
+N47=PIC1 | O47=ACE | P47=PIC2 | Q47=TEN | R47=NINE | S47=ACE | U47=PIC1 | V47=ACE | W47=PIC2 | X47=TEN | Y47=KING | Z47=ACE | AB47=PIC1 | AC47=PIC5 | AD47=PIC1 | AE47=TEN | AF47=KING | AG47=ACE
+N48=KING | O48=PIC5 | P48=PIC1 | Q48=PIC2 | R48=KING | S48=JACK | U48=KING | V48=PIC5 | W48=PIC1 | X48=PIC2 | Y48=PIC1 | Z48=JACK | AB48=KING | AC48=ACE | AD48=PIC4 | AE48=PIC2 | AF48=PIC1 | AG48=JACK
+N49=PIC2 | O49=ACE | P49=PIC4 | Q49=JACK | R49=PIC1 | S49=PIC2 | U49=PIC2 | V49=ACE | W49=PIC4 | X49=JACK | Y49=JACK | Z49=PIC2 | AB49=PIC2 | AC49=PIC4 | AD49=JACK | AE49=JACK | AF49=JACK | AG49=PIC2
+N50=ACE | O50=PIC4 | P50=JACK | Q50=PIC1 | R50=JACK | S50=PIC3 | U50=ACE | V50=PIC4 | W50=JACK | X50=PIC1 | Y50=PIC2 | Z50=PIC3 | AB50=ACE | AC50=PIC2 | AD50=PIC3 | AE50=PIC1 | AF50=PIC2 | AG50=PIC3
+N51=QUEEN | O51=PIC2 | P51=PIC3 | Q51=PIC3 | R51=PIC2 | S51=PIC4 | U51=QUEEN | V51=PIC2 | W51=PIC3 | X51=PIC3 | Y51=KING | Z51=PIC4 | AB51=QUEEN | AC51=ACE | AD51=JACK | AE51=PIC3 | AF51=KING | AG51=PIC4
+N52=JACK | O52=ACE | P52=JACK | Q52=PIC4 | R52=KING | S52=ACE | U52=JACK | V52=ACE | W52=JACK | X52=PIC4 | Y52=JACK | Z52=ACE | AB52=JACK | AC52=PIC5 | AD52=NINE | AE52=PIC4 | AF52=JACK | AG52=ACE
+N53=PIC1 | O53=PIC5 | P53=NINE | Q53=PIC5 | R53=JACK | S53=TEN | U53=PIC1 | V53=PIC5 | W53=NINE | X53=PIC5 | Y53=PIC5 | Z53=TEN | AB53=PIC1 | AC53=PIC2 | AD53=KING | AE53=PIC5 | AF53=PIC5 | AG53=TEN
+N54=KING | O54=PIC2 | P54=KING | Q54=ACE | R54=PIC5 | S54=PIC1 | U54=KING | V54=PIC2 | W54=KING | X54=ACE | Y54=QUEEN | Z54=PIC1 | AB54=KING | AC54=PIC1 | AD54=SCAT | AE54=ACE | AF54=QUEEN | AG54=PIC1
+N55=QUEEN | O55=PIC1 | P55=SCAT | Q55=TEN | R55=QUEEN | S55=ACE | U55=QUEEN | V55=PIC1 | W55=SCAT | X55=TEN | Y55=PIC4 | Z55=ACE | AB55=QUEEN | AC55=PIC3 | AD55=PIC4 | AE55=TEN | AF55=PIC4 | AG55=ACE
+N56=PIC5 | O56=PIC3 | P56=PIC4 | Q56=JACK | R56=PIC4 | S56=PIC4 | U56=PIC5 | V56=PIC3 | W56=PIC4 | X56=JACK | Y56=PIC1 | Z56=PIC4 | AB56=PIC5 | AC56=PIC4 | AD56=KING | AE56=JACK | AF56=PIC1 | AG56=PIC4
+N57=KING | O57=PIC4 | P57=KING | Q57=NINE | R57=PIC1 | S57=NINE | U57=KING | V57=PIC4 | W57=KING | X57=NINE | Y57=KING | Z57=NINE | AB57=KING | AC57=PIC2 | AD57=QUEEN | AE57=NINE | AF57=KING | AG57=NINE
+N58=QUEEN | O58=PIC2 | P58=QUEEN | Q58=PIC1 | R58=KING | S58=ACE | U58=QUEEN | V58=PIC2 | W58=QUEEN | X58=PIC1 | Y58=KING | Z58=ACE | AB58=QUEEN | AC58=TEN | AD58=TEN | AE58=PIC1 | AF58=KING | AG58=ACE
+N59=PIC2 | O59=TEN | P59=TEN | Q59=ACE | R59=KING | S59=ACE | U59=PIC2 | V59=TEN | W59=TEN | X59=ACE | Y59=PIC5 | Z59=ACE | AB59=PIC2 | AC59=TEN | AD59=PIC1 | AE59=ACE | AF59=PIC5 | AG59=ACE
+N60=JACK | O60=TEN | P60=WILD | Q60=JACK | R60=PIC5 | S60=PIC3 | U60=JACK | V60=TEN | W60=PIC1 | X60=JACK | Y60=QUEEN | Z60=PIC3 | AB60=JACK | AC60=PIC4 | AD60=NINE | AE60=JACK | AF60=QUEEN | AG60=PIC3
+N61=KING | O61=PIC4 | P61=NINE | Q61=TEN | R61=QUEEN | S61=PIC3 | U61=KING | V61=PIC4 | W61=NINE | X61=TEN | Y61=PIC2 | Z61=PIC3 | AB61=KING | AC61=ACE | AD61=KING | AE61=TEN | AF61=PIC2 | AG61=PIC3
+N62=NINE | O62=ACE | P62=KING | Q62=NINE | R62=PIC2 | S62=PIC3 | U62=NINE | V62=ACE | W62=KING | X62=NINE | Y62=PIC2 | Z62=PIC3 | AB62=NINE | AC62=PIC1 | AD62=TEN | AE62=NINE | AF62=PIC2 | AG62=PIC3
+N63=QUEEN | O63=PIC1 | P63=TEN | Q63=TEN | R63=PIC2 | S63=ACE | U63=QUEEN | V63=PIC1 | W63=TEN | X63=TEN | Y63=TEN | Z63=ACE | AB63=QUEEN | AC63=JACK | AD63=PIC4 | AE63=TEN | AF63=TEN | AG63=ACE
+N64=JACK | O64=JACK | P64=PIC4 | Q64=PIC3 | R64=TEN | S64=PIC1 | U64=JACK | V64=JACK | W64=PIC4 | X64=PIC3 | Y64=TEN | Z64=PIC1 | AB64=JACK | AC64=PIC4 | AD64=ACE | AE64=PIC3 | AF64=TEN | AG64=PIC1
+N65=KING | O65=PIC4 | P65=ACE | Q65=KING | R65=TEN | S65=ACE | U65=KING | V65=PIC4 | W65=ACE | X65=KING | Y65=PIC4 | Z65=ACE | AB65=KING | AC65=JACK | AD65=PIC3 | AE65=KING | AF65=PIC4 | AG65=ACE
+N66=PIC3 | O66=JACK | P66=PIC3 | Q66=NINE | R66=PIC4 | S66=TEN | U66=PIC3 | V66=JACK | W66=PIC3 | X66=NINE | Y66=PIC1 | Z66=TEN | AB66=PIC3 | AC66=PIC5 | AD66=JACK | AE66=NINE | AF66=PIC1 | AG66=TEN
+N67=KING | O67=PIC5 | P67=JACK | Q67=PIC4 | R67=PIC1 | S67=PIC2 | U67=KING | V67=PIC5 | W67=JACK | X67=PIC4 | Y67=TEN | Z67=PIC2 | AB67=KING | AC67=QUEEN | AD67=PIC5 | AE67=PIC4 | AF67=TEN | AG67=PIC2
+N68=QUEEN | O68=QUEEN | P68=PIC5 | Q68=TEN | R68=TEN | S68=JACK | U68=QUEEN | V68=QUEEN | W68=PIC5 | X68=TEN | Y68=TEN | Z68=JACK | AB68=QUEEN | AC68=PIC1 | AD68=PIC4 | AE68=TEN | AF68=TEN | AG68=JACK
+N69=NINE | O69=PIC1 | P69=PIC4 | Q69=PIC2 | R69=TEN | S69=ACE | U69=NINE | V69=PIC1 | W69=PIC4 | X69=PIC2 | Y69=TEN | Z69=ACE | AB69=NINE | AC69=ACE | AD69=JACK | AE69=PIC2 | AF69=TEN | AG69=ACE
+N70=JACK | O70=ACE | P70=JACK | Q70=PIC5 | R70=TEN | S70=PIC5 | U70=JACK | V70=ACE | W70=JACK | X70=PIC5 | Y70=JACK | Z70=PIC5 | AB70=JACK | AC70=TEN | AD70=PIC2 | AE70=PIC5 | AF70=JACK | AG70=PIC5
+N71=QUEEN | O71=TEN | P71=PIC2 | Q71=TEN | R71=JACK | S71=PIC1 | U71=QUEEN | V71=TEN | W71=PIC2 | X71=TEN | Y71=PIC3 | Z71=PIC1 | AB71=QUEEN | AC71=QUEEN | AD71=JACK | AE71=TEN | AF71=PIC3 | AG71=PIC1
+N72=PIC2 | O72=QUEEN | P72=JACK | Q72=KING | R72=PIC3 | S72=PIC5 | U72=PIC2 | V72=QUEEN | W72=JACK | X72=KING | Y72=QUEEN | Z72=PIC5 | AB72=PIC2 | AC72=WILD | AD72=PIC4 | AE72=KING | AF72=QUEEN | AG72=PIC5
+N73=JACK | O73=WILD | P73=PIC4 | Q73=TEN | R73=QUEEN | S73=PIC2 | U73=JACK | V73=WILD | W73=PIC4 | X73=TEN | Y73=QUEEN | Z73=PIC2 | AB73=JACK | AC73=ACE | AD73=PIC1 | AE73=TEN | AF73=QUEEN | AG73=PIC2
+N74=JACK | O74=ACE | P74=PIC1 | Q74=QUEEN | R74=QUEEN | S74=ACE | U74=JACK | V74=ACE | W74=PIC1 | X74=QUEEN | Y74=PIC4 | Z74=ACE | AB74=JACK | AC74=NINE | AD74=JACK | AE74=QUEEN | AF74=PIC4 | AG74=ACE
+N75=PIC4 | O75=NINE | P75=JACK | Q75=PIC2 | R75=PIC4 | S75=ACE | U75=PIC4 | V75=NINE | W75=JACK | X75=PIC2 | Y75=KING | Z75=ACE | AB75=PIC4 | AC75=TEN | AD75=PIC5 | AE75=PIC2 | AF75=KING | AG75=ACE
+N76=QUEEN | O76=TEN | P76=PIC5 | Q76=PIC5 | R76=KING | S76=PIC3 | U76=QUEEN | V76=TEN | W76=PIC5 | X76=PIC5 | Y76=PIC5 | Z76=PIC3 | AB76=QUEEN | AC76=PIC1 | AD76=PIC2 | AE76=PIC5 | AF76=PIC5 | AG76=PIC3
+N77=KING | O77=PIC1 | P77=PIC2 | Q77=TEN | R77=PIC5 | S77=PIC2 | U77=KING | V77=PIC1 | W77=PIC2 | X77=TEN | Y77=PIC1 | Z77=PIC2 | AB77=KING | AC77=PIC5 | AD77=PIC3 | AE77=TEN | AF77=PIC1 | AG77=PIC2
+N78=QUEEN | O78=PIC5 | P78=PIC3 | Q78=KING | R78=PIC1 | S78=ACE | U78=QUEEN | V78=PIC5 | W78=PIC3 | X78=KING | Y78=KING | Z78=ACE | AB78=QUEEN | AC78=PIC4 | AD78=PIC2 | AE78=KING | AF78=KING | AG78=ACE
+N79=NINE | O79=PIC4 | P79=PIC2 | Q79=TEN | R79=KING | S79=ACE | U79=NINE | V79=PIC4 | W79=PIC2 | X79=TEN | Y79=QUEEN | Z79=ACE | AB79=NINE | AC79=ACE | AD79=JACK | AE79=TEN | AF79=QUEEN | AG79=ACE
+N80=JACK | O80=ACE | P80=JACK | Q80=QUEEN | R80=QUEEN | S80=PIC3 | U80=JACK | V80=ACE | W80=JACK | X80=QUEEN | Y80=PIC3 | Z80=PIC3 | AB80=JACK | AC80=PIC3 | AD80=PIC1 | AE80=QUEEN | AF80=PIC3 | AG80=PIC3
+N81=QUEEN | O81=SCAT | P81=PIC1 | R81=PIC3 | S81=PIC1 | U81=QUEEN | V81=SCAT | W81=PIC1 | Y81=QUEEN | Z81=PIC1 | AB81=QUEEN | AC81=PIC2 | AD81=NINE | AE81=PIC5 | AF81=QUEEN | AG81=PIC1
+N82=PIC5 | O82=PIC3 | P82=NINE | R82=QUEEN | S82=PIC5 | U82=PIC5 | V82=PIC3 | W82=NINE | Y82=PIC2 | Z82=PIC5 | AB82=PIC5 | AC82=PIC3 | AD82=KING | AE82=ACE | AF82=PIC2 | AG82=PIC5
+N83=QUEEN | O83=PIC2 | P83=KING | R83=PIC2 | S83=TEN | U83=QUEEN | V83=PIC2 | W83=KING | Y83=PIC5 | Z83=TEN | AB83=QUEEN | AC83=ACE | AD83=TEN | AE83=PIC4 | AF83=PIC5 | AG83=TEN
+N84=JACK | O84=PIC3 | P84=TEN | R84=PIC5 | S84=PIC4 | U84=JACK | V84=PIC3 | W84=TEN | Y84=QUEEN | Z84=PIC4 | AB84=JACK | AC84=PIC1 | AD84=PIC3 | AE84=JACK | AF84=QUEEN | AG84=PIC4
+N85=KING | O85=ACE | P85=PIC3 | R85=QUEEN | S85=JACK | U85=KING | V85=ACE | W85=PIC3 | Y85=SCAT | Z85=JACK | AB85=KING | AC85=ACE | AD85=ACE | AE85=ACE | AF85=SCAT | AG85=JACK
+N86=JACK | O86=PIC1 | P86=ACE | R86=SCAT | S86=PIC5 | U86=JACK | V86=PIC1 | W86=ACE | Y86=PIC2 | Z86=PIC5 | AB86=JACK | AC86=PIC5 | AD86=JACK | AE86=PIC5 | AF86=PIC2 | AG86=PIC5
+N87=QUEEN | O87=ACE | P87=JACK | R87=PIC2 | S87=ACE | U87=QUEEN | V87=ACE | W87=JACK | Y87=PIC4 | Z87=ACE | AB87=QUEEN | AC87=ACE | AD87=NINE | AE87=KING | AF87=PIC4 | AG87=ACE
+N88=PIC2 | O88=PIC5 | P88=NINE | R88=PIC4 | S88=ACE | U88=PIC2 | V88=PIC5 | W88=NINE | Y88=PIC1 | Z88=ACE | AB88=PIC2 | AC88=PIC4 | AD88=TEN | AE88=JACK | AF88=PIC1 | AG88=ACE
+N89=PIC1 | O89=ACE | P89=TEN | R89=PIC1 | S89=PIC1 | U89=PIC1 | V89=ACE | W89=TEN | Y89=PIC5 | Z89=PIC1 | AB89=PIC1 | AC89=JACK | AD89=PIC1 | AE89=QUEEN | AF89=PIC5 | AG89=PIC1
+N90=ACE | O90=PIC4 | P90=PIC1 | R90=PIC5 | S90=PIC3 | U90=ACE | V90=PIC4 | W90=PIC1 | Y90=PIC2 | Z90=PIC3 | AB90=ACE | AC90=ACE | AD90=PIC2 | AE90=PIC4 | AF90=PIC2 | AG90=PIC3
+N91=JACK | O91=JACK | P91=PIC2 | R91=PIC2 | S91=TEN | U91=JACK | V91=JACK | W91=PIC2 | Y91=PIC5 | Z91=TEN | AB91=JACK | AC91=PIC5 | AD91=PIC4 | AE91=JACK | AF91=PIC5 | AG91=TEN
+N92=KING | O92=ACE | P92=PIC4 | R92=PIC5 | S92=PIC3 | U92=KING | V92=ACE | W92=PIC4 | Y92=PIC1 | Z92=PIC3 | AB92=KING | AC92=KING | AD92=TEN | AE92=PIC5 | AF92=PIC1 | AG92=PIC3
+N93=QUEEN | O93=PIC5 | P93=TEN | R93=PIC1 | S93=PIC1 | U93=QUEEN | V93=PIC5 | W93=TEN | Y93=PIC2 | Z93=PIC1 | AB93=QUEEN | AC93=JACK | AD93=PIC4 | AF93=PIC2 | AG93=PIC1
+N94=JACK | P94=PIC4 | R94=PIC2 | S94=PIC5 | U94=JACK | W94=PIC4 | Y94=QUEEN | Z94=PIC5 | AB94=JACK | AC94=QUEEN | AD94=QUEEN | AF94=QUEEN | AG94=PIC5
+N95=PIC2 | P95=QUEEN | R95=QUEEN | S95=TEN | U95=PIC2 | W95=QUEEN | Y95=TEN | Z95=TEN | AB95=PIC2 | AC95=PIC4 | AD95=PIC3 | AF95=TEN | AG95=TEN
+N96=KING | P96=PIC3 | R96=TEN | S96=PIC3 | U96=KING | W96=PIC3 | Y96=TEN | Z96=PIC3 | AB96=KING | AC96=JACK | AD96=PIC4 | AF96=TEN | AG96=PIC3
+N97=KING | P97=PIC4 | R97=TEN | S97=PIC5 | U97=KING | W97=PIC4 | Y97=PIC3 | Z97=PIC5 | AB97=KING | AC97=PIC5 | AD97=KING | AF97=PIC3 | AG97=PIC5
+N98=PIC3 | P98=KING | R98=PIC3 | S98=TEN | U98=PIC3 | W98=KING | Y98=PIC1 | Z98=TEN | AB98=PIC3 | AD98=JACK | AF98=PIC1 | AG98=TEN
+N99=JACK | P99=JACK | R99=PIC1 | S99=PIC1 | U99=JACK | W99=JACK | Y99=PIC3 | Z99=PIC1 | AB99=JACK | AD99=QUEEN | AF99=PIC3 | AG99=PIC1
+N100=KING | P100=QUEEN | R100=PIC3 | S100=PIC5 | U100=KING | W100=QUEEN | Y100=QUEEN | Z100=PIC5 | AB100=KING | AD100=PIC4 | AF100=QUEEN | AG100=PIC5
+N101=QUEEN | P101=PIC4 | R101=QUEEN | S101=PIC3 | U101=QUEEN | W101=PIC4 | Y101=PIC5 | Z101=PIC3 | AB101=QUEEN | AD101=JACK | AF101=PIC5 | AG101=PIC3
+N102=PIC3 | P102=JACK | R102=PIC5 | S102=ACE | U102=PIC3 | W102=JACK | Y102=PIC2 | Z102=ACE | AB102=PIC3 | AD102=PIC5 | AF102=PIC2 | AG102=ACE
+N103=JACK | P103=PIC5 | R103=PIC2 | S103=NINE | U103=JACK | W103=PIC5 | Y103=QUEEN | Z103=NINE | AB103=JACK | AF103=QUEEN | AG103=NINE
+N104=KING | R104=QUEEN | S104=PIC3 | U104=KING | Y104=ACE | Z104=PIC3 | AB104=KING | AF104=ACE | AG104=PIC3
+N105=PIC4 | R105=ACE | S105=PIC5 | U105=PIC4 | Y105=PIC4 | Z105=PIC5 | AB105=PIC4 | AF105=PIC4 | AG105=PIC5
+N106=QUEEN | R106=PIC4 | S106=ACE | U106=QUEEN | Y106=PIC3 | Z106=ACE | AB106=QUEEN | AF106=PIC3 | AG106=ACE
+N107=JACK | R107=PIC3 | S107=PIC3 | U107=JACK | Y107=PIC1 | Z107=PIC3 | AB107=JACK | AF107=PIC1 | AG107=PIC3
+N108=PIC2 | R108=PIC1 | S108=PIC4 | U108=PIC2 | Y108=PIC3 | Z108=PIC4 | AB108=PIC2 | AF108=PIC3 | AG108=PIC4
+N109=KING | R109=PIC3 | S109=PIC5 | U109=KING | Y109=PIC3 | Z109=PIC5 | AB109=KING | AF109=PIC3 | AG109=PIC5
+N110=JACK | R110=PIC3 | S110=ACE | U110=JACK | Y110=KING | Z110=ACE | AB110=JACK | AF110=KING | AG110=ACE
+N111=QUEEN | R111=KING | S111=PIC4 | U111=QUEEN | Y111=PIC1 | Z111=PIC4 | AB111=QUEEN | AF111=PIC1 | AG111=PIC4
+N112=JACK | R112=PIC1 | S112=ACE | U112=JACK | Y112=NINE | Z112=ACE | AB112=JACK | AF112=NINE | AG112=ACE
+N113=NINE | R113=NINE | S113=PIC5 | U113=NINE | Y113=ACE | Z113=PIC5 | AB113=NINE | AF113=ACE | AG113=PIC5
+N114=KING | R114=ACE | S114=PIC4 | U114=KING | Y114=PIC5 | Z114=PIC4 | AB114=KING | AF114=PIC5 | AG114=PIC4
+N115=ACE | R115=PIC5 | S115=PIC4 | U115=ACE | Y115=PIC4 | Z115=PIC4 | AB115=ACE | AF115=PIC4 | AG115=PIC4
+N116=SCAT | R116=PIC4 | S116=ACE | U116=SCAT | Y116=TEN | Z116=ACE | AB116=SCAT | AF116=TEN | AG116=ACE
+N117=QUEEN | R117=TEN | S117=ACE | U117=QUEEN | Y117=QUEEN | Z117=ACE | AB117=QUEEN | AF117=QUEEN | AG117=ACE
+N118=JACK | R118=QUEEN | S118=JACK | U118=JACK | Y118=PIC1 | Z118=JACK | AB118=JACK | AF118=PIC1 | AG118=JACK
+N119=KING | R119=PIC1 | S119=PIC4 | U119=KING | Y119=PIC3 | Z119=PIC4 | AB119=KING | AF119=PIC3 | AG119=PIC4
+N120=TEN | R120=PIC3 | S120=PIC5 | U120=TEN | Y120=PIC2 | Z120=PIC5 | AB120=TEN | AF120=PIC2 | AG120=PIC5
+N121=PIC1 | R121=PIC2 | S121=SCAT | U121=PIC1 | Y121=PIC1 | Z121=SCAT | AB121=PIC1 | AF121=PIC1 | AG121=SCAT
+N122=NINE | R122=PIC1 | S122=PIC3 | U122=NINE | Y122=QUEEN | Z122=PIC3 | AB122=NINE | AF122=QUEEN | AG122=PIC3
+N123=TEN | R123=QUEEN | S123=PIC4 | U123=TEN | Y123=PIC5 | Z123=PIC4 | AB123=TEN | AF123=PIC5 | AG123=PIC4
+N124=KING | R124=PIC5 | S124=NINE | U124=KING | Y124=TEN | Z124=NINE | AB124=KING | AF124=TEN | AG124=NINE
+N125=JACK | R125=TEN | S125=PIC2 | U125=JACK | Y125=PIC4 | Z125=PIC2 | AB125=JACK | AF125=PIC4 | AG125=PIC2
+N126=QUEEN | R126=PIC4 | S126=PIC3 | U126=QUEEN | Y126=TEN | Z126=PIC3 | AB126=QUEEN | AF126=TEN | AG126=PIC3
+N127=JACK | R127=TEN | S127=PIC4 | U127=JACK | Y127=PIC4 | Z127=PIC4 | AB127=JACK | AF127=PIC4 | AG127=PIC4
+N128=PIC1 | R128=PIC4 | S128=PIC5 | U128=PIC1 | Y128=TEN | Z128=PIC5 | AB128=PIC1 | AF128=TEN | AG128=PIC5
+N129=PIC2 | R129=TEN | S129=PIC3 | U129=PIC2 | Y129=QUEEN | Z129=PIC3 | AB129=PIC2 | AF129=QUEEN | AG129=PIC3
+N130=JACK | R130=QUEEN | S130=PIC5 | U130=JACK | Y130=PIC1 | Z130=PIC5 | AB130=JACK | AF130=PIC1 | AG130=PIC5
+N131=JACK | R131=PIC1 | S131=PIC4 | U131=JACK | Y131=PIC2 | Z131=PIC4 | AB131=JACK | AF131=PIC2 | AG131=PIC4
+N132=KING | R132=PIC2 | S132=PIC2 | U132=KING | Y132=QUEEN | Z132=PIC2 | AB132=KING | AF132=QUEEN | AG132=PIC2
+N133=QUEEN | R133=QUEEN | S133=PIC3 | U133=QUEEN | Y133=PIC3 | Z133=PIC3 | AB133=QUEEN | AF133=PIC3 | AG133=PIC3
+N134=QUEEN | R134=PIC3 | S134=PIC5 | U134=QUEEN | Y134=PIC3 | Z134=PIC5 | AB134=QUEEN | AF134=PIC3 | AG134=PIC5
+N135=PIC1 | R135=PIC3 | S135=PIC4 | U135=PIC1 | Y135=KING | Z135=PIC4 | AB135=PIC1 | AF135=KING | AG135=PIC4
+N136=JACK | R136=KING | S136=PIC3 | U136=JACK | Y136=PIC1 | Z136=PIC3 | AB136=JACK | AF136=PIC1 | AG136=PIC3
+N137=KING | R137=PIC1 | S137=PIC1 | U137=KING | Y137=PIC5 | Z137=PIC1 | AB137=KING | AF137=PIC5 | AG137=PIC1
+N138=SCAT | R138=PIC5 | S138=PIC1 | U138=QUEEN | Y138=PIC2 | Z138=PIC1 | AB138=QUEEN | AF138=PIC2 | AG138=PIC1
+N139=QUEEN | R139=PIC2 | S139=PIC5 | U139=JACK | Y139=PIC3 | Z139=PIC5 | AB139=JACK | AF139=PIC3 | AG139=PIC5
+N140=JACK | R140=PIC3 | S140=ACE | U140=PIC1 | Y140=PIC4 | Z140=ACE | AB140=PIC1 | AF140=PIC4 | AG140=ACE
+N141=PIC1 | R141=PIC4 | S141=PIC3 | U141=PIC3 | Y141=PIC5 | Z141=PIC3 | AB141=PIC3 | AF141=PIC5 | AG141=PIC3
+N142=PIC3 | R142=PIC5 | S142=PIC5 | U142=KING | Y142=ACE | Z142=PIC5 | AB142=KING | AF142=ACE | AG142=PIC5
+N143=KING | R143=ACE | S143=PIC5 | U143=QUEEN | Y143=PIC1 | Z143=PIC5 | AB143=QUEEN | AF143=PIC1 | AG143=PIC5
+N144=QUEEN | R144=PIC1 | S144=PIC4 | U144=PIC1 | Y144=PIC2 | Z144=PIC4 | AB144=PIC1 | AF144=PIC2 | AG144=PIC4
+N145=PIC1 | R145=PIC2 | S145=PIC3 | Y145=PIC1 | Z145=PIC3 | AF145=PIC1 | AG145=PIC3
+R146=PIC1 | S146=ACE | Y146=TEN | Z146=ACE | AF146=TEN | AG146=ACE
+R147=TEN | S147=PIC4 | Y147=PIC3 | Z147=PIC4 | AF147=PIC3 | AG147=PIC4
+R148=PIC3 | S148=PIC3 | Y148=KING | Z148=PIC3 | AF148=KING | AG148=PIC3
+R149=KING | S149=KING | Y149=NINE | Z149=KING | AF149=NINE | AG149=KING
+R150=NINE | S150=KING | Y150=PIC4 | Z150=KING | AF150=PIC4 | AG150=KING
+R151=PIC4 | S151=PIC4 | Y151=TEN | Z151=PIC4 | AF151=TEN | AG151=PIC4
+R152=TEN | S152=JACK | Y152=PIC2 | Z152=JACK | AF152=PIC2 | AG152=JACK
+R153=PIC2 | S153=PIC5 | Y153=PIC5 | Z153=PIC5 | AF153=PIC5 | AG153=PIC5
+R154=PIC5 | S154=ACE | Y154=TEN | Z154=ACE | AF154=TEN | AG154=ACE
+R155=TEN | S155=PIC4 | Y155=KING | Z155=PIC4 | AF155=KING | AG155=PIC4
+R156=KING | S156=PIC3 | Y156=TEN | Z156=PIC3 | AF156=TEN | AG156=PIC3
+R157=TEN | S157=KING | Y157=QUEEN | Z157=KING | AF157=QUEEN | AG157=KING
+R158=QUEEN | S158=PIC4 | Y158=PIC1 | Z158=PIC4 | AF158=PIC1 | AG158=PIC4
+R159=PIC1 | S159=PIC3 | Y159=PIC2 | Z159=PIC3 | AF159=PIC2 | AG159=PIC3
+R160=PIC2 | S160=PIC5 | Y160=QUEEN | Z160=PIC5 | AF160=QUEEN | AG160=PIC5
+R161=QUEEN | S161=PIC3 | Y161=TEN | Z161=PIC3 | AF161=TEN | AG161=PIC3
+R162=TEN | S162=PIC2 | Y162=PIC3 | Z162=PIC2 | AF162=PIC3 | AG162=PIC2
+R163=PIC3 | S163=KING | Z163=KING | AG163=KING
+S164=PIC5 | Z164=PIC5 | AG164=PIC5
+S165=PIC4 | Z165=PIC4 | AG165=PIC4
+S166=SCAT | Z166=PIC3 | AG166=PIC3
+S167=PIC3 | Z167=PIC5 | AG167=PIC5
+S168=PIC5 | Z168=PIC5 | AG168=PIC5
+S169=PIC5 | Z169=PIC4 | AG169=PIC4
+S170=PIC4 | Z170=TEN | AG170=TEN
+S171=TEN | Z171=PIC2 | AG171=PIC2
+S172=PIC2 | Z172=PIC1 | AG172=PIC1
+S173=PIC1
+
+### SHEET Buy Bonus BF
+Y1=Pseudo reelset to trigger the feature from base game
+A2=Buy Bonus Bet Details
+AA3=BB reelset F1 (4 SCAT)
+B4=Scat count | C4=Bet (x game bet) | D4=Option 1 | E4=Option 2 | AA4=Reel 1 | AB4=Reel 2 | AC4=Reel 3 | AD4=Reel 4 | AE4=Reel 5 | AF4=Reel 6
+A5=BB option 1 | B5=4 | C5=80 | D5=12 FS | E5=4 spins | AA5=KING | AB5=PIC5 | AC5=JACK | AD5=TEN | AE5=PIC5 | AF5=ACE
+A6=BB option 2 | B6=5 | C6=95 | D6=20 FS | E6=6 spins | AA6=PIC4 | AB6=ACE | AC6=PIC3 | AD6=SCAT | AE6=PIC3 | AF6=PIC4
+A7=BB option 3 | B7=6 | C7=110 | D7=30 FS | E7=8 spins | AA7=QUEEN | AB7=NINE | AC7=SCAT | AD7=PIC3 | AE7=KING | AF7=PIC3
+AA8=SCAT | AB8=PIC1 | AC8=TEN | AD8=PIC3 | AE8=KING | AF8=SCAT
+A9=Feature Option 2: | C9=Blitz Feature
+AA10=BB reelset F2 (5 SCAT)
+A11=Step 1 | B11=Depending on the number of Scatters, 4, 6 and 8 Blitz spins are awarded by 4, 5 and 6 Scatters, respectively. | AA11=Reel 1 | AB11=Reel 2 | AC11=Reel 3 | AD11=Reel 4 | AE11=Reel 5 | AF11=Reel 6
+A12=Step 2 | B12=From the awarded fixed Blitz spins, select a random spin with all spins equally weighted for good table implementation in Step 5. | AA12=QUEEN | AB12=NINE | AC12=PIC3 | AD12=TEN | AE12=TEN | AF12=PIC4
+A13=Step 3 | B13=Using the weights, we will decide whether 1 or 2 Collect symbols will appear on the window on Reels 1 and 6.  | AA13=SCAT | AB13=PIC1 | AC13=SCAT | AD13=SCAT | AE13=TEN | AF13=PIC3
+B14=1 Reel can have a maximum of 1 Collect symbol and the entire window will contain a minimum of 1 Collect symbol in this feature. | AA14=KING | AB14=PIC5 | AC14=TEN | AD14=PIC3 | AE14=PIC1 | AF14=SCAT
+AA15=PIC4 | AB15=ACE | AC15=JACK | AD15=PIC3 | AE15=SCAT | AF15=ACE
+C16=Weights
+B17=# of Collect | C17=BB option 1 | D17=BB option 2 | E17=BB option 3 | AA17=BB reelset F3 (6 SCAT)
+B18=1 | C18=75 | D18=80 | E18=80 | AA18=Reel 1 | AB18=Reel 2 | AC18=Reel 3 | AD18=Reel 4 | AE18=Reel 5 | AF18=Reel 6
+B19=2 | C19=25 | D19=20 | E19=20 | AA19=QUEEN | AB19=TEN | AC19=PIC3 | AD19=PIC3 | AE19=PIC1 | AF19=ACE
+AA20=SCAT | AB20=TEN | AC20=SCAT | AD20=PIC3 | AE20=SCAT | AF20=PIC4
+A21=Step 4 | B21=For all positions besides the ones occupied by the Collect, we will check for potential occurrence of CORs. | AA21=KING | AB21=SCAT | AC21=TEN | AD21=TEN | AE21=TEN | AF21=PIC3
+AA22=PIC4 | AB22=ACE | AC22=JACK | AD22=SCAT | AE22=TEN | AF22=SCAT
+C23=Weights
+B24=COR weights | C24=BB option 1 | D24=BB option 2 | E24=BB option 3
+B25=yes | C25=20 | D25=18 | E25=18
+B26=no | C26=80 | D26=82 | E26=82
+A27=Step 5 | B27=Assign the values from below tables. Good table will be used for selected spin in Step 2 and Bad table will be used for all other spins.
+Q28=Mini | S28=Minor | V28=Major | X28=Grand
+A29=BB option 1 | B29=COR values (xBet) | C29=0.5 | D29=1 | E29=1.5 | F29=2 | G29=2.5 | H29=3 | I29=3.5 | J29=4 | K29=5 | L29=6 | M29=7 | N29=7.5 | O29=8 | P29=9 | Q29=10 | R29=12.5 | S29=25 | T29=50 | U29=125 | V29=250 | W29=500 | X29=2000
+B30=Good table weights | C30=0 | D30=0 | E30=0 | F30=0 | G30=0 | H30=0 | I30=0 | J30=1100 | K30=1000 | L30=600 | M30=500 | N30=500 | O30=500 | P30=500 | Q30=400 | R30=400 | S30=300 | T30=100 | U30=30 | V30=10 | W30=10 | X30=3
+B31=Bad table weights | C31=4000000 | D31=4000000 | E31=1500000 | F31=700000 | G31=2000 | H31=2000 | I31=1000 | J31=500 | K31=500 | L31=100 | M31=50 | N31=50 | O31=50 | P31=25 | Q31=25 | R31=15 | S31=8 | T31=2 | U31=1 | V31=0 | W31=0 | X31=0
+A33=BB option 2 | B33=COR values (xBet) | C33=0.5 | D33=1 | E33=1.5 | F33=2 | G33=2.5 | H33=3 | I33=3.5 | J33=4 | K33=5 | L33=6 | M33=7 | N33=7.5 | O33=8 | P33=9 | Q33=10 | R33=12.5 | S33=25 | T33=50 | U33=125 | V33=250 | W33=500 | X33=2000
+B34=Good table weights | C34=0 | D34=0 | E34=0 | F34=0 | G34=0 | H34=0 | I34=0 | J34=2400 | K34=800 | L34=500 | M34=500 | N34=400 | O34=300 | P34=300 | Q34=200 | R34=100 | S34=100 | T34=100 | U34=30 | V34=10 | W34=10 | X34=1
+B35=Bad table weights | C35=4000000 | D35=4000000 | E35=1500000 | F35=700000 | G35=1000 | H35=1000 | I35=1000 | J35=500 | K35=500 | L35=100 | M35=50 | N35=50 | O35=50 | P35=25 | Q35=25 | R35=15 | S35=8 | T35=2 | U35=1 | V35=0 | W35=0 | X35=0
+A37=BB option 3 | B37=COR values (xBet) | C37=0.5 | D37=1 | E37=1.5 | F37=2 | G37=2.5 | H37=3 | I37=3.5 | J37=4 | K37=5 | L37=6 | M37=7 | N37=7.5 | O37=8 | P37=9 | Q37=10 | R37=12.5 | S37=25 | T37=50 | U37=125 | V37=250 | W37=500 | X37=2000
+B38=Good table weights | C38=0 | D38=0 | E38=0 | F38=0 | G38=0 | H38=0 | I38=0 | J38=4800 | K38=400 | L38=500 | M38=500 | N38=400 | O38=300 | P38=300 | Q38=200 | R38=100 | S38=100 | T38=100 | U38=30 | V38=10 | W38=10 | X38=1
+B39=Bad table weights | C39=8000000 | D39=5000000 | E39=1500000 | F39=700000 | G39=1000 | H39=1000 | I39=1000 | J39=500 | K39=500 | L39=100 | M39=50 | N39=50 | O39=50 | P39=25 | Q39=25 | R39=15 | S39=8 | T39=2 | U39=1 | V39=0 | W39=0 | X39=0
+A42=Step 6 | B42=Each Collect will collect the CORs on the screen and multiply by the total bet.
+A43=Step 7 | B43=Screen resets on every spin.
+A44=Step 8  | B44=When all the Spins exhaust, exit the feature.
+
+codex
+The parsheet includes more than the rule document: base reelset weighting, added-coin logic, COR value weights, Free Spins multipliers, Blitz spin generation, and buy-bonus tables. I’ve got enough to draft the Planner artifacts, but writing them will require workspace write access.
+exec
+/bin/bash -lc "python3 - <<'PY'
+from zipfile import ZipFile
+from pathlib import Path
+import xml.etree.ElementTree as ET, re, json
+p=Path('specs/math_models/Parsheet_Vegas_Blitz.xlsx')
+NS={'a':'http://schemas.openxmlformats.org/spreadsheetml/2006/main','r':'http://schemas.openxmlformats.org/officeDocument/2006/relationships'}
+
+def col_to_num(c):
+ n=0
+ for ch in c: n=n*26+ord(ch)-64
+ return n
+
+def ref_to_rc(ref):
+ m=re.match(r'([A-Z]+)(\\d+)', ref); return int(m.group(2)), col_to_num(m.group(1))
+
+def read_book(path):
+ data={}
+ with ZipFile(path) as z:
+  shared=[]
+  root=ET.fromstring(z.read('xl/sharedStrings.xml'))
+  for si in root.findall('a:si',NS): shared.append(''.join(t.text or '' for t in si.findall('.//a:t',NS)))
+  wb=ET.fromstring(z.read('xl/workbook.xml'))
+  rels=ET.fromstring(z.read('xl/_rels/workbook.xml.rels'))
+  relmap={rel.attrib['Id']: rel.attrib['Target'] for rel in rels}
+  for s in wb.find('a:sheets',NS):
+   name=s.attrib['name']; rid=s.attrib['{http://schemas.openxmlformats.org/officeDocument/2006/relationships}id']
+   root=ET.fromstring(z.read('xl/'+relmap[rid]))
+   cells={}
+   for c in root.findall('.//a:sheetData/a:row/a:c',NS):
+    v=c.find('a:v',NS)
+    if v is None: continue
+    val=v.text
+    if c.attrib.get('t')=='s': val=shared[int(val)]
+    else:
+     try:
+      fv=float(val); val=int(fv) if fv.is_integer() else fv
+     except: pass
+    cells[ref_to_rc(c.attrib['r'])]=val
+   data[name]=cells
+ return data
+book=read_book(p)
+rs=book['Reelsets']
+def col_values(c, start=4):
+ arr=[]
+ r=start
+ while True:
+  v=rs.get((r,c))
+  if v is None:
+   # allow trailing blanks? stop after 5 empty rows
+   if all(rs.get((rr,c)) is None for rr in range(r, r+5)): break
+  else: arr.append(v)
+  r+=1
+ return arr
+sets={'B1':range(2,8),'B2':range(10,16),'F1':range(18,24)}
+for name, cols in sets.items():
+ print(name)
+ for i,c in enumerate(cols,1):
+  arr=col_values(c)
+  print(' R%d len=%d %s'%(i,len(arr), ','.join(map(str,arr))))
+PY" in /home/arka/projects/Slot_Lib/SlotCore
+ succeeded in 0ms:
+B1
+ R1 len=89 KING,JACK,QUEEN,PIC2,PIC1,KING,JACK,KING,QUEEN,JACK,NINE,COLLECT,KING,QUEEN,PIC3,KING,QUEEN,PIC1,JACK,KING,KING,PIC2,JACK,PIC1,KING,JACK,QUEEN,JACK,SCAT,KING,PIC4,QUEEN,PIC5,JACK,TEN,PIC5,QUEEN,PIC1,NINE,KING,JACK,QUEEN,JACK,JACK,PIC1,KING,PIC3,QUEEN,KING,PIC1,QUEEN,JACK,QUEEN,JACK,PIC1,KING,PIC4,KING,QUEEN,JACK,PIC1,KING,QUEEN,KING,JACK,QUEEN,PIC1,JACK,KING,SCAT,QUEEN,JACK,NINE,QUEEN,KING,QUEEN,PIC1,PIC1,PIC1,PIC2,QUEEN,JACK,KING,TEN,PIC1,ACE,KING,COIN,COIN
+ R2 len=82 PIC5,ACE,NINE,PIC1,PIC1,PIC1,TEN,PIC5,PIC5,QUEEN,ACE,COIN,COIN,PIC3,ACE,QUEEN,PIC2,PIC3,JACK,PIC5,TEN,ACE,PIC5,PIC2,ACE,PIC5,TEN,WILD,ACE,PIC5,PIC5,TEN,ACE,PIC4,PIC5,TEN,ACE,PIC5,KING,PIC5,TEN,SCAT,ACE,TEN,TEN,PIC5,TEN,WILD,TEN,ACE,PIC5,TEN,TEN,ACE,TEN,PIC4,TEN,PIC5,ACE,PIC5,PIC5,ACE,TEN,ACE,PIC3,PIC2,ACE,TEN,ACE,TEN,PIC5,ACE,PIC1,ACE,TEN,ACE,PIC5,TEN,TEN,ACE,TEN,PIC5
+ R3 len=130 JACK,PIC2,PIC4,JACK,JACK,PIC2,TEN,TEN,PIC3,JACK,NINE,TEN,TEN,QUEEN,SCAT,JACK,TEN,PIC1,PIC4,TEN,NINE,TEN,TEN,PIC4,PIC1,SCAT,TEN,JACK,PIC3,JACK,PIC4,TEN,JACK,PIC4,TEN,PIC4,TEN,PIC4,PIC4,QUEEN,TEN,TEN,PIC4,TEN,WILD,JACK,PIC4,TEN,PIC4,NINE,ACE,TEN,TEN,PIC4,PIC4,PIC2,PIC4,QUEEN,QUEEN,PIC1,KING,PIC4,PIC5,NINE,JACK,PIC2,PIC4,JACK,JACK,PIC2,TEN,TEN,SCAT,PIC3,JACK,NINE,TEN,TEN,QUEEN,PIC1,PIC1,PIC1,PIC4,TEN,SCAT,TEN,TEN,PIC4,PIC1,TEN,JACK,PIC3,JACK,PIC4,TEN,WILD,PIC4,TEN,PIC4,TEN,PIC4,PIC4,QUEEN,TEN,TEN,PIC4,TEN,WILD,JACK,PIC4,TEN,PIC4,NINE,ACE,TEN,TEN,PIC4,PIC4,PIC2,PIC4,QUEEN,QUEEN,PIC1,KING,PIC4,PIC5,NINE,COIN,COIN,COIN
+ R4 len=65 PIC1,PIC1,PIC1,KING,TEN,KING,QUEEN,TEN,ACE,WILD,TEN,KING,TEN,QUEEN,NINE,NINE,TEN,QUEEN,TEN,KING,PIC1,NINE,QUEEN,TEN,PIC1,PIC5,PIC4,PIC3,PIC3,SCAT,PIC3,PIC3,TEN,TEN,PIC2,TEN,TEN,PIC3,ACE,TEN,ACE,JACK,PIC1,ACE,ACE,TEN,ACE,WILD,TEN,ACE,ACE,TEN,PIC3,ACE,ACE,PIC1,TEN,PIC2,KING,PIC3,QUEEN,COIN,COIN,COIN,ACE
+ R5 len=83 KING,KING,PIC5,PIC3,PIC3,QUEEN,QUEEN,ACE,PIC4,PIC3,TEN,TEN,TEN,WILD,PIC2,PIC2,PIC3,ACE,ACE,JACK,PIC5,NINE,PIC1,ACE,ACE,QUEEN,KING,PIC4,PIC5,ACE,SCAT,TEN,TEN,PIC1,PIC4,PIC4,TEN,PIC4,PIC3,ACE,ACE,PIC5,PIC4,PIC4,PIC5,PIC3,QUEEN,TEN,PIC3,PIC1,ACE,PIC5,PIC2,PIC3,ACE,JACK,PIC1,PIC1,PIC1,JACK,PIC2,KING,JACK,PIC5,QUEEN,PIC1,WILD,KING,KING,PIC5,QUEEN,PIC2,PIC2,TEN,TEN,PIC4,PIC3,PIC5,KING,KING,COIN,COIN,COIN
+ R6 len=82 COIN,QUEEN,COLLECT,PIC4,PIC3,PIC5,TEN,COIN,COIN,PIC2,PIC2,TEN,QUEEN,COLLECT,PIC3,QUEEN,TEN,PIC3,PIC1,PIC5,PIC4,PIC3,SCAT,PIC4,ACE,PIC5,PIC4,PIC4,ACE,SCAT,ACE,PIC4,PIC5,KING,PIC3,PIC3,PIC5,TEN,PIC1,PIC1,PIC1,KING,PIC3,ACE,TEN,NINE,ACE,JACK,WILD,PIC3,PIC4,ACE,TEN,PIC1,ACE,PIC4,PIC1,ACE,ACE,PIC3,PIC3,PIC3,ACE,PIC1,ACE,TEN,PIC2,JACK,ACE,PIC5,PIC1,NINE,KING,KING,KING,PIC3,PIC2,ACE,WILD,QUEEN,KING,PIC5
+B2
+ R1 len=26 PIC1,ACE,KING,JACK,ACE,PIC3,NINE,NINE,PIC3,JACK,PIC1,NINE,PIC5,PIC1,ACE,JACK,ACE,PIC3,QUEEN,NINE,NINE,PIC4,PIC3,JACK,PIC1,TEN
+ R2 len=25 PIC2,QUEEN,KING,KING,TEN,PIC2,PIC4,PIC5,QUEEN,TEN,PIC4,PIC5,ACE,JACK,PIC2,QUEEN,KING,KING,TEN,NINE,PIC2,PIC4,PIC5,QUEEN,TEN
+ R3 len=26 ACE,KING,JACK,ACE,PIC3,NINE,NINE,PIC3,JACK,PIC1,NINE,PIC5,PIC1,ACE,PIC2,JACK,ACE,PIC3,QUEEN,NINE,NINE,PIC4,PIC3,JACK,PIC1,TEN
+ R4 len=27 PIC2,QUEEN,KING,KING,TEN,PIC2,PIC4,PIC5,QUEEN,TEN,PIC4,PIC5,PIC1,ACE,JACK,PIC2,QUEEN,KING,PIC3,KING,TEN,NINE,PIC2,PIC4,PIC5,QUEEN,TEN
+ R5 len=27 PIC1,ACE,KING,JACK,ACE,PIC3,NINE,NINE,PIC3,JACK,PIC1,NINE,PIC5,PIC1,ACE,PIC2,JACK,ACE,PIC3,QUEEN,NINE,NINE,PIC4,PIC3,JACK,PIC1,TEN
+ R6 len=27 PIC2,QUEEN,KING,KING,TEN,PIC2,PIC4,PIC5,QUEEN,TEN,PIC4,PIC5,PIC1,ACE,JACK,PIC2,QUEEN,KING,PIC3,KING,TEN,NINE,PIC2,PIC4,PIC5,QUEEN,TEN
+F1
+ R1 len=144 PIC2,KING,QUEEN,PIC3,PIC1,KING,PIC4,PIC3,JACK,KING,QUEEN,PIC3,JACK,PIC2,KING,JACK,QUEEN,PIC3,PIC2,KING,ACE,NINE,QUEEN,JACK,PIC1,PIC2,PIC3,PIC4,TEN,KING,JACK,QUEEN,PIC1,PIC2,PIC5,KING,JACK,QUEEN,KING,NINE,PIC2,JACK,QUEEN,JACK,PIC1,KING,PIC2,ACE,QUEEN,JACK,PIC1,KING,QUEEN,PIC5,KING,QUEEN,PIC2,JACK,KING,NINE,QUEEN,JACK,KING,PIC3,KING,QUEEN,NINE,JACK,QUEEN,PIC2,JACK,JACK,PIC4,QUEEN,KING,QUEEN,NINE,JACK,QUEEN,PIC5,QUEEN,JACK,KING,JACK,QUEEN,PIC2,PIC1,ACE,JACK,KING,QUEEN,JACK,PIC2,KING,KING,PIC3,JACK,KING,QUEEN,PIC3,JACK,KING,PIC4,QUEEN,JACK,PIC2,KING,JACK,QUEEN,JACK,NINE,KING,ACE,QUEEN,QUEEN,JACK,KING,TEN,PIC1,NINE,TEN,KING,JACK,QUEEN,JACK,PIC1,PIC2,JACK,JACK,KING,QUEEN,QUEEN,PIC1,JACK,KING,SCAT,QUEEN,JACK,PIC1,PIC3,KING,QUEEN,PIC1,SCAT
+ R2 len=91 ACE,NINE,ACE,TEN,SCAT,ACE,JACK,PIC1,ACE,JACK,ACE,WILD,TEN,ACE,JACK,KING,JACK,PIC2,PIC4,PIC2,NINE,JACK,PIC4,PIC1,PIC5,QUEEN,QUEEN,ACE,TEN,WILD,JACK,ACE,TEN,PIC1,NINE,PIC5,SCAT,PIC1,ACE,PIC3,PIC2,ACE,ACE,PIC1,ACE,PIC5,ACE,PIC4,PIC2,ACE,PIC5,PIC2,PIC1,PIC3,PIC4,PIC2,TEN,TEN,PIC4,PIC2,PIC1,JACK,PIC4,JACK,PIC5,QUEEN,PIC1,ACE,TEN,QUEEN,WILD,ACE,PIC4,TEN,PIC1,PIC5,PIC4,PIC1,SCAT,PIC3,PIC2,ACE,ACE,PIC1,ACE,PIC5,ACE,PIC4,JACK,ACE,PIC5
+ R3 len=101 JACK,PIC5,QUEEN,JACK,NINE,WILD,KING,QUEEN,JACK,PIC4,PIC1,JACK,PIC5,SCAT,PIC3,PIC2,JACK,NINE,PIC4,PIC4,PIC4,TEN,PIC1,PIC2,TEN,JACK,TEN,JACK,NINE,TEN,QUEEN,PIC4,TEN,PIC4,QUEEN,PIC3,PIC4,KING,PIC1,TEN,QUEEN,TEN,PIC4,TEN,PIC2,PIC1,PIC4,JACK,PIC3,JACK,NINE,KING,SCAT,PIC4,KING,QUEEN,TEN,WILD,NINE,KING,TEN,PIC4,ACE,PIC3,JACK,PIC5,PIC4,JACK,PIC2,JACK,PIC4,PIC1,JACK,PIC5,PIC2,PIC3,PIC2,JACK,PIC1,NINE,KING,TEN,WILD,ACE,JACK,NINE,TEN,PIC1,PIC2,PIC4,TEN,PIC4,QUEEN,PIC3,PIC4,KING,PIC1,PIC1,PIC4,JACK,PIC5
+ R4 len=60 PIC1,PIC3,NINE,TEN,PIC1,PIC5,TEN,SCAT,PIC1,PIC2,PIC4,PIC3,TEN,PIC5,PIC4,PIC2,NINE,TEN,JACK,WILD,QUEEN,ACE,JACK,ACE,ACE,SCAT,PIC4,ACE,JACK,PIC1,PIC5,ACE,PIC2,KING,QUEEN,NINE,WILD,KING,ACE,TEN,PIC1,ACE,PIC3,PIC4,TEN,PIC2,JACK,PIC1,PIC3,PIC4,PIC5,ACE,TEN,JACK,NINE,WILD,ACE,JACK,TEN,NINE
+ R5 len=167 KING,PIC2,PIC5,PIC3,QUEEN,PIC1,ACE,PIC4,SCAT,TEN,JACK,PIC1,PIC3,PIC2,PIC2,PIC1,ACE,KING,JACK,PIC5,PIC1,PIC5,PIC4,PIC3,TEN,PIC1,SCAT,PIC2,ACE,PIC5,PIC1,PIC4,PIC2,PIC3,QUEEN,TEN,PIC3,PIC1,ACE,PIC5,PIC2,PIC3,ACE,JACK,NINE,KING,PIC1,JACK,PIC2,KING,JACK,PIC5,QUEEN,PIC4,PIC1,KING,KING,PIC5,QUEEN,PIC2,PIC2,TEN,TEN,PIC4,PIC1,TEN,TEN,TEN,JACK,PIC3,QUEEN,QUEEN,PIC4,KING,PIC1,PIC1,KING,QUEEN,PIC3,QUEEN,PIC2,PIC5,QUEEN,SCAT,PIC2,PIC4,PIC1,PIC5,PIC2,PIC5,PIC1,PIC2,QUEEN,TEN,TEN,PIC3,PIC1,PIC3,QUEEN,PIC1,PIC2,QUEEN,ACE,PIC4,PIC3,PIC1,PIC3,PIC3,KING,PIC1,NINE,ACE,PIC5,PIC4,TEN,QUEEN,PIC1,PIC3,PIC2,PIC1,QUEEN,PIC5,TEN,PIC4,TEN,PIC4,TEN,QUEEN,PIC1,PIC2,QUEEN,PIC3,PIC3,KING,PIC1,PIC5,PIC2,PIC3,PIC4,PIC5,ACE,PIC1,PIC2,PIC1,TEN,PIC3,KING,NINE,PIC4,TEN,PIC2,PIC5,PIC1,PIC4,PIC2,PIC1,PIC1,PIC3,TEN,KING,TEN,QUEEN,PIC1,PIC2,QUEEN,TEN,PIC3
+ R6 len=171 PIC4,QUEEN,PIC2,ACE,PIC3,PIC5,TEN,PIC1,PIC3,PIC2,PIC2,TEN,QUEEN,NINE,PIC3,QUEEN,TEN,PIC3,PIC1,PIC5,PIC4,PIC3,ACE,PIC2,ACE,PIC5,PIC3,PIC4,ACE,NINE,ACE,PIC4,PIC5,SCAT,PIC3,PIC5,TEN,PIC1,PIC2,PIC4,PIC3,ACE,TEN,PIC1,ACE,JACK,PIC2,PIC3,PIC4,ACE,TEN,PIC1,ACE,PIC4,NINE,ACE,ACE,PIC3,PIC3,PIC3,ACE,PIC1,ACE,TEN,PIC2,JACK,ACE,PIC5,PIC1,PIC5,ACE,ACE,ACE,PIC3,PIC2,ACE,ACE,ACE,PIC1,PIC5,TEN,PIC4,JACK,PIC5,ACE,ACE,PIC1,PIC3,TEN,PIC3,PIC1,PIC5,TEN,PIC3,PIC5,TEN,PIC1,PIC5,PIC3,ACE,NINE,PIC3,PIC5,ACE,PIC3,PIC4,PIC5,ACE,PIC4,ACE,PIC5,PIC4,PIC4,ACE,ACE,JACK,PIC4,PIC5,SCAT,PIC3,PIC4,NINE,PIC2,PIC3,PIC4,PIC5,PIC3,PIC5,PIC4,PIC2,PIC3,PIC5,PIC4,PIC3,PIC1,PIC1,PIC5,ACE,PIC3,PIC5,PIC5,PIC4,PIC3,ACE,PIC4,PIC3,KING,KING,PIC4,JACK,PIC5,ACE,PIC4,PIC3,KING,PIC4,PIC3,PIC5,PIC3,PIC2,KING,PIC5,PIC4,SCAT,PIC3,PIC5,PIC5,PIC4,TEN,PIC2,PIC1
+
+codex
+The core reelsets are now extracted, including full symbol sequences and lengths. I’m checking the buy-bonus free-games sheet as well, because the Planner skill asks for feature-buy rules when present in the math model.
+exec
+/bin/bash -lc "python3 - <<'PY'
+from zipfile import ZipFile
+from pathlib import Path
+import xml.etree.ElementTree as ET, re
+p=Path('specs/math_models/Parsheet_Vegas_Blitz.xlsx')
+NS={'a':'http://schemas.openxmlformats.org/spreadsheetml/2006/main','r':'http://schemas.openxmlformats.org/officeDocument/2006/relationships'}
+# dump only Buy Bonus FG rows with populated cells
+with ZipFile(p) as z:
+ shared=[]
+ root=ET.fromstring(z.read('xl/sharedStrings.xml'))
+ for si in root.findall('a:si',NS): shared.append(''.join(t.text or '' for t in si.findall('.//a:t',NS)))
+ wb=ET.fromstring(z.read('xl/workbook.xml'))
+ rels=ET.fromstring(z.read('xl/_rels/workbook.xml.rels'))
+ relmap={rel.attrib['Id']: rel.attrib['Target'] for rel in rels}
+ target=None
+ for s in wb.find('a:sheets',NS):
+  if s.attrib['name']=='Buy Bonus FG': target='xl/'+relmap[s.attrib['{http://schemas.openxmlformats.org/officeDocument/2006/relationships}id']]
+ root=ET.fromstring(z.read(target))
+ for row in root.findall('.//a:sheetData/a:row',NS):
+  entries=[]
+  for c in row.findall('a:c',NS):
+   v=c.find('a:v',NS)
+   if v is None: continue
+   val=v.text
+   if c.attrib.get('t')=='s': val=shared[int(val)]
+   else:
+    try:
+     fv=float(val); val=int(fv) if fv.is_integer() else fv
+    except: pass
+   entries.append(f\"{c.attrib['r']}={val}\")
+  if entries: print(' | '.join(entries))
+PY" in /home/arka/projects/Slot_Lib/SlotCore
+ succeeded in 142ms:
+N1=Reelset BB F2 | U1=Reelset BB F3 | AB1=Reelset BB F4 | AJ1=Pseudo reelset to trigger the free game from base game
+A2=Buy Bonus Bet Details | N2=Reel 1 | O2=Reel 2 | P2=Reel 3 | Q2=Reel 4 | R2=Reel 5 | S2=Reel 6 | U2=Reel 1 | V2=Reel 2 | W2=Reel 3 | X2=Reel 4 | Y2=Reel 5 | Z2=Reel 6 | AB2=Reel 1 | AC2=Reel 2 | AD2=Reel 3 | AE2=Reel 4 | AF2=Reel 5 | AG2=Reel 6
+N3=PIC2 | O3=ACE | P3=PIC1 | Q3=PIC1 | R3=KING | S3=PIC4 | U3=PIC2 | V3=ACE | W3=PIC1 | X3=PIC1 | Y3=KING | Z3=PIC4 | AB3=PIC2 | AC3=ACE | AD3=PIC1 | AE3=PIC1 | AF3=KING | AG3=PIC4 | AJ3=BB reelset F1 (4 SCAT)
+B4=Scat count | C4=Bet (x game bet) | D4=Option 1 | E4=Option 2 | N4=KING | O4=NINE | P4=PIC5 | Q4=PIC3 | R4=PIC2 | S4=QUEEN | U4=KING | V4=NINE | W4=PIC5 | X4=PIC3 | Y4=PIC2 | Z4=QUEEN | AB4=KING | AC4=NINE | AD4=PIC5 | AE4=PIC3 | AF4=PIC2 | AG4=QUEEN | AJ4=Reel 1 | AK4=Reel 2 | AL4=Reel 3 | AM4=Reel 4 | AN4=Reel 5 | AO4=Reel 6
+A5=BB option 1 | B5=4 | C5=80 | D5=12 FS | E5=4 spins | N5=QUEEN | O5=ACE | P5=QUEEN | Q5=NINE | R5=PIC5 | S5=PIC2 | U5=QUEEN | V5=ACE | W5=QUEEN | X5=NINE | Y5=PIC5 | Z5=PIC2 | AB5=QUEEN | AC5=ACE | AD5=QUEEN | AE5=NINE | AF5=PIC5 | AG5=PIC2 | AJ5=KING | AK5=PIC5 | AL5=JACK | AM5=TEN | AN5=PIC5 | AO5=ACE
+A6=BB option 2 | B6=5 | C6=95 | D6=20 FS | E6=6 spins | N6=PIC3 | O6=TEN | P6=JACK | Q6=TEN | R6=PIC3 | S6=PIC1 | U6=PIC3 | V6=TEN | W6=JACK | X6=TEN | Y6=PIC3 | Z6=PIC1 | AB6=PIC3 | AC6=TEN | AD6=JACK | AE6=TEN | AF6=PIC3 | AG6=PIC1 | AJ6=PIC4 | AK6=ACE | AL6=PIC3 | AM6=SCAT | AN6=PIC3 | AO6=PIC4
+A7=BB option 3 | B7=6 | C7=110 | D7=30 FS | E7=8 spins | N7=JACK | O7=SCAT | P7=NINE | Q7=ACE | R7=QUEEN | S7=PIC3 | U7=JACK | V7=SCAT | W7=NINE | X7=ACE | Y7=QUEEN | Z7=PIC3 | AB7=JACK | AC7=ACE | AD7=NINE | AE7=ACE | AF7=QUEEN | AG7=PIC3 | AJ7=QUEEN | AK7=NINE | AL7=SCAT | AM7=PIC3 | AN7=KING | AO7=PIC3
+N8=KING | O8=ACE | P8=WILD | Q8=PIC5 | R8=JACK | S8=PIC5 | U8=KING | V8=ACE | W8=WILD | X8=PIC5 | Y8=JACK | Z8=PIC5 | AB8=KING | AC8=JACK | AD8=WILD | AE8=PIC5 | AF8=JACK | AG8=PIC5 | AJ8=SCAT | AK8=PIC1 | AL8=TEN | AM8=PIC3 | AN8=KING | AO8=SCAT
+N9=PIC4 | O9=JACK | P9=KING | Q9=TEN | R9=ACE | S9=TEN | U9=PIC4 | V9=JACK | W9=KING | X9=TEN | Y9=ACE | Z9=TEN | AB9=PIC4 | AC9=QUEEN | AD9=KING | AE9=TEN | AF9=ACE | AG9=TEN
+A10=Features | N10=PIC3 | O10=QUEEN | P10=QUEEN | Q10=SCAT | R10=PIC4 | S10=ACE | U10=PIC3 | V10=QUEEN | W10=QUEEN | X10=SCAT | Y10=PIC4 | Z10=ACE | AB10=PIC3 | AC10=TEN | AD10=QUEEN | AE10=SCAT | AF10=PIC4 | AG10=ACE | AJ10=BB reelset F2 (5 SCAT)
+A11=Feature Option 1: | C11=Free Games Feature | N11=JACK | O11=TEN | P11=JACK | Q11=JACK | R11=SCAT | S11=PIC3 | U11=JACK | V11=TEN | W11=JACK | X11=JACK | Y11=TEN | Z11=PIC3 | AB11=JACK | AC11=JACK | AD11=JACK | AE11=JACK | AF11=TEN | AG11=PIC3 | AJ11=Reel 1 | AK11=Reel 2 | AL11=Reel 3 | AM11=Reel 4 | AN11=Reel 5 | AO11=Reel 6
+N12=PIC1 | O12=JACK | P12=PIC4 | Q12=PIC2 | R12=TEN | S12=PIC2 | U12=PIC1 | V12=JACK | W12=PIC4 | X12=PIC2 | Y12=JACK | Z12=PIC2 | AB12=PIC1 | AC12=ACE | AD12=PIC4 | AE12=PIC2 | AF12=JACK | AG12=PIC2 | AJ12=QUEEN | AK12=NINE | AL12=PIC3 | AM12=TEN | AN12=TEN | AO12=PIC4
+A13=Step 1 | B13=Depending on the number of Scatters, 12, 20 and 30 Free games are awarded for 4, 5 and 6 Scatters, respectively. | N13=QUEEN | O13=ACE | P13=KING | Q13=PIC4 | R13=JACK | S13=PIC2 | U13=QUEEN | V13=ACE | W13=KING | X13=PIC4 | Y13=ACE | Z13=PIC2 | AB13=QUEEN | AC13=WILD | AD13=KING | AE13=PIC4 | AF13=ACE | AG13=PIC2 | AJ13=SCAT | AK13=PIC1 | AL13=SCAT | AM13=SCAT | AN13=TEN | AO13=PIC3
+A14=Step 2 | B14=Use Reel sets BB F2, BB F3 and BB F4 depending on the number of Scatters triggering the feature to create the window. | N14=PIC3 | O14=WILD | P14=JACK | Q14=PIC3 | R14=ACE | S14=TEN | U14=PIC3 | V14=WILD | W14=JACK | X14=PIC3 | Y14=PIC3 | Z14=TEN | AB14=PIC3 | AC14=TEN | AD14=JACK | AE14=PIC3 | AF14=PIC3 | AG14=TEN | AJ14=KING | AK14=PIC5 | AL14=TEN | AM14=PIC3 | AN14=PIC1 | AO14=SCAT
+N15=JACK | O15=TEN | P15=PIC5 | Q15=TEN | R15=PIC3 | S15=QUEEN | U15=JACK | V15=TEN | W15=PIC5 | X15=TEN | Y15=PIC2 | Z15=QUEEN | AB15=JACK | AC15=ACE | AD15=PIC5 | AE15=TEN | AF15=PIC2 | AG15=QUEEN | AJ15=PIC4 | AK15=ACE | AL15=JACK | AM15=PIC3 | AN15=SCAT | AO15=ACE
+B16=Reelset | C16=Scatters | N16=PIC2 | O16=ACE | P16=SCAT | Q16=PIC5 | R16=PIC2 | S16=NINE | U16=PIC2 | V16=ACE | W16=SCAT | X16=PIC5 | Y16=PIC2 | Z16=NINE | AB16=PIC2 | AC16=JACK | AD16=PIC3 | AE16=PIC5 | AF16=PIC2 | AG16=NINE
+B17=BB F2 | C17=4 | N17=PIC1 | O17=JACK | P17=PIC3 | Q17=PIC4 | R17=PIC2 | S17=PIC3 | U17=PIC1 | V17=JACK | W17=PIC3 | X17=PIC4 | Y17=PIC1 | Z17=PIC3 | AB17=PIC1 | AC17=KING | AD17=PIC2 | AE17=PIC4 | AF17=PIC1 | AG17=PIC3 | AJ17=BB reelset F3 (6 SCAT)
+B18=BB F3 | C18=5 | N18=JACK | O18=KING | P18=PIC2 | Q18=PIC2 | R18=PIC1 | S18=QUEEN | U18=JACK | V18=KING | W18=PIC2 | X18=PIC2 | Y18=ACE | Z18=QUEEN | AB18=JACK | AC18=JACK | AD18=JACK | AE18=PIC2 | AF18=ACE | AG18=QUEEN | AJ18=Reel 1 | AK18=Reel 2 | AL18=Reel 3 | AM18=Reel 4 | AN18=Reel 5 | AO18=Reel 6
+B19=BB F4 | C19=6 | N19=QUEEN | O19=JACK | P19=JACK | Q19=NINE | R19=ACE | S19=TEN | U19=QUEEN | V19=JACK | W19=JACK | X19=NINE | Y19=KING | Z19=TEN | AB19=QUEEN | AC19=PIC2 | AD19=NINE | AE19=NINE | AF19=KING | AG19=TEN | AJ19=QUEEN | AK19=TEN | AL19=PIC3 | AM19=PIC3 | AN19=PIC1 | AO19=ACE
+N20=PIC3 | O20=PIC2 | P20=NINE | Q20=TEN | R20=KING | S20=PIC3 | U20=PIC3 | V20=PIC2 | W20=NINE | X20=TEN | Y20=JACK | Z20=PIC3 | AB20=PIC3 | AC20=PIC4 | AD20=PIC4 | AE20=TEN | AF20=JACK | AG20=PIC3 | AJ20=SCAT | AK20=TEN | AL20=SCAT | AM20=PIC3 | AN20=SCAT | AO20=PIC4
+A21=Step 3 | B21=Assign values to each multiplier on the window based on the weights. The entire ways win will be multiplied by all the Wilds till that reel. | N21=NINE | O21=PIC4 | P21=PIC4 | Q21=JACK | R21=JACK | S21=PIC1 | U21=NINE | V21=PIC4 | W21=PIC4 | X21=JACK | Y21=PIC5 | Z21=PIC1 | AB21=NINE | AC21=TEN | AD21=PIC1 | AE21=JACK | AF21=PIC5 | AG21=PIC1 | AJ21=KING | AK21=SCAT | AL21=TEN | AM21=TEN | AN21=TEN | AO21=PIC3
+A22=Step 4 | B22=Calculate left to right ways wins and Scatter wins as in the game. Collect and CORs will not appear in this feature option. | N22=KING | O22=TEN | P22=PIC1 | Q22=WILD | R22=PIC5 | S22=PIC5 | U22=KING | V22=TEN | W22=PIC1 | X22=WILD | Y22=PIC1 | Z22=PIC5 | AB22=KING | AC22=NINE | AD22=PIC4 | AE22=WILD | AF22=PIC1 | AG22=PIC5 | AJ22=PIC4 | AK22=ACE | AL22=JACK | AM22=SCAT | AN22=TEN | AO22=SCAT
+A23=Step 5 | B23=Check for retriggers where 2, 3, 4, 5 or 6 Scatters awards 5, 8, 12, 20, 30 additional Free games. | N23=ACE | O23=NINE | P23=PIC4 | Q23=QUEEN | R23=PIC1 | S23=PIC4 | U23=ACE | V23=NINE | W23=PIC4 | X23=QUEEN | Y23=PIC5 | Z23=PIC4 | AB23=ACE | AC23=JACK | AD23=TEN | AE23=QUEEN | AF23=PIC5 | AG23=PIC4
+A24=Step 6 | B24=Same reelset as used on the feature trigger time will be used for additional spins too. | N24=NINE | O24=JACK | P24=TEN | Q24=ACE | R24=PIC5 | S24=PIC3 | U24=NINE | V24=JACK | W24=TEN | X24=ACE | Y24=PIC4 | Z24=PIC3 | AB24=NINE | AC24=PIC4 | AD24=PIC1 | AE24=ACE | AF24=PIC4 | AG24=PIC3
+A25=Step 7 | B25=Once all free games exhaust, exit the feature. | N25=QUEEN | O25=PIC4 | P25=PIC1 | Q25=JACK | R25=PIC4 | S25=ACE | U25=QUEEN | V25=PIC4 | W25=PIC1 | X25=JACK | Y25=PIC3 | Z25=ACE | AB25=QUEEN | AC25=PIC1 | AD25=PIC2 | AE25=JACK | AF25=PIC3 | AG25=ACE
+N26=JACK | O26=PIC1 | P26=PIC2 | Q26=ACE | R26=PIC3 | S26=PIC2 | U26=JACK | V26=PIC1 | W26=PIC2 | X26=ACE | Y26=TEN | Z26=PIC2 | AB26=JACK | AC26=PIC5 | AD26=TEN | AE26=ACE | AF26=TEN | AG26=PIC2
+C27=Weights | N27=PIC1 | O27=PIC5 | P27=TEN | Q27=ACE | R27=TEN | S27=ACE | U27=PIC1 | V27=PIC5 | W27=TEN | X27=ACE | Y27=PIC1 | Z27=ACE | AB27=PIC1 | AC27=PIC3 | AD27=JACK | AE27=ACE | AF27=PIC1 | AG27=ACE
+B28=Multiplier values | C28=4 Scat | D28=5 Scat | E28=6 Scat | N28=NINE | O28=PIC3 | P28=JACK | Q28=SCAT | R28=PIC1 | S28=PIC5 | U28=NINE | V28=PIC3 | W28=JACK | X28=SCAT | Y28=SCAT | Z28=PIC5 | AB28=NINE | AC28=QUEEN | AD28=TEN | AE28=SCAT | AF28=SCAT | AG28=PIC5
+B29=2 | C29=450 | D29=438 | E29=458 | N29=PIC3 | O29=QUEEN | P29=TEN | Q29=PIC4 | R29=SCAT | S29=PIC3 | U29=PIC3 | V29=QUEEN | W29=TEN | X29=PIC4 | Y29=PIC2 | Z29=PIC3 | AB29=PIC3 | AC29=ACE | AD29=JACK | AE29=PIC4 | AF29=PIC2 | AG29=PIC3
+B30=3 | C30=465 | D30=465 | E30=445 | N30=PIC4 | O30=ACE | P30=JACK | Q30=ACE | R30=PIC2 | S30=PIC4 | U30=PIC4 | V30=ACE | W30=JACK | X30=ACE | Y30=ACE | Z30=PIC4 | AB30=PIC4 | AC30=TEN | AD30=WILD | AE30=ACE | AF30=ACE | AG30=PIC4
+B31=5 | C31=300 | D31=312 | E31=312 | N31=TEN | O31=TEN | P31=WILD | Q31=JACK | R31=ACE | S31=ACE | U31=TEN | V31=TEN | W31=WILD | X31=JACK | Y31=PIC5 | Z31=ACE | AB31=TEN | AC31=WILD | AD31=TEN | AE31=JACK | AF31=PIC5 | AG31=ACE
+N32=KING | O32=WILD | P32=TEN | Q32=PIC1 | R32=PIC5 | S32=NINE | U32=KING | V32=WILD | W32=TEN | X32=PIC1 | Y32=PIC1 | Z32=NINE | AB32=KING | AC32=JACK | AD32=QUEEN | AE32=PIC1 | AF32=PIC1 | AG32=NINE
+N33=JACK | O33=JACK | P33=QUEEN | Q33=PIC5 | R33=PIC1 | S33=ACE | U33=JACK | V33=JACK | W33=QUEEN | X33=PIC5 | Y33=PIC4 | Z33=ACE | AB33=JACK | AC33=ACE | AD33=PIC4 | AE33=PIC5 | AF33=PIC4 | AG33=ACE
+N34=QUEEN | O34=ACE | P34=PIC4 | Q34=ACE | R34=PIC4 | S34=PIC4 | U34=QUEEN | V34=ACE | W34=PIC4 | X34=ACE | Y34=PIC2 | Z34=PIC4 | AB34=QUEEN | AC34=TEN | AD34=TEN | AE34=ACE | AF34=PIC2 | AG34=PIC4
+N35=PIC1 | O35=TEN | P35=TEN | Q35=PIC2 | R35=PIC2 | S35=PIC5 | U35=PIC1 | V35=TEN | W35=TEN | X35=PIC2 | Y35=PIC3 | Z35=PIC5 | AB35=PIC1 | AC35=PIC3 | AD35=PIC4 | AE35=PIC2 | AF35=PIC3 | AG35=PIC5
+N36=PIC2 | O36=PIC3 | P36=PIC4 | Q36=KING | R36=PIC3 | S36=SCAT | U36=PIC2 | V36=PIC3 | W36=PIC4 | X36=KING | Y36=QUEEN | Z36=SCAT | AB36=PIC2 | AC36=NINE | AD36=QUEEN | AE36=KING | AF36=QUEEN | AG36=SCAT
+N37=PIC5 | O37=NINE | P37=QUEEN | Q37=QUEEN | R37=QUEEN | S37=PIC3 | U37=PIC5 | V37=NINE | W37=QUEEN | X37=QUEEN | Y37=TEN | Z37=PIC3 | AB37=PIC5 | AC37=PIC5 | AD37=PIC3 | AE37=QUEEN | AF37=TEN | AG37=PIC3
+N38=KING | O38=PIC5 | P38=PIC3 | Q38=NINE | R38=TEN | S38=PIC5 | U38=KING | V38=PIC5 | W38=PIC3 | X38=NINE | Y38=PIC3 | Z38=PIC5 | AB38=KING | AC38=SCAT | AD38=PIC4 | AE38=NINE | AF38=PIC3 | AG38=PIC5
+N39=JACK | O39=SCAT | P39=PIC4 | Q39=WILD | R39=PIC3 | S39=TEN | U39=JACK | V39=SCAT | W39=PIC4 | X39=WILD | Y39=PIC1 | Z39=TEN | AB39=JACK | AC39=QUEEN | AD39=KING | AE39=WILD | AF39=PIC1 | AG39=TEN
+N40=QUEEN | O40=QUEEN | P40=KING | Q40=KING | R40=PIC1 | S40=PIC1 | U40=QUEEN | V40=QUEEN | W40=KING | X40=KING | Y40=ACE | Z40=PIC1 | AB40=QUEEN | AC40=ACE | AD40=PIC1 | AE40=KING | AF40=ACE | AG40=PIC1
+N41=KING | O41=ACE | P41=PIC1 | Q41=ACE | R41=ACE | S41=PIC2 | U41=KING | V41=ACE | W41=PIC1 | X41=ACE | Y41=PIC5 | Z41=PIC2 | AB41=KING | AC41=PIC3 | AD41=TEN | AE41=ACE | AF41=PIC5 | AG41=PIC2
+N42=NINE | O42=PIC3 | P42=TEN | Q42=TEN | R42=PIC5 | S42=PIC4 | U42=NINE | V42=PIC3 | W42=TEN | X42=TEN | Y42=PIC2 | Z42=PIC4 | AB42=NINE | AC42=PIC2 | AD42=QUEEN | AE42=TEN | AF42=PIC2 | AG42=PIC4
+N43=PIC2 | O43=PIC2 | P43=QUEEN | Q43=PIC1 | R43=PIC2 | S43=PIC3 | U43=PIC2 | V43=PIC2 | W43=QUEEN | X43=PIC1 | Y43=PIC3 | Z43=PIC3 | AB43=PIC2 | AC43=ACE | AD43=TEN | AE43=PIC1 | AF43=PIC3 | AG43=PIC3
+N44=JACK | O44=ACE | P44=TEN | Q44=ACE | R44=PIC3 | S44=ACE | U44=JACK | V44=ACE | W44=TEN | X44=ACE | Y44=ACE | Z44=ACE | AB44=JACK | AC44=ACE | AD44=PIC4 | AE44=ACE | AF44=ACE | AG44=ACE
+N45=QUEEN | O45=ACE | P45=PIC4 | Q45=PIC3 | R45=ACE | S45=TEN | U45=QUEEN | V45=ACE | W45=PIC4 | X45=PIC3 | Y45=JACK | Z45=TEN | AB45=QUEEN | AC45=PIC1 | AD45=TEN | AE45=PIC3 | AF45=JACK | AG45=TEN
+N46=JACK | O46=PIC1 | P46=TEN | Q46=PIC4 | R46=JACK | S46=PIC1 | U46=JACK | V46=PIC1 | W46=TEN | X46=PIC4 | Y46=NINE | Z46=PIC1 | AB46=JACK | AC46=ACE | AD46=PIC2 | AE46=PIC4 | AF46=NINE | AG46=PIC1
+N47=PIC1 | O47=ACE | P47=PIC2 | Q47=TEN | R47=NINE | S47=ACE | U47=PIC1 | V47=ACE | W47=PIC2 | X47=TEN | Y47=KING | Z47=ACE | AB47=PIC1 | AC47=PIC5 | AD47=PIC1 | AE47=TEN | AF47=KING | AG47=ACE
+N48=KING | O48=PIC5 | P48=PIC1 | Q48=PIC2 | R48=KING | S48=JACK | U48=KING | V48=PIC5 | W48=PIC1 | X48=PIC2 | Y48=PIC1 | Z48=JACK | AB48=KING | AC48=ACE | AD48=PIC4 | AE48=PIC2 | AF48=PIC1 | AG48=JACK
+N49=PIC2 | O49=ACE | P49=PIC4 | Q49=JACK | R49=PIC1 | S49=PIC2 | U49=PIC2 | V49=ACE | W49=PIC4 | X49=JACK | Y49=JACK | Z49=PIC2 | AB49=PIC2 | AC49=PIC4 | AD49=JACK | AE49=JACK | AF49=JACK | AG49=PIC2
+N50=ACE | O50=PIC4 | P50=JACK | Q50=PIC1 | R50=JACK | S50=PIC3 | U50=ACE | V50=PIC4 | W50=JACK | X50=PIC1 | Y50=PIC2 | Z50=PIC3 | AB50=ACE | AC50=PIC2 | AD50=PIC3 | AE50=PIC1 | AF50=PIC2 | AG50=PIC3
+N51=QUEEN | O51=PIC2 | P51=PIC3 | Q51=PIC3 | R51=PIC2 | S51=PIC4 | U51=QUEEN | V51=PIC2 | W51=PIC3 | X51=PIC3 | Y51=KING | Z51=PIC4 | AB51=QUEEN | AC51=ACE | AD51=JACK | AE51=PIC3 | AF51=KING | AG51=PIC4
+N52=JACK | O52=ACE | P52=JACK | Q52=PIC4 | R52=KING | S52=ACE | U52=JACK | V52=ACE | W52=JACK | X52=PIC4 | Y52=JACK | Z52=ACE | AB52=JACK | AC52=PIC5 | AD52=NINE | AE52=PIC4 | AF52=JACK | AG52=ACE
+N53=PIC1 | O53=PIC5 | P53=NINE | Q53=PIC5 | R53=JACK | S53=TEN | U53=PIC1 | V53=PIC5 | W53=NINE | X53=PIC5 | Y53=PIC5 | Z53=TEN | AB53=PIC1 | AC53=PIC2 | AD53=KING | AE53=PIC5 | AF53=PIC5 | AG53=TEN
+N54=KING | O54=PIC2 | P54=KING | Q54=ACE | R54=PIC5 | S54=PIC1 | U54=KING | V54=PIC2 | W54=KING | X54=ACE | Y54=QUEEN | Z54=PIC1 | AB54=KING | AC54=PIC1 | AD54=SCAT | AE54=ACE | AF54=QUEEN | AG54=PIC1
+N55=QUEEN | O55=PIC1 | P55=SCAT | Q55=TEN | R55=QUEEN | S55=ACE | U55=QUEEN | V55=PIC1 | W55=SCAT | X55=TEN | Y55=PIC4 | Z55=ACE | AB55=QUEEN | AC55=PIC3 | AD55=PIC4 | AE55=TEN | AF55=PIC4 | AG55=ACE
+N56=PIC5 | O56=PIC3 | P56=PIC4 | Q56=JACK | R56=PIC4 | S56=PIC4 | U56=PIC5 | V56=PIC3 | W56=PIC4 | X56=JACK | Y56=PIC1 | Z56=PIC4 | AB56=PIC5 | AC56=PIC4 | AD56=KING | AE56=JACK | AF56=PIC1 | AG56=PIC4
+N57=KING | O57=PIC4 | P57=KING | Q57=NINE | R57=PIC1 | S57=NINE | U57=KING | V57=PIC4 | W57=KING | X57=NINE | Y57=KING | Z57=NINE | AB57=KING | AC57=PIC2 | AD57=QUEEN | AE57=NINE | AF57=KING | AG57=NINE
+N58=QUEEN | O58=PIC2 | P58=QUEEN | Q58=PIC1 | R58=KING | S58=ACE | U58=QUEEN | V58=PIC2 | W58=QUEEN | X58=PIC1 | Y58=KING | Z58=ACE | AB58=QUEEN | AC58=TEN | AD58=TEN | AE58=PIC1 | AF58=KING | AG58=ACE
+N59=PIC2 | O59=TEN | P59=TEN | Q59=ACE | R59=KING | S59=ACE | U59=PIC2 | V59=TEN | W59=TEN | X59=ACE | Y59=PIC5 | Z59=ACE | AB59=PIC2 | AC59=TEN | AD59=PIC1 | AE59=ACE | AF59=PIC5 | AG59=ACE
+N60=JACK | O60=TEN | P60=WILD | Q60=JACK | R60=PIC5 | S60=PIC3 | U60=JACK | V60=TEN | W60=PIC1 | X60=JACK | Y60=QUEEN | Z60=PIC3 | AB60=JACK | AC60=PIC4 | AD60=NINE | AE60=JACK | AF60=QUEEN | AG60=PIC3
+N61=KING | O61=PIC4 | P61=NINE | Q61=TEN | R61=QUEEN | S61=PIC3 | U61=KING | V61=PIC4 | W61=NINE | X61=TEN | Y61=PIC2 | Z61=PIC3 | AB61=KING | AC61=ACE | AD61=KING | AE61=TEN | AF61=PIC2 | AG61=PIC3
+N62=NINE | O62=ACE | P62=KING | Q62=NINE | R62=PIC2 | S62=PIC3 | U62=NINE | V62=ACE | W62=KING | X62=NINE | Y62=PIC2 | Z62=PIC3 | AB62=NINE | AC62=PIC1 | AD62=TEN | AE62=NINE | AF62=PIC2 | AG62=PIC3
+N63=QUEEN | O63=PIC1 | P63=TEN | Q63=TEN | R63=PIC2 | S63=ACE | U63=QUEEN | V63=PIC1 | W63=TEN | X63=TEN | Y63=TEN | Z63=ACE | AB63=QUEEN | AC63=JACK | AD63=PIC4 | AE63=TEN | AF63=TEN | AG63=ACE
+N64=JACK | O64=JACK | P64=PIC4 | Q64=PIC3 | R64=TEN | S64=PIC1 | U64=JACK | V64=JACK | W64=PIC4 | X64=PIC3 | Y64=TEN | Z64=PIC1 | AB64=JACK | AC64=PIC4 | AD64=ACE | AE64=PIC3 | AF64=TEN | AG64=PIC1
+N65=KING | O65=PIC4 | P65=ACE | Q65=KING | R65=TEN | S65=ACE | U65=KING | V65=PIC4 | W65=ACE | X65=KING | Y65=PIC4 | Z65=ACE | AB65=KING | AC65=JACK | AD65=PIC3 | AE65=KING | AF65=PIC4 | AG65=ACE
+N66=PIC3 | O66=JACK | P66=PIC3 | Q66=NINE | R66=PIC4 | S66=TEN | U66=PIC3 | V66=JACK | W66=PIC3 | X66=NINE | Y66=PIC1 | Z66=TEN | AB66=PIC3 | AC66=PIC5 | AD66=JACK | AE66=NINE | AF66=PIC1 | AG66=TEN
+N67=KING | O67=PIC5 | P67=JACK | Q67=PIC4 | R67=PIC1 | S67=PIC2 | U67=KING | V67=PIC5 | W67=JACK | X67=PIC4 | Y67=TEN | Z67=PIC2 | AB67=KING | AC67=QUEEN | AD67=PIC5 | AE67=PIC4 | AF67=TEN | AG67=PIC2
+N68=QUEEN | O68=QUEEN | P68=PIC5 | Q68=TEN | R68=TEN | S68=JACK | U68=QUEEN | V68=QUEEN | W68=PIC5 | X68=TEN | Y68=TEN | Z68=JACK | AB68=QUEEN | AC68=PIC1 | AD68=PIC4 | AE68=TEN | AF68=TEN | AG68=JACK
+N69=NINE | O69=PIC1 | P69=PIC4 | Q69=PIC2 | R69=TEN | S69=ACE | U69=NINE | V69=PIC1 | W69=PIC4 | X69=PIC2 | Y69=TEN | Z69=ACE | AB69=NINE | AC69=ACE | AD69=JACK | AE69=PIC2 | AF69=TEN | AG69=ACE
+N70=JACK | O70=ACE | P70=JACK | Q70=PIC5 | R70=TEN | S70=PIC5 | U70=JACK | V70=ACE | W70=JACK | X70=PIC5 | Y70=JACK | Z70=PIC5 | AB70=JACK | AC70=TEN | AD70=PIC2 | AE70=PIC5 | AF70=JACK | AG70=PIC5
+N71=QUEEN | O71=TEN | P71=PIC2 | Q71=TEN | R71=JACK | S71=PIC1 | U71=QUEEN | V71=TEN | W71=PIC2 | X71=TEN | Y71=PIC3 | Z71=PIC1 | AB71=QUEEN | AC71=QUEEN | AD71=JACK | AE71=TEN | AF71=PIC3 | AG71=PIC1
+N72=PIC2 | O72=QUEEN | P72=JACK | Q72=KING | R72=PIC3 | S72=PIC5 | U72=PIC2 | V72=QUEEN | W72=JACK | X72=KING | Y72=QUEEN | Z72=PIC5 | AB72=PIC2 | AC72=WILD | AD72=PIC4 | AE72=KING | AF72=QUEEN | AG72=PIC5
+N73=JACK | O73=WILD | P73=PIC4 | Q73=TEN | R73=QUEEN | S73=PIC2 | U73=JACK | V73=WILD | W73=PIC4 | X73=TEN | Y73=QUEEN | Z73=PIC2 | AB73=JACK | AC73=ACE | AD73=PIC1 | AE73=TEN | AF73=QUEEN | AG73=PIC2
+N74=JACK | O74=ACE | P74=PIC1 | Q74=QUEEN | R74=QUEEN | S74=ACE | U74=JACK | V74=ACE | W74=PIC1 | X74=QUEEN | Y74=PIC4 | Z74=ACE | AB74=JACK | AC74=NINE | AD74=JACK | AE74=QUEEN | AF74=PIC4 | AG74=ACE
+N75=PIC4 | O75=NINE | P75=JACK | Q75=PIC2 | R75=PIC4 | S75=ACE | U75=PIC4 | V75=NINE | W75=JACK | X75=PIC2 | Y75=KING | Z75=ACE | AB75=PIC4 | AC75=TEN | AD75=PIC5 | AE75=PIC2 | AF75=KING | AG75=ACE
+N76=QUEEN | O76=TEN | P76=PIC5 | Q76=PIC5 | R76=KING | S76=PIC3 | U76=QUEEN | V76=TEN | W76=PIC5 | X76=PIC5 | Y76=PIC5 | Z76=PIC3 | AB76=QUEEN | AC76=PIC1 | AD76=PIC2 | AE76=PIC5 | AF76=PIC5 | AG76=PIC3
+N77=KING | O77=PIC1 | P77=PIC2 | Q77=TEN | R77=PIC5 | S77=PIC2 | U77=KING | V77=PIC1 | W77=PIC2 | X77=TEN | Y77=PIC1 | Z77=PIC2 | AB77=KING | AC77=PIC5 | AD77=PIC3 | AE77=TEN | AF77=PIC1 | AG77=PIC2
+N78=QUEEN | O78=PIC5 | P78=PIC3 | Q78=KING | R78=PIC1 | S78=ACE | U78=QUEEN | V78=PIC5 | W78=PIC3 | X78=KING | Y78=KING | Z78=ACE | AB78=QUEEN | AC78=PIC4 | AD78=PIC2 | AE78=KING | AF78=KING | AG78=ACE
+N79=NINE | O79=PIC4 | P79=PIC2 | Q79=TEN | R79=KING | S79=ACE | U79=NINE | V79=PIC4 | W79=PIC2 | X79=TEN | Y79=QUEEN | Z79=ACE | AB79=NINE | AC79=ACE | AD79=JACK | AE79=TEN | AF79=QUEEN | AG79=ACE
+N80=JACK | O80=ACE | P80=JACK | Q80=QUEEN | R80=QUEEN | S80=PIC3 | U80=JACK | V80=ACE | W80=JACK | X80=QUEEN | Y80=PIC3 | Z80=PIC3 | AB80=JACK | AC80=PIC3 | AD80=PIC1 | AE80=QUEEN | AF80=PIC3 | AG80=PIC3
+N81=QUEEN | O81=SCAT | P81=PIC1 | R81=PIC3 | S81=PIC1 | U81=QUEEN | V81=SCAT | W81=PIC1 | Y81=QUEEN | Z81=PIC1 | AB81=QUEEN | AC81=PIC2 | AD81=NINE | AE81=PIC5 | AF81=QUEEN | AG81=PIC1
+N82=PIC5 | O82=PIC3 | P82=NINE | R82=QUEEN | S82=PIC5 | U82=PIC5 | V82=PIC3 | W82=NINE | Y82=PIC2 | Z82=PIC5 | AB82=PIC5 | AC82=PIC3 | AD82=KING | AE82=ACE | AF82=PIC2 | AG82=PIC5
+N83=QUEEN | O83=PIC2 | P83=KING | R83=PIC2 | S83=TEN | U83=QUEEN | V83=PIC2 | W83=KING | Y83=PIC5 | Z83=TEN | AB83=QUEEN | AC83=ACE | AD83=TEN | AE83=PIC4 | AF83=PIC5 | AG83=TEN
+N84=JACK | O84=PIC3 | P84=TEN | R84=PIC5 | S84=PIC4 | U84=JACK | V84=PIC3 | W84=TEN | Y84=QUEEN | Z84=PIC4 | AB84=JACK | AC84=PIC1 | AD84=PIC3 | AE84=JACK | AF84=QUEEN | AG84=PIC4
+N85=KING | O85=ACE | P85=PIC3 | R85=QUEEN | S85=JACK | U85=KING | V85=ACE | W85=PIC3 | Y85=SCAT | Z85=JACK | AB85=KING | AC85=ACE | AD85=ACE | AE85=ACE | AF85=SCAT | AG85=JACK
+N86=JACK | O86=PIC1 | P86=ACE | R86=SCAT | S86=PIC5 | U86=JACK | V86=PIC1 | W86=ACE | Y86=PIC2 | Z86=PIC5 | AB86=JACK | AC86=PIC5 | AD86=JACK | AE86=PIC5 | AF86=PIC2 | AG86=PIC5
+N87=QUEEN | O87=ACE | P87=JACK | R87=PIC2 | S87=ACE | U87=QUEEN | V87=ACE | W87=JACK | Y87=PIC4 | Z87=ACE | AB87=QUEEN | AC87=ACE | AD87=NINE | AE87=KING | AF87=PIC4 | AG87=ACE
+N88=PIC2 | O88=PIC5 | P88=NINE | R88=PIC4 | S88=ACE | U88=PIC2 | V88=PIC5 | W88=NINE | Y88=PIC1 | Z88=ACE | AB88=PIC2 | AC88=PIC4 | AD88=TEN | AE88=JACK | AF88=PIC1 | AG88=ACE
+N89=PIC1 | O89=ACE | P89=TEN | R89=PIC1 | S89=PIC1 | U89=PIC1 | V89=ACE | W89=TEN | Y89=PIC5 | Z89=PIC1 | AB89=PIC1 | AC89=JACK | AD89=PIC1 | AE89=QUEEN | AF89=PIC5 | AG89=PIC1
+N90=ACE | O90=PIC4 | P90=PIC1 | R90=PIC5 | S90=PIC3 | U90=ACE | V90=PIC4 | W90=PIC1 | Y90=PIC2 | Z90=PIC3 | AB90=ACE | AC90=ACE | AD90=PIC2 | AE90=PIC4 | AF90=PIC2 | AG90=PIC3
+N91=JACK | O91=JACK | P91=PIC2 | R91=PIC2 | S91=TEN | U91=JACK | V91=JACK | W91=PIC2 | Y91=PIC5 | Z91=TEN | AB91=JACK | AC91=PIC5 | AD91=PIC4 | AE91=JACK | AF91=PIC5 | AG91=TEN
+N92=KING | O92=ACE | P92=PIC4 | R92=PIC5 | S92=PIC3 | U92=KING | V92=ACE | W92=PIC4 | Y92=PIC1 | Z92=PIC3 | AB92=KING | AC92=KING | AD92=TEN | AE92=PIC5 | AF92=PIC1 | AG92=PIC3
+N93=QUEEN | O93=PIC5 | P93=TEN | R93=PIC1 | S93=PIC1 | U93=QUEEN | V93=PIC5 | W93=TEN | Y93=PIC2 | Z93=PIC1 | AB93=QUEEN | AC93=JACK | AD93=PIC4 | AF93=PIC2 | AG93=PIC1
+N94=JACK | P94=PIC4 | R94=PIC2 | S94=PIC5 | U94=JACK | W94=PIC4 | Y94=QUEEN | Z94=PIC5 | AB94=JACK | AC94=QUEEN | AD94=QUEEN | AF94=QUEEN | AG94=PIC5
+N95=PIC2 | P95=QUEEN | R95=QUEEN | S95=TEN | U95=PIC2 | W95=QUEEN | Y95=TEN | Z95=TEN | AB95=PIC2 | AC95=PIC4 | AD95=PIC3 | AF95=TEN | AG95=TEN
+N96=KING | P96=PIC3 | R96=TEN | S96=PIC3 | U96=KING | W96=PIC3 | Y96=TEN | Z96=PIC3 | AB96=KING | AC96=JACK | AD96=PIC4 | AF96=TEN | AG96=PIC3
+N97=KING | P97=PIC4 | R97=TEN | S97=PIC5 | U97=KING | W97=PIC4 | Y97=PIC3 | Z97=PIC5 | AB97=KING | AC97=PIC5 | AD97=KING | AF97=PIC3 | AG97=PIC5
+N98=PIC3 | P98=KING | R98=PIC3 | S98=TEN | U98=PIC3 | W98=KING | Y98=PIC1 | Z98=TEN | AB98=PIC3 | AD98=JACK | AF98=PIC1 | AG98=TEN
+N99=JACK | P99=JACK | R99=PIC1 | S99=PIC1 | U99=JACK | W99=JACK | Y99=PIC3 | Z99=PIC1 | AB99=JACK | AD99=QUEEN | AF99=PIC3 | AG99=PIC1
+N100=KING | P100=QUEEN | R100=PIC3 | S100=PIC5 | U100=KING | W100=QUEEN | Y100=QUEEN | Z100=PIC5 | AB100=KING | AD100=PIC4 | AF100=QUEEN | AG100=PIC5
+N101=QUEEN | P101=PIC4 | R101=QUEEN | S101=PIC3 | U101=QUEEN | W101=PIC4 | Y101=PIC5 | Z101=PIC3 | AB101=QUEEN | AD101=JACK | AF101=PIC5 | AG101=PIC3
+N102=PIC3 | P102=JACK | R102=PIC5 | S102=ACE | U102=PIC3 | W102=JACK | Y102=PIC2 | Z102=ACE | AB102=PIC3 | AD102=PIC5 | AF102=PIC2 | AG102=ACE
+N103=JACK | P103=PIC5 | R103=PIC2 | S103=NINE | U103=JACK | W103=PIC5 | Y103=QUEEN | Z103=NINE | AB103=JACK | AF103=QUEEN | AG103=NINE
+N104=KING | R104=QUEEN | S104=PIC3 | U104=KING | Y104=ACE | Z104=PIC3 | AB104=KING | AF104=ACE | AG104=PIC3
+N105=PIC4 | R105=ACE | S105=PIC5 | U105=PIC4 | Y105=PIC4 | Z105=PIC5 | AB105=PIC4 | AF105=PIC4 | AG105=PIC5
+N106=QUEEN | R106=PIC4 | S106=ACE | U106=QUEEN | Y106=PIC3 | Z106=ACE | AB106=QUEEN | AF106=PIC3 | AG106=ACE
+N107=JACK | R107=PIC3 | S107=PIC3 | U107=JACK | Y107=PIC1 | Z107=PIC3 | AB107=JACK | AF107=PIC1 | AG107=PIC3
+N108=PIC2 | R108=PIC1 | S108=PIC4 | U108=PIC2 | Y108=PIC3 | Z108=PIC4 | AB108=PIC2 | AF108=PIC3 | AG108=PIC4
+N109=KING | R109=PIC3 | S109=PIC5 | U109=KING | Y109=PIC3 | Z109=PIC5 | AB109=KING | AF109=PIC3 | AG109=PIC5
+N110=JACK | R110=PIC3 | S110=ACE | U110=JACK | Y110=KING | Z110=ACE | AB110=JACK | AF110=KING | AG110=ACE
+N111=QUEEN | R111=KING | S111=PIC4 | U111=QUEEN | Y111=PIC1 | Z111=PIC4 | AB111=QUEEN | AF111=PIC1 | AG111=PIC4
+N112=JACK | R112=PIC1 | S112=ACE | U112=JACK | Y112=NINE | Z112=ACE | AB112=JACK | AF112=NINE | AG112=ACE
+N113=NINE | R113=NINE | S113=PIC5 | U113=NINE | Y113=ACE | Z113=PIC5 | AB113=NINE | AF113=ACE | AG113=PIC5
+N114=KING | R114=ACE | S114=PIC4 | U114=KING | Y114=PIC5 | Z114=PIC4 | AB114=KING | AF114=PIC5 | AG114=PIC4
+N115=ACE | R115=PIC5 | S115=PIC4 | U115=ACE | Y115=PIC4 | Z115=PIC4 | AB115=ACE | AF115=PIC4 | AG115=PIC4
+N116=SCAT | R116=PIC4 | S116=ACE | U116=SCAT | Y116=TEN | Z116=ACE | AB116=SCAT | AF116=TEN | AG116=ACE
+N117=QUEEN | R117=TEN | S117=ACE | U117=QUEEN | Y117=QUEEN | Z117=ACE | AB117=QUEEN | AF117=QUEEN | AG117=ACE
+N118=JACK | R118=QUEEN | S118=JACK | U118=JACK | Y118=PIC1 | Z118=JACK | AB118=JACK | AF118=PIC1 | AG118=JACK
+N119=KING | R119=PIC1 | S119=PIC4 | U119=KING | Y119=PIC3 | Z119=PIC4 | AB119=KING | AF119=PIC3 | AG119=PIC4
+N120=TEN | R120=PIC3 | S120=PIC5 | U120=TEN | Y120=PIC2 | Z120=PIC5 | AB120=TEN | AF120=PIC2 | AG120=PIC5
+N121=PIC1 | R121=PIC2 | S121=SCAT | U121=PIC1 | Y121=PIC1 | Z121=SCAT | AB121=PIC1 | AF121=PIC1 | AG121=SCAT
+N122=NINE | R122=PIC1 | S122=PIC3 | U122=NINE | Y122=QUEEN | Z122=PIC3 | AB122=NINE | AF122=QUEEN | AG122=PIC3
+N123=TEN | R123=QUEEN | S123=PIC4 | U123=TEN | Y123=PIC5 | Z123=PIC4 | AB123=TEN | AF123=PIC5 | AG123=PIC4
+N124=KING | R124=PIC5 | S124=NINE | U124=KING | Y124=TEN | Z124=NINE | AB124=KING | AF124=TEN | AG124=NINE
+N125=JACK | R125=TEN | S125=PIC2 | U125=JACK | Y125=PIC4 | Z125=PIC2 | AB125=JACK | AF125=PIC4 | AG125=PIC2
+N126=QUEEN | R126=PIC4 | S126=PIC3 | U126=QUEEN | Y126=TEN | Z126=PIC3 | AB126=QUEEN | AF126=TEN | AG126=PIC3
+N127=JACK | R127=TEN | S127=PIC4 | U127=JACK | Y127=PIC4 | Z127=PIC4 | AB127=JACK | AF127=PIC4 | AG127=PIC4
+N128=PIC1 | R128=PIC4 | S128=PIC5 | U128=PIC1 | Y128=TEN | Z128=PIC5 | AB128=PIC1 | AF128=TEN | AG128=PIC5
+N129=PIC2 | R129=TEN | S129=PIC3 | U129=PIC2 | Y129=QUEEN | Z129=PIC3 | AB129=PIC2 | AF129=QUEEN | AG129=PIC3
+N130=JACK | R130=QUEEN | S130=PIC5 | U130=JACK | Y130=PIC1 | Z130=PIC5 | AB130=JACK | AF130=PIC1 | AG130=PIC5
+N131=JACK | R131=PIC1 | S131=PIC4 | U131=JACK | Y131=PIC2 | Z131=PIC4 | AB131=JACK | AF131=PIC2 | AG131=PIC4
+N132=KING | R132=PIC2 | S132=PIC2 | U132=KING | Y132=QUEEN | Z132=PIC2 | AB132=KING | AF132=QUEEN | AG132=PIC2
+N133=QUEEN | R133=QUEEN | S133=PIC3 | U133=QUEEN | Y133=PIC3 | Z133=PIC3 | AB133=QUEEN | AF133=PIC3 | AG133=PIC3
+N134=QUEEN | R134=PIC3 | S134=PIC5 | U134=QUEEN | Y134=PIC3 | Z134=PIC5 | AB134=QUEEN | AF134=PIC3 | AG134=PIC5
+N135=PIC1 | R135=PIC3 | S135=PIC4 | U135=PIC1 | Y135=KING | Z135=PIC4 | AB135=PIC1 | AF135=KING | AG135=PIC4
+N136=JACK | R136=KING | S136=PIC3 | U136=JACK | Y136=PIC1 | Z136=PIC3 | AB136=JACK | AF136=PIC1 | AG136=PIC3
+N137=KING | R137=PIC1 | S137=PIC1 | U137=KING | Y137=PIC5 | Z137=PIC1 | AB137=KING | AF137=PIC5 | AG137=PIC1
+N138=SCAT | R138=PIC5 | S138=PIC1 | U138=QUEEN | Y138=PIC2 | Z138=PIC1 | AB138=QUEEN | AF138=PIC2 | AG138=PIC1
+N139=QUEEN | R139=PIC2 | S139=PIC5 | U139=JACK | Y139=PIC3 | Z139=PIC5 | AB139=JACK | AF139=PIC3 | AG139=PIC5
+N140=JACK | R140=PIC3 | S140=ACE | U140=PIC1 | Y140=PIC4 | Z140=ACE | AB140=PIC1 | AF140=PIC4 | AG140=ACE
+N141=PIC1 | R141=PIC4 | S141=PIC3 | U141=PIC3 | Y141=PIC5 | Z141=PIC3 | AB141=PIC3 | AF141=PIC5 | AG141=PIC3
+N142=PIC3 | R142=PIC5 | S142=PIC5 | U142=KING | Y142=ACE | Z142=PIC5 | AB142=KING | AF142=ACE | AG142=PIC5
+N143=KING | R143=ACE | S143=PIC5 | U143=QUEEN | Y143=PIC1 | Z143=PIC5 | AB143=QUEEN | AF143=PIC1 | AG143=PIC5
+N144=QUEEN | R144=PIC1 | S144=PIC4 | U144=PIC1 | Y144=PIC2 | Z144=PIC4 | AB144=PIC1 | AF144=PIC2 | AG144=PIC4
+N145=PIC1 | R145=PIC2 | S145=PIC3 | Y145=PIC1 | Z145=PIC3 | AF145=PIC1 | AG145=PIC3
+R146=PIC1 | S146=ACE | Y146=TEN | Z146=ACE | AF146=TEN | AG146=ACE
+R147=TEN | S147=PIC4 | Y147=PIC3 | Z147=PIC4 | AF147=PIC3 | AG147=PIC4
+R148=PIC3 | S148=PIC3 | Y148=KING | Z148=PIC3 | AF148=KING | AG148=PIC3
+R149=KING | S149=KING | Y149=NINE | Z149=KING | AF149=NINE | AG149=KING
+R150=NINE | S150=KING | Y150=PIC4 | Z150=KING | AF150=PIC4 | AG150=KING
+R151=PIC4 | S151=PIC4 | Y151=TEN | Z151=PIC4 | AF151=TEN | AG151=PIC4
+R152=TEN | S152=JACK | Y152=PIC2 | Z152=JACK | AF152=PIC2 | AG152=JACK
+R153=PIC2 | S153=PIC5 | Y153=PIC5 | Z153=PIC5 | AF153=PIC5 | AG153=PIC5
+R154=PIC5 | S154=ACE | Y154=TEN | Z154=ACE | AF154=TEN | AG154=ACE
+R155=TEN | S155=PIC4 | Y155=KING | Z155=PIC4 | AF155=KING | AG155=PIC4
+R156=KING | S156=PIC3 | Y156=TEN | Z156=PIC3 | AF156=TEN | AG156=PIC3
+R157=TEN | S157=KING | Y157=QUEEN | Z157=KING | AF157=QUEEN | AG157=KING
+R158=QUEEN | S158=PIC4 | Y158=PIC1 | Z158=PIC4 | AF158=PIC1 | AG158=PIC4
+R159=PIC1 | S159=PIC3 | Y159=PIC2 | Z159=PIC3 | AF159=PIC2 | AG159=PIC3
+R160=PIC2 | S160=PIC5 | Y160=QUEEN | Z160=PIC5 | AF160=QUEEN | AG160=PIC5
+R161=QUEEN | S161=PIC3 | Y161=TEN | Z161=PIC3 | AF161=TEN | AG161=PIC3
+R162=TEN | S162=PIC2 | Y162=PIC3 | Z162=PIC2 | AF162=PIC3 | AG162=PIC2
+R163=PIC3 | S163=KING | Z163=KING | AG163=KING
+S164=PIC5 | Z164=PIC5 | AG164=PIC5
+S165=PIC4 | Z165=PIC4 | AG165=PIC4
+S166=SCAT | Z166=PIC3 | AG166=PIC3
+S167=PIC3 | Z167=PIC5 | AG167=PIC5
+S168=PIC5 | Z168=PIC5 | AG168=PIC5
+S169=PIC5 | Z169=PIC4 | AG169=PIC4
+S170=PIC4 | Z170=TEN | AG170=TEN
+S171=TEN | Z171=PIC2 | AG171=PIC2
+S172=PIC2 | Z172=PIC1 | AG172=PIC1
+S173=PIC1
+
+codex
+I’m going to attempt the requested file updates now: `game_flow.md`, `game_flow.json`, and `summary.md`. If the sandbox blocks the write, I’ll leave the exact blocker and the Planner findings in the final response.
+2026-06-14T20:23:28.549347Z ERROR codex_core::tools::router: error=patch rejected: writing is blocked by read-only sandbox; rejected by user approval settings
+codex
+I read the requested files and ran the Planner analysis against the Vegas Blitz DOCX/XLSX inputs.
+
+Write attempt failed because the workspace is in a read-only sandbox:
+
+`patch rejected: writing is blocked by read-only sandbox; rejected by user approval settings`
+
+So these files were **not** created/updated:
+
+- `artifacts/plan/game_flow.md`
+- `artifacts/plan/game_flow.json`
+- `summary.md`
+
+Planner findings gathered:
+
+- Game: Vegas Blitz
+- Layout: 6x4, 4096 ways
+- Bet: 20 fixed coins
+- Base reelsets: B1/B2 weighted 58/42
+- Features: Free Spins and Blitz Spins selected after 3+ base-game Scatters
+- Free Spins: 3/4/5/6 Scatters award 8/12/20/30 spins; retriggers on 2-6 Scatters
+- Blitz Spins: 3/4/5/6 Scatters award 3/4/6/8 spins; guarantees at least 1 COIN and 1 COLLECT
+- Missing/warning: reel stop selection and wrap behavior for constructing the 4 visible symbols per reel are not explicitly documented
+
+No repository files were modified.
+tokens used
+72,780
+I read the requested files and ran the Planner analysis against the Vegas Blitz DOCX/XLSX inputs.
+
+Write attempt failed because the workspace is in a read-only sandbox:
+
+`patch rejected: writing is blocked by read-only sandbox; rejected by user approval settings`
+
+So these files were **not** created/updated:
+
+- `artifacts/plan/game_flow.md`
+- `artifacts/plan/game_flow.json`
+- `summary.md`
+
+Planner findings gathered:
+
+- Game: Vegas Blitz
+- Layout: 6x4, 4096 ways
+- Bet: 20 fixed coins
+- Base reelsets: B1/B2 weighted 58/42
+- Features: Free Spins and Blitz Spins selected after 3+ base-game Scatters
+- Free Spins: 3/4/5/6 Scatters award 8/12/20/30 spins; retriggers on 2-6 Scatters
+- Blitz Spins: 3/4/5/6 Scatters award 3/4/6/8 spins; guarantees at least 1 COIN and 1 COLLECT
+- Missing/warning: reel stop selection and wrap behavior for constructing the 4 visible symbols per reel are not explicitly documented
+
+No repository files were modified.
+[2026-06-14 20:23:39] Finished stage: planner
