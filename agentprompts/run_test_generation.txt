@@ -1,0 +1,68 @@
+## Stage: Test Generator
+
+### Skill File
+
+Read:
+
+
+./skills/test_generator.md
+
+### Required Inputs
+
+Consume all available inputs specified by the skill file.
+
+### Execution Requirements
+
+Follow the workflow defined in the skill file exactly.
+
+Generate missing deterministic edge cases.
+
+Generate or update the forced-window runner.
+
+Compile and execute the forced-window runner in the sandbox when possible.
+
+Capture execution results into:
+
+
+./checks/generated_tests/edge_results.json
+
+Update:
+
+
+./checks/generated_tests/edge_cases.txt
+
+with observed execution results.
+
+Perform structural audits and invariant audits using execution results.
+
+Do not manually calculate payouts.
+
+Do not manually calculate feature awards.
+
+Do not invent expected values.
+
+All observed values must come from executing `core.cpp`.
+
+### Required Outputs
+
+Ensure the following files exist when finished:
+
+
+./checks/generated_tests/edge_cases.txt
+./checks/generated_tests/edge_results.json
+./checks/reports/test_generation_report.md
+
+If a real blocker is discovered, update:
+
+
+./checks/reports/escalation.md
+
+### Completion Condition
+
+The stage is complete when:
+
+* Edge cases have been generated.
+* Forced-window execution has been attempted.
+* Results have been captured.
+* Structural audits have been completed.
+* Required output files have been written.

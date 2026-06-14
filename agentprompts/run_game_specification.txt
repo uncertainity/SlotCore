@@ -1,0 +1,17 @@
+Read:
+
+./summary.md
+./AGENTS.md
+./skills/game_specification.md
+
+Run only the Planner stage.
+
+Generate:
+
+./artifacts/plan/game_flow.md
+./artifacts/plan/game_flow.json
+
+Update:
+
+./summary.md
+

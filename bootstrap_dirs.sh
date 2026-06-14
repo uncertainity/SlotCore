@@ -1,0 +1,56 @@
+SPECS_DIR="./specs"
+REFERENCE_DIR="./reference"
+ARTIFACTS_DIR="./artifacts"
+CHECKS_DIR="./checks"
+MATH_DIR="./math"
+LOGS_DIR="./logs"
+
+GAME_RULES_DIR="${SPECS_DIR}/game_rules"
+MATH_MODELS_DIR="${SPECS_DIR}/math_models"
+
+REFERENCE_CPP_DIR="${REFERENCE_DIR}/cpp"
+REFERENCE_NUMBA_DIR="${REFERENCE_DIR}/numba"
+REFERENCE_EXAMPLES_DIR="${REFERENCE_DIR}/examples"
+
+PLAN_DIR="${ARTIFACTS_DIR}/plan"
+CONTRACT_DIR="${ARTIFACTS_DIR}/contract"
+IMPLEMENTATION_DIR="${ARTIFACTS_DIR}/implementation"
+OPTIMIZED_DIR="${ARTIFACTS_DIR}/optimized"
+DEMO_DIR="${ARTIFACTS_DIR}/demo"
+
+ORACLE_DIR="${CHECKS_DIR}/oracle"
+GENERATED_TESTS_DIR="${CHECKS_DIR}/generated_tests"
+REPORTS_DIR="${CHECKS_DIR}/reports"
+TRACES_DIR="${CHECKS_DIR}/traces"
+
+
+FOLDERS=(
+    "$SPECS_DIR"
+    "$REFERENCE_DIR"
+    "$ARTIFACTS_DIR"
+    "$CHECKS_DIR"
+    "$MATH_DIR"
+    "$LOGS_DIR"
+    "$GAME_RULES_DIR"
+    "$MATH_MODELS_DIR"
+    "$REFERENCE_CPP_DIR"
+    "$REFERENCE_NUMBA_DIR"
+    "$REFERENCE_EXAMPLES_DIR"
+    "$PLAN_DIR"
+    "$CONTRACT_DIR"
+    "$IMPLEMENTATION_DIR"
+    "$OPTIMIZED_DIR"
+    "$DEMO_DIR"
+    "$ORACLE_DIR"
+    "$GENERATED_TESTS_DIR"
+    "$REPORTS_DIR"
+    "$TRACES_DIR"
+
+)
+
+for folder in "${FOLDERS[@]}"; do
+    mkdir -p "$folder"
+    echo "[CREATED] $folder"
+done
+
+

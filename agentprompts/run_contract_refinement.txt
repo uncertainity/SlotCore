@@ -1,0 +1,290 @@
+Read:
+
+./summary.md
+./AGENTS.md
+./skills/simulator_design.md
+
+./artifacts/plan/game_flow.md
+./artifacts/plan/game_flow.json
+
+./checks/traces/trace_ref.txt
+./checks/traces/corrected_trace_ref.txt
+
+./checks/reports/escalation.md
+./checks/reports/planner_verifier_report.md
+./checks/generated_tests/test_cases.txt
+
+./specs/game_rule/
+./specs/math_model/
+
+./reference/cpp/reflib.cpp
+./reference/cpp/trace.cpp
+
+Run only the Simulator refinement pass.
+
+Do not write production C++ code.
+Do not modify game mathematics.
+Do not invent missing mechanics.
+
+The corrected trace reference is acceptable as the canonical trace contract.
+
+Now generate one unified Coder contract file:
+
+./artifacts/implementation/coder_contract.md
+
+This file must be sufficient for the Coder to implement the simulator without consulting the original game documents.
+
+The contract must include:
+
+1. Canonical constants and symbols
+
+Define:
+
+- NO_OF_REELS
+- NO_OF_ROWS
+- STANDARD_SYMBOL_COUNT
+- PAYTABLE_SYMBOL_COUNT
+- BASE_BET_FIXED_COINS
+- Symbol enum
+- SCATTER -> SCAT alias rule
+
+2. Canonical reelset contract
+
+Specify:
+
+- BG1_Reels maps to planner.reel_strips.base_B1
+- BG2_Reels maps to planner.reel_strips.base_B2
+- FG1_Reels maps to planner.reel_strips.free_F1
+- each reelset has shape [6][variable]
+- each ReelSize vector has shape [6]
+
+3. Canonical probTable contract
+
+Define the required probTable fields, shapes, and purpose:
+
+- ReelsetWeights shape [2]
+- corTrigger shape [2]
+- numCorWeight shape [5]
+- wildMult shape [3]
+- freeGamenumCollect shape [2]
+- freeGameCOROccur shape [2]
+- goodCORTable shape [22]
+- badCORTable shape [22]
+- CORValues shape [22]
+- baseCORValueWeights values shape [22], weights shape [22]
+
+4. PayTable contract
+
+Create a precise paytable contract.
+
+The paytable must be symbol-keyed for:
+
+HV1, HV2, HV3, HV4, HV5,
+LV1, LV2, LV3, LV4, LV5, LV6,
+SCAT
+
+It must expose a matrix view with shape [12x7], where:
+
+- rows correspond to the 12 payable symbols
+- columns correspond to symbol counts 0 through 6
+- missing counts pay 0
+- standard ways symbols use counts according to game rules
+- SCAT row is used for scatter pays
+- WILD, COR, and COLLECT do not have direct paytable rows unless explicitly defined by Planner
+
+If Planner output provides the exact paytable values, copy them into this section.
+If exact paytable values are missing, write a [BLOCKER] to escalation.md and clearly mark the paytable as incomplete in coder_contract.md.
+
+5. Function contracts with pseudocode
+
+For every function below, write:
+
+- purpose
+- inputs
+- outputs
+- global/probTable dependencies
+- shape contract
+- pseudocode
+- invariants
+- trace emission requirements
+
+Functions:
+
+- generatePayWindow
+- additionalCOR
+- waysWinCalculation
+- waysWinCalculationWithMultiplier
+- resolveCollect
+- FreeGameFeature_1
+- FreeGameFeature_2
+- runOneSpin
+
+The pseudocode must be implementation-ready but must not be production C++ code.
+
+6. Machine-verifiable stack trace contract
+
+Write stack traces in the same normalized format emitted by `Trace` in `trace.cpp`.
+
+Use this format exactly:
+
+->function_name
+  input <name>: <type> shape:<shape>
+  output <name>: <type> shape:<shape>
+  Global/Struct <name>: <type> shape:<shape>
+<- function_name
+
+Rules:
+
+- Function entry must start with `->`.
+- Function exit must start with `<- `.
+- Function exit name must match the most recent open function.
+- Nesting is represented only by indentation.
+- Each nesting level uses two spaces.
+- Inputs must use:
+  `input <name>: <type> shape:<shape>`
+- Outputs must use:
+  `output <name>: <type> shape:<shape>`
+- Globals and struct fields must use:
+  `Global/Struct <name>: <type> shape:<shape>`
+- Shapes must use canonical format:
+  - scalar: `[1]`
+  - pay window: `[4x6]`
+  - reelset: `[6][variable]`
+  - reel size vector: `[6]`
+  - paytable matrix view: `[12x7]`
+- Do not use ellipses such as `...base path...`.
+- Expand every trace fully.
+- Do not include prose inside machine-verifiable traces.
+
+Generate machine-verifiable traces for:
+
+- BaseGame_NoFreeGame
+- BaseGame_FreeGameFeature1
+- BaseGame_FreeGameFeature2
+
+Each trace must be written under a clear heading, but the trace body itself must contain only tracer-compatible lines.
+The exact code for Tracer is also given 
+
+template<typename T>
+std::string shape_of(const T&) {
+    return "[1]";
+}
+
+template<typename T>
+std::string shape_of(const std::vector<T>& v) {
+    return "[" + std::to_string(v.size()) + "]";
+}
+
+template<typename T>
+std::string shape_of(const std::vector<std::vector<T>>& v) {
+
+    size_t rows = v.size();
+    size_t cols = rows ? v[0].size() : 0;
+
+    return "[" +
+           std::to_string(rows) +
+           "x" +
+           std::to_string(cols) +
+           "]";
+}
+
+template<typename T, size_t N>
+std::string shape_of(const T (&)[N]) {
+    return "[" + std::to_string(N) + "]";
+}
+
+template<typename T, size_t R, size_t C>
+std::string shape_of(const T (&)[R][C]) {
+    return "[" + std::to_string(R) + "x" + std::to_string(C) + "]";
+}
+
+
+struct Trace{
+    static inline int depth = 0;
+    std::string fn;
+
+    Trace(const char* function_name) : fn(function_name){
+        std::cout << std::string(depth * 2, ' ') << "->" << fn << "\n";
+        depth ++;
+    }
+
+    template<typename T>
+    void input(const std:: string& name, const T& value){
+        std::cout << std::string(depth * 2, ' ')
+                  << "input " << name
+                  << ": " <<  type_name<T>()
+                  << " shape:" << shape_of(value)
+                  << "\n";
+    }
+
+    template<typename T>
+    void output(const std::string& name, const T& value) {
+        std::cout << std::string(depth * 2, ' ')
+                  << "output " << name
+                  << ": " << type_name<T>()
+                  << " shape:" << shape_of(value)
+                  << "\n";
+    }
+
+    template<typename T>
+    void GlobalandStruct(const std::string& name, const T& value){
+        std::cout << std::string(depth * 2, ' ')
+                  << "Global/Struct " << name
+                  << ": " << type_name<T>()
+                  << " shape:" << shape_of(value)
+                  << "\n";
+    }
+
+    ~Trace() {
+        depth--;
+        std::cout << std::string(depth * 2, ' ')
+                  << "<- " << fn << "\n";
+    }
+};
+
+7. Human-readable execution explanation
+
+After the machine-verifiable traces, include a short explanatory section describing the gameplay flow in normal prose.
+
+8. ./checks/traces/trace_contract.txt
+In addition to embedding the machine-verifiable traces inside: ./artifacts/implementation/coder_contract.md
+also generate or update ./checks/traces/trace_contract.txt
+trace_contract.txt contains only the machine-verifiable trace bodies extracted from coder_contract.md.
+
+It exists so the Trace Checker can parse and compare expected traces without reading the full human-readable Coder contract.
+
+Expected contents:
+
+Scenario headings for each trace.
+The full trace body for BaseGame_NoFreeGame.
+The full trace body for BaseGame_FreeGameFeature1.
+The full trace body for BaseGame_FreeGameFeature2.
+Only tracer-compatible lines inside each trace body.
+No pseudocode.
+No implementation notes.
+No gameplay explanation.
+No paytable discussion.
+No prose inside the trace bodies.
+
+The trace contents in trace_contract.txt must match the machine-verifiable trace section of coder_contract.md.
+
+
+9. Escalation behavior
+
+If any field, table, reel strip, shape, function dependency, or paytable value is missing or ambiguous:
+
+- append to ./checks/reports/escalation.md
+- use [WARNING], [AMBIGUITY], or [BLOCKER]
+- do not silently guess
+
+10. Update summary
+
+Update:
+
+./summary.md
+
+with:
+
+- that the corrected trace was accepted as canonical
+- that coder_contract.md was generated
+- any unresolved warnings, ambiguities, or blockers

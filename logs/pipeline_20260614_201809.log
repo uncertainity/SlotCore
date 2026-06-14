@@ -1,0 +1,10 @@
+[OK] Folder found: ./specs/game_rules
+[OK] Optional folder found: ./specs/math_models
+[OK] Optional folder found: ./checks/oracle
+[OK] File found: ./AGENTS.md
+[OK] Folder found: ./reference/cpp
+[ERROR] Folder is empty: ./reference/numba
+
+[PASSED] All required inputs are present.
+[2026-06-14 20:18:09] Running stage: planner
+Not inside a trusted directory and --skip-git-repo-check was not specified.

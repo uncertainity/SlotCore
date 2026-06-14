@@ -1,0 +1,18 @@
+Input (read)
+    ./artifacts/implementation/coder_contract.md
+    ./artifacts/implementation/test_core.cpp
+    ./artifacts/implementation/run_forced_window.cpp
+    
+Task 
+    Understand the Machine Verifiable Stack Trace Contract in coder_contract.md.
+    Modify the test_core.cpp and the run_forced_window.cpp such that the traces are printed and saved in 
+    ./checks/traces/test_traces.txt
+    Mention the changes in summary.md
+
+Output (write)
+    ./checks/traces/test_traces.txt
+
+Rules
+    DO NOT MODIFY THE CORE LOGIC OF ./artifacts/implementation/test_core.cpp and ./artifacts/implementation/forced_window.cpp.
+    DO NOT CHANGE OR MORDIFY ./artifacts/implementation/coder_contract.md
+

@@ -1,0 +1,19 @@
+
+Read:
+
+./summary.md
+./AGENTS.md
+./skills/specification_validation.md
+
+Run only the specification validation (planner-verifier) stage.
+
+Generate:
+
+./checks/reports/escalation.md
+./checks/reports/planner_verifier_report.md
+./checks/generated_tests/proposed_test_cases.txt
+
+Update:
+
+./summary.md
+

@@ -1,0 +1,114 @@
+Read:
+
+./summary.md
+./AGENTS.md
+./skills/implementation_generation.md
+
+./artifacts/contract/coder_contract.md
+
+./artifacts/plan/game_flow.md
+./artifacts/plan/game_flow.json
+
+./checks/generated_tests/proposed_test_cases.txt
+./checks/reports/escalation.md
+./checks/reports/planner_verifier_report.md
+
+./reference/cpp/reflib.cpp
+./reference/cpp/trace.cpp
+
+Run only the implementation generation (coder) stage.
+
+Treat:
+
+./artifacts/contract/coder_contract.md
+
+as the primary implementation contract.
+
+Do not interpret the original game from scratch.
+Do not invent mechanics.
+Do not tune RTP.
+Do not optimize.
+Do not generate demo code.
+
+Generate:
+
+./artifacts/implementation/core.cpp
+./artifacts/implementation/test_core.cpp
+./artifacts/implementation/run_commands.txt
+./checks/reports/coder_report.md
+
+Implementation requirements:
+
+1. Implement baseline C++ only.
+2. Implement every function listed in coder_contract.md.
+3. Preserve exact function names from coder_contract.md.
+4. Use Planner files only for clarification.
+5. If Planner files conflict with coder_contract.md, append a [BLOCKER] to escalation.md and stop.
+6. If required paytables, reel strips, probability tables, or expected outputs are missing, append a [BLOCKER] to escalation.md and stop.
+7. Do not write placeholder implementations.
+
+Trace requirements:
+
+1. Incorporate the Trace utility from:
+
+./reference/cpp/trace.cpp
+
+2. Every contract function must instantiate Trace at function entry.
+3. Every contract function must emit inputs, outputs, and Global/Struct dependencies using the Trace methods.
+4. Runtime trace formatting must match trace.cpp.
+5. The emitted trace must be machine-comparable against the expected trace in coder_contract.md.
+
+Testing requirements:
+
+1. Read oracle tests from:
+
+./checks/generated_tests/proposed_test_cases.txt
+
+2. Create:
+
+./artifacts/implementation/test_core.cpp
+
+3. The test harness must support forced pay windows.
+4. Tests must directly call relevant functions where possible.
+5. Verify:
+   - ways wins
+   - scatter counts
+   - scatter wins
+   - collect/COR behavior
+   - feature trigger behavior
+   - total win behavior
+   - trace call order and shapes where possible
+
+6. Also read ./checks/reports/simulator_consensus_repair_report.md if it exists, and implement any remaining Coder actions listed there.
+
+Run command requirements:
+
+Write exact compile/run commands to:
+
+./artifacts/implementation/run_commands.txt
+
+Include at minimum:
+
+g++ -std=c++17 -O0 -g ./artifacts/implementation/core.cpp ./artifacts/implementation/test_core.cpp -o ./artifacts/implementation/test_core
+./artifacts/implementation/test_core
+
+Report requirements:
+
+Write:
+
+./checks/reports/coder_report.md
+
+Include:
+
+- files generated
+- compilation status
+- tests implemented
+- tests passed/failed
+- trace instrumentation status
+- warnings
+- ambiguities
+- blockers
+
+Update:
+
+./summary.md
