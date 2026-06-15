@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include "trace_checker.h"
 using namespace std;
 
 struct Contract {
@@ -272,6 +273,9 @@ bool signatureCompatible(const NodeSignature& a, const NodeSignature& b) {
 }
 
 bool nodeCompatible(TraceNode* test, TraceNode* ref) {
+    if (test->name != ref->name)
+        return false;
+
     NodeSignature ts = makeSignature(test);
     NodeSignature rs = makeSignature(ref);
 
@@ -301,10 +305,10 @@ bool childrenCompatible(const vector<TraceNode*>& test_children,const vector<Tra
 
 bool treeCompatible(TraceNode* test, TraceNode* ref) {
     if (!nodeCompatible(test, ref)){
-        cout<<test->name
-            << " and "
-            << ref->name
-            <<" are not compatible"<<endl;
+        // cout<<test->name
+        //     << " and "
+        //     << ref->name
+        //     <<" are not compatible"<<endl;
         return false;
     }
     return childrenCompatible(test->children, ref->children);
@@ -346,87 +350,87 @@ bool traceMatches(const vector<TraceNode*>& test_roots,const vector<TraceNode*>&
 
 
 
-int main() {
-    string ref_trace = R"(
-->runOneSpin
-  input bet_fixed_coins: int shape:[1]
-  input feature_choice: FeatureChoice shape:[1]
-  Global/Struct probTable.ReelsetWeights: std::vector<int, std::allocator<int> > shape:[2]
-  ->generatePayWindow
-    input ReelSet: Symbol[6][variable] shape:[6][variable]
-    input ReelSize: std::vector<int, std::allocator<int> > shape:[6]
-    Global/Struct NO_OF_ROWS: int shape:[1]
-    Global/Struct NO_OF_REELS: int shape:[1]
-    output pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
-  <- generatePayWindow
-  ->additionalCOR
-    input pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
-    Global/Struct probTable.corTrigger: std::vector<int, std::allocator<int> > shape:[2]
-    Global/Struct probTable.numCorWeight: std::vector<int, std::allocator<int> > shape:[5]
-    Global/Struct probTable.baseCORValueWeights.values: std::vector<double, std::allocator<double> > shape:[22]
-    Global/Struct probTable.baseCORValueWeights.weights: std::vector<int, std::allocator<int> > shape:[22]
-    output pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
-  <- additionalCOR
-  ->waysWinCalculation
-    input pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
-    Global/Struct PayTable: int shape:[12x7]
-    Global/Struct STANDARD_SYMBOL_COUNT: int shape:[1]
-    output win: int shape:[1]
-  <- waysWinCalculation
-  ->resolveCollect
-    input pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
-    input bet_fixed_coins: int shape:[1]
-    Global/Struct probTable.CORValues: std::vector<double, std::allocator<double> > shape:[22]
-    output CollectResult: CollectResult shape:[1]
-  <- resolveCollect
-  ->FreeGameFeature_2
-    input num_of_blitz_spins: int shape:[1]
-    Global/Struct probTable.freeGamenumCollect: std::vector<int, std::allocator<int> > shape:[2]
-    Global/Struct probTable.freeGameCOROccur: std::vector<int, std::allocator<int> > shape:[2]
-    Global/Struct probTable.goodCORTable: std::vector<int, std::allocator<int> > shape:[22]
-    Global/Struct probTable.badCORTable: std::vector<int, std::allocator<int> > shape:[22]
-    Global/Struct probTable.CORValues: std::vector<double, std::allocator<double> > shape:[22]
-    ->resolveCollect
-      input pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
-      input bet_fixed_coins: int shape:[1]
-      Global/Struct probTable.CORValues: std::vector<double, std::allocator<double> > shape:[22]
-      output CollectResult: CollectResult shape:[1]
-    <- resolveCollect
-    output FeatureResult.session_win: int shape:[1]
-  <- FreeGameFeature_2
-  output SpinResult.total_win: int shape:[1]
-<- runOneSpin
+// int main() {
+//     string ref_trace = R"(
+// ->runOneSpin
+//   input bet_fixed_coins: int shape:[1]
+//   input feature_choice: FeatureChoice shape:[1]
+//   Global/Struct probTable.ReelsetWeights: std::vector<int, std::allocator<int> > shape:[2]
+//   ->generatePayWindow
+//     input ReelSet: Symbol[6][variable] shape:[6][variable]
+//     input ReelSize: std::vector<int, std::allocator<int> > shape:[6]
+//     Global/Struct NO_OF_ROWS: int shape:[1]
+//     Global/Struct NO_OF_REELS: int shape:[1]
+//     output pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
+//   <- generatePayWindow
+//   ->additionalCOR
+//     input pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
+//     Global/Struct probTable.corTrigger: std::vector<int, std::allocator<int> > shape:[2]
+//     Global/Struct probTable.numCorWeight: std::vector<int, std::allocator<int> > shape:[5]
+//     Global/Struct probTable.baseCORValueWeights.values: std::vector<double, std::allocator<double> > shape:[22]
+//     Global/Struct probTable.baseCORValueWeights.weights: std::vector<int, std::allocator<int> > shape:[22]
+//     output pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
+//   <- additionalCOR
+//   ->waysWinCalculation
+//     input pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
+//     Global/Struct PayTable: int shape:[12x7]
+//     Global/Struct STANDARD_SYMBOL_COUNT: int shape:[1]
+//     output win: int shape:[1]
+//   <- waysWinCalculation
+//   ->resolveCollect
+//     input pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
+//     input bet_fixed_coins: int shape:[1]
+//     Global/Struct probTable.CORValues: std::vector<double, std::allocator<double> > shape:[22]
+//     output CollectResult: CollectResult shape:[1]
+//   <- resolveCollect
+//   ->FreeGameFeature_2
+//     input num_of_blitz_spins: int shape:[1]
+//     Global/Struct probTable.freeGamenumCollect: std::vector<int, std::allocator<int> > shape:[2]
+//     Global/Struct probTable.freeGameCOROccur: std::vector<int, std::allocator<int> > shape:[2]
+//     Global/Struct probTable.goodCORTable: std::vector<int, std::allocator<int> > shape:[22]
+//     Global/Struct probTable.badCORTable: std::vector<int, std::allocator<int> > shape:[22]
+//     Global/Struct probTable.CORValues: std::vector<double, std::allocator<double> > shape:[22]
+//     ->resolveCollect
+//       input pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
+//       input bet_fixed_coins: int shape:[1]
+//       Global/Struct probTable.CORValues: std::vector<double, std::allocator<double> > shape:[22]
+//       output CollectResult: CollectResult shape:[1]
+//     <- resolveCollect
+//     output FeatureResult.session_win: int shape:[1]
+//   <- FreeGameFeature_2
+//   output SpinResult.total_win: int shape:[1]
+// <- runOneSpin
 
-)";
-    string test_trace = R"(
-->waysWinCalculation
-  input pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
-  Global/Struct PayTable: std::array<std::array<int, 7ul>, 12ul> shape:[12x7]
-  Global/Struct STANDARD_SYMBOL_COUNT: int shape:[1]
-  output win: int shape:[1]
-<- waysWinCalculation
-->resolveCollect
-  input pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
-  input bet_fixed_coins: int shape:[1]
-  Global/Struct probTable.CORValues: std::vector<double, std::allocator<double> > shape:[22]
-  output CollectResult: CollectResult shape:[1]
-<- resolveCollect
-)";
+// )";
+//     string test_trace = R"(
+// ->waysWinCalculation
+//   input pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
+//   Global/Struct PayTable: std::array<std::array<int, 7ul>, 12ul> shape:[12x7]
+//   Global/Struct STANDARD_SYMBOL_COUNT: int shape:[1]
+//   output win: int shape:[1]
+// <- waysWinCalculation
+// ->resolveCollect
+//   input pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
+//   input bet_fixed_coins: int shape:[1]
+//   Global/Struct probTable.CORValues: std::vector<double, std::allocator<double> > shape:[22]
+//   output CollectResult: CollectResult shape:[1]
+// <- resolveCollect
+// )";
 
-    // vector<TraceNode*> roots = parseTrace(trace);
+//     // vector<TraceNode*> roots = parseTrace(trace);
 
-    // for (TraceNode* root : roots) {
-    //     printSignature(root);
-    //     //printTree(root);
-    // }
+//     // for (TraceNode* root : roots) {
+//     //     printSignature(root);
+//     //     //printTree(root);
+//     // }
 
-    //same node check
-    vector<TraceNode*> test_roots = parseTrace(test_trace);
-    vector<TraceNode*> ref_roots = parseTrace(ref_trace);
-    if (traceMatches(test_roots, ref_roots)) {
-        cout << "PASS\n";
-    } else {
-        cout << "FAIL\n";
-    }
-    return 0;
-}
+//     //same node check
+//     vector<TraceNode*> test_roots = parseTrace(test_trace);
+//     vector<TraceNode*> ref_roots = parseTrace(ref_trace);
+//     if (traceMatches(test_roots, ref_roots)) {
+//         cout << "PASS\n";
+//     } else {
+//         cout << "FAIL\n";
+//     }
+//     return 0;
+// }

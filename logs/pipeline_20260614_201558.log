@@ -1,7 +1,0 @@
-[OK] Folder found: ./specs/game_rules
-[OK] Optional folder found: ./specs/math_models
-[OK] Optional folder found: ./checks/oracle
-[OK] File found: ./AGENTS.md
-[ERROR] Missing folder: ./referrence/cpp
-[ERROR] Missing folder: ./referrence/numba
-[FAILED] Required REFERENCE LIBRARY missing. Fix errors before running Codex.

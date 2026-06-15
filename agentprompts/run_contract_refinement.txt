@@ -8,11 +8,11 @@ Read:
 ./artifacts/plan/game_flow.json
 
 ./checks/traces/trace_ref.txt
-./checks/traces/corrected_trace_ref.txt
+./checks/traces/trace_contract.txt
 
 ./checks/reports/escalation.md
 ./checks/reports/planner_verifier_report.md
-./checks/generated_tests/test_cases.txt
+./checks/generated_tests/proposed_test_cases.txt
 
 ./specs/game_rule/
 ./specs/math_model/
@@ -288,3 +288,9 @@ with:
 - that the corrected trace was accepted as canonical
 - that coder_contract.md was generated
 - any unresolved warnings, ambiguities, or blockers
+
+Fixing Existing blockers
+
+[BLOCKER] Simulator Design could not verify `trace_ref.txt` / `ref_trace.txt` against Planner outputs because neither `./checks/traces/trace_ref.txt` nor `./checks/traces/ref_trace.txt` exists. No `./checks/traces/corrected_trace_ref.txt` was generated because there was no trace content to correct. The implementation schema was generated from Planner outputs and resolved human-review decisions, with trace verification status recorded as blocked.
+
+The ref_trace containing the pseudocode and the ref_taces are now in /checks/traces/trace_ref.txt

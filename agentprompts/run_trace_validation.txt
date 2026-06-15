@@ -1,0 +1,24 @@
+For ./checks/traces/test_traces.txt, the traces were validated against ./checks/traces/trace_contract.txt.
+
+To understand the tracing and validation logic, inspect:
+- ./reference/cpp/trace.cpp
+- ./reference/cpp/trace_checker.cpp
+- ./checks/traces/trace_validator.cpp
+
+The raw validation results are in:
+- ./checks/traces/trace_report.txt
+
+You may also inspect:
+- ./artifacts/implementation/
+
+Trace checking is intentionally not absolute. Please generate:
+- ./checks/reports/trace_validation.md
+
+The report should explain which traces failed and why, based on the trace contract, test traces, validator logic, and implementation files.
+Generate the report case-by-case for each failed test trace. Use a concise error-reporting style:
+- Test Trace
+- Matched Scenario (if any)
+- Failure Point
+- Likely Cause
+
+Avoid verbose explanations, speculation, or restating the entire trace.

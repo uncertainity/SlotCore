@@ -1,0 +1,88 @@
+{
+  "cases": [
+    {
+      "case_id": "CASE_EDGE_001",
+      "category": "Base Game / Empty Payout Boundary",
+      "status": "EXECUTED",
+      "observed_result": {"ways_win":0,"collect_win":0,"run_one_spin_total":0,"free_spins_evaluator_calls":0,"blitz_resolve_collect_calls":0,"final_state":{"persistent_state":"none_exposed"}},
+      "errors": []
+    },
+    {
+      "case_id": "CASE_EDGE_002",
+      "category": "Base Game / One Below Feature Trigger",
+      "status": "EXECUTED",
+      "observed_result": {"ways_win":8,"run_one_spin_total":8,"free_spins_evaluator_calls":0,"final_state":{"persistent_state":"none_exposed"}},
+      "errors": []
+    },
+    {
+      "case_id": "CASE_EDGE_003",
+      "category": "Base Game / Exact Trigger With Free Spins Selection",
+      "status": "EXECUTED",
+      "observed_result": {"run_one_spin_total":20,"free_spins_evaluator_calls":8,"feature_function_calls":1,"final_state":{"persistent_state":"none_exposed"}},
+      "errors": []
+    },
+    {
+      "case_id": "CASE_EDGE_004",
+      "category": "Base Game / Trigger Plus One With Blitz Spins Selection",
+      "status": "EXECUTED",
+      "observed_result": {"run_one_spin_total":6120,"blitz_resolve_collect_calls":5,"feature_function_calls":1,"final_state":{"persistent_state":"none_exposed"}},
+      "errors": []
+    },
+    {
+      "case_id": "CASE_EDGE_005",
+      "category": "Base Game / additionalCOR Protected Symbols",
+      "status": "EXECUTED",
+      "observed_result": {"protected_position_changes":0,"post_additional_cor_count":1,"final_state":{"persistent_state":"none_exposed"}},
+      "errors": []
+    },
+    {
+      "case_id": "CASE_EDGE_006",
+      "category": "Ways Evaluation / First Reel Wild Forced Boundary",
+      "status": "EXECUTED",
+      "observed_result": {"ways_win":68,"final_state":{"persistent_state":"none_exposed"}},
+      "errors": []
+    },
+    {
+      "case_id": "CASE_EDGE_007",
+      "category": "Ways Evaluation / Last Reel Wild Boundary",
+      "status": "EXECUTED",
+      "observed_result": {"ways_win":50,"final_state":{"persistent_state":"none_exposed"}},
+      "errors": []
+    },
+    {
+      "case_id": "CASE_EDGE_008",
+      "category": "Ways Evaluation / Full Winning Occupancy",
+      "status": "EXECUTED",
+      "observed_result": {"ways_win":409600,"final_state":{"persistent_state":"none_exposed"}},
+      "errors": []
+    },
+    {
+      "case_id": "CASE_EDGE_009",
+      "category": "Free Spins / No Wild Multiplier",
+      "status": "EXECUTED",
+      "observed_result": {"free_spins_win":108,"final_state":{"persistent_state":"none_exposed"}},
+      "errors": []
+    },
+    {
+      "case_id": "CASE_EDGE_010",
+      "category": "Free Spins / Maximum SCAT Retrigger Boundary",
+      "status": "EXECUTED",
+      "observed_result": {"free_spins_session_win":108,"free_spins_evaluator_calls":31,"final_state":{"persistent_state":"none_exposed"}},
+      "errors": []
+    },
+    {
+      "case_id": "CASE_EDGE_011",
+      "category": "Blitz Spins / Multi-Spin State Reset",
+      "status": "EXECUTED",
+      "observed_result": {"blitz_session_win":2780,"resolve_collect_calls":2,"final_state":{"persistent_state":"none_exposed"}},
+      "errors": []
+    },
+    {
+      "case_id": "CASE_EDGE_012",
+      "category": "Collect / No COR Boundary",
+      "status": "EXECUTED",
+      "observed_result": {"collect_win":0,"run_one_spin_total":8,"final_state":{"persistent_state":"none_exposed"}},
+      "errors": []
+    }
+  ]
+}

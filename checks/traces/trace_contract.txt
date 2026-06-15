@@ -1,0 +1,143 @@
+Scenario: BaseGame_NoFreeGame
+->runOneSpin
+  Global/Struct probTable.ReelsetWeights: std::vector<int, std::allocator<int> > shape:[2]
+  ->generatePayWindow
+    input Reelset: Symbol** shape:[6][variable]
+    input ReelSize: std::vector<int, std::allocator<int> > shape:[6]
+    Global/Struct NO_OF_ROWS: int shape:[1]
+    Global/Struct NO_OF_REELS: int shape:[1]
+    output pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
+  <- generatePayWindow
+  ->additionalCOR
+    input pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
+    Global/Struct probTable.corTrigger: std::vector<int, std::allocator<int> > shape:[2]
+    Global/Struct probTable.numCorWeight: std::vector<int, std::allocator<int> > shape:[5]
+    Global/Struct probTable.baseCORValueWeights.values: std::vector<double, std::allocator<double> > shape:[22]
+    Global/Struct probTable.baseCORValueWeights.weights: std::vector<int, std::allocator<int> > shape:[22]
+    output pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
+  <- additionalCOR
+  ->waysWinCalculation
+    input pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
+    Global/Struct PayTable: int [12][7] shape:[12x7]
+    Global/Struct STANDARD_SYMBOL_COUNT: int shape:[1]
+    Global/Struct PAYTABLE_SYMBOL_COUNT: int shape:[1]
+    output win: int shape:[1]
+  <- waysWinCalculation
+  ->resolveCollect
+    input pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
+    input cor_values: std::vector<std::vector<double, std::allocator<double> >, std::allocator<std::vector<double, std::allocator<double> > > > shape:[4x6]
+    Global/Struct BASE_BET_FIXED_COINS: int shape:[1]
+    Global/Struct probTable.CORValues: std::vector<double, std::allocator<double> > shape:[22]
+    output collect_win: int shape:[1]
+  <- resolveCollect
+  output total_win: int shape:[1]
+<- runOneSpin
+Scenario: BaseGame_FreeGameFeature1
+->runOneSpin
+  input selectedFeature: FeatureChoice shape:[1]
+  Global/Struct probTable.ReelsetWeights: std::vector<int, std::allocator<int> > shape:[2]
+  ->generatePayWindow
+    input Reelset: Symbol** shape:[6][variable]
+    input ReelSize: std::vector<int, std::allocator<int> > shape:[6]
+    Global/Struct NO_OF_ROWS: int shape:[1]
+    Global/Struct NO_OF_REELS: int shape:[1]
+    output pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
+  <- generatePayWindow
+  ->additionalCOR
+    input pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
+    Global/Struct probTable.corTrigger: std::vector<int, std::allocator<int> > shape:[2]
+    Global/Struct probTable.numCorWeight: std::vector<int, std::allocator<int> > shape:[5]
+    Global/Struct probTable.baseCORValueWeights.values: std::vector<double, std::allocator<double> > shape:[22]
+    Global/Struct probTable.baseCORValueWeights.weights: std::vector<int, std::allocator<int> > shape:[22]
+    output pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
+  <- additionalCOR
+  ->waysWinCalculation
+    input pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
+    Global/Struct PayTable: int [12][7] shape:[12x7]
+    Global/Struct STANDARD_SYMBOL_COUNT: int shape:[1]
+    Global/Struct PAYTABLE_SYMBOL_COUNT: int shape:[1]
+    output win: int shape:[1]
+  <- waysWinCalculation
+  ->resolveCollect
+    input pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
+    input cor_values: std::vector<std::vector<double, std::allocator<double> >, std::allocator<std::vector<double, std::allocator<double> > > > shape:[4x6]
+    Global/Struct BASE_BET_FIXED_COINS: int shape:[1]
+    Global/Struct probTable.CORValues: std::vector<double, std::allocator<double> > shape:[22]
+    output collect_win: int shape:[1]
+  <- resolveCollect
+  ->FreeGameFeature_1
+    input num_of_free_spins: int shape:[1]
+    Global/Struct FG1_Reels: Symbol** shape:[6][variable]
+    Global/Struct FG1_ReelSize: std::vector<int, std::allocator<int> > shape:[6]
+    Global/Struct probTable.wildMult: std::vector<int, std::allocator<int> > shape:[3]
+    ->generatePayWindow
+      input Reelset: Symbol** shape:[6][variable]
+      input ReelSize: std::vector<int, std::allocator<int> > shape:[6]
+      Global/Struct NO_OF_ROWS: int shape:[1]
+      Global/Struct NO_OF_REELS: int shape:[1]
+      output pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
+    <- generatePayWindow
+    ->waysWinCalculationWithMultiplier
+      input pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
+      Global/Struct probTable.wildMult: std::vector<int, std::allocator<int> > shape:[3]
+      Global/Struct PayTable: int [12][7] shape:[12x7]
+      Global/Struct STANDARD_SYMBOL_COUNT: int shape:[1]
+      Global/Struct PAYTABLE_SYMBOL_COUNT: int shape:[1]
+      output win: int shape:[1]
+    <- waysWinCalculationWithMultiplier
+    output session_win: int shape:[1]
+  <- FreeGameFeature_1
+  output total_win: int shape:[1]
+<- runOneSpin
+Scenario: BaseGame_FreeGameFeature2
+->runOneSpin
+  input selectedFeature: FeatureChoice shape:[1]
+  Global/Struct probTable.ReelsetWeights: std::vector<int, std::allocator<int> > shape:[2]
+  ->generatePayWindow
+    input Reelset: Symbol** shape:[6][variable]
+    input ReelSize: std::vector<int, std::allocator<int> > shape:[6]
+    Global/Struct NO_OF_ROWS: int shape:[1]
+    Global/Struct NO_OF_REELS: int shape:[1]
+    output pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
+  <- generatePayWindow
+  ->additionalCOR
+    input pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
+    Global/Struct probTable.corTrigger: std::vector<int, std::allocator<int> > shape:[2]
+    Global/Struct probTable.numCorWeight: std::vector<int, std::allocator<int> > shape:[5]
+    Global/Struct probTable.baseCORValueWeights.values: std::vector<double, std::allocator<double> > shape:[22]
+    Global/Struct probTable.baseCORValueWeights.weights: std::vector<int, std::allocator<int> > shape:[22]
+    output pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
+  <- additionalCOR
+  ->waysWinCalculation
+    input pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
+    Global/Struct PayTable: int [12][7] shape:[12x7]
+    Global/Struct STANDARD_SYMBOL_COUNT: int shape:[1]
+    Global/Struct PAYTABLE_SYMBOL_COUNT: int shape:[1]
+    output win: int shape:[1]
+  <- waysWinCalculation
+  ->resolveCollect
+    input pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
+    input cor_values: std::vector<std::vector<double, std::allocator<double> >, std::allocator<std::vector<double, std::allocator<double> > > > shape:[4x6]
+    Global/Struct BASE_BET_FIXED_COINS: int shape:[1]
+    Global/Struct probTable.CORValues: std::vector<double, std::allocator<double> > shape:[22]
+    output collect_win: int shape:[1]
+  <- resolveCollect
+  ->FreeGameFeature_2
+    input num_of_free_spins: int shape:[1]
+    Global/Struct probTable.freeGamenumCollect: std::vector<int, std::allocator<int> > shape:[2]
+    Global/Struct probTable.freeGameCOROccur: std::vector<int, std::allocator<int> > shape:[2]
+    Global/Struct probTable.goodCORTable: std::vector<int, std::allocator<int> > shape:[22]
+    Global/Struct probTable.badCORTable: std::vector<int, std::allocator<int> > shape:[22]
+    Global/Struct probTable.CORValues: std::vector<double, std::allocator<double> > shape:[22]
+    Global/Struct BASE_BET_FIXED_COINS: int shape:[1]
+    ->resolveCollect
+      input pay_window: std::vector<std::vector<Symbol, std::allocator<Symbol> >, std::allocator<std::vector<Symbol, std::allocator<Symbol> > > > shape:[4x6]
+      input cor_values: std::vector<std::vector<double, std::allocator<double> >, std::allocator<std::vector<double, std::allocator<double> > > > shape:[4x6]
+      Global/Struct BASE_BET_FIXED_COINS: int shape:[1]
+      Global/Struct probTable.CORValues: std::vector<double, std::allocator<double> > shape:[22]
+      output collect_win: int shape:[1]
+    <- resolveCollect
+    output session_win: int shape:[1]
+  <- FreeGameFeature_2
+  output total_win: int shape:[1]
+<- runOneSpin

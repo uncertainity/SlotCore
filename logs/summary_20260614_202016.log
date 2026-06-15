@@ -1,7 +1,0 @@
-[2026-06-14 20:20:16] Running validate_specs.sh
-[2026-06-14 20:20:16] Input validation passed
-[2026-06-14 20:20:16] Running stage: planner
-[2026-06-14 20:23:39] planner: 72,780
-[2026-06-14 20:23:39] Finished stage: planner
-[2026-06-14 20:23:39] Planner has been completed.
-[2026-06-14 20:23:39] ERROR: Missing required artifact: ./artifacts/plan/game_flow.md

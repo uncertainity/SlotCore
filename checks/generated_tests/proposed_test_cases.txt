@@ -1,0 +1,331 @@
+# Vegas Blitz Proposed Core Test Cases
+
+Source basis: Planner outputs, DOCX game rules, parsheet data, oracle workbook notes, and the repository example window-test format.
+
+These are static full-window evaluator tests. They are not reel-stop tests because stop-index semantics, wrap direction, and visible-row ordering are unresolved.
+
+Final currency amounts are not asserted for standard ways or SCATTER wins until payout-unit and denomination rules are clarified. COR expectations use x total bet because that unit is specified.
+
+Symbols use Planner labels: HV1-HV5, LV1-LV6, WILD, SCATTER, COR, COLLECT.
+
+## TC-001 Pay Window Shape
+
+MODE: Base
+PURPOSE: Verify evaluator accepts a 6 reel x 4 row visible window.
+
+FULL_WINDOW:
+row 0 | HV1 | HV2 | HV3 | HV4 | HV5 | LV1
+row 1 | LV2 | LV3 | LV4 | LV5 | LV6 | HV2
+row 2 | LV3 | LV4 | LV5 | LV6 | HV3 | HV4
+row 3 | LV4 | LV5 | LV6 | HV5 | LV1 | LV2
+
+ACTIVE_WINDOW:
+row 0 | HV1 | HV2 | HV3 | HV4 | HV5 | LV1
+row 1 | LV2 | LV3 | LV4 | LV5 | LV6 | HV2
+row 2 | LV3 | LV4 | LV5 | LV6 | HV3 | HV4
+row 3 | LV4 | LV5 | LV6 | HV5 | LV1 | LV2
+
+EXPECTED:
+- Window dimensions = 6 reels x 4 rows.
+- SCATTER count = 0.
+- COLLECT count = 0.
+- No feature trigger.
+
+## TC-002 Standard HV1 Six Of A Kind
+
+MODE: Base
+PURPOSE: Verify a single standard-symbol 6 OAK ways win.
+
+FULL_WINDOW:
+row 0 | HV1 | HV1 | HV1 | HV1 | HV1 | HV1
+row 1 | LV2 | LV3 | LV4 | LV5 | LV6 | HV2
+row 2 | LV3 | LV4 | LV5 | LV6 | HV3 | HV4
+row 3 | LV4 | LV5 | LV6 | HV5 | LV1 | LV2
+
+ACTIVE_WINDOW:
+row 0 | HV1 | HV1 | HV1 | HV1 | HV1 | HV1
+row 1 | LV2 | LV3 | LV4 | LV5 | LV6 | HV2
+row 2 | LV3 | LV4 | LV5 | LV6 | HV3 | HV4
+row 3 | LV4 | LV5 | LV6 | HV5 | LV1 | LV2
+
+EXPECTED:
+- HV1 kind = 6.
+- HV1 ways count = 1.
+- HV1 paytable factor = 100 before unresolved payout-unit scaling.
+
+## TC-003 Low Symbol Three Of A Kind
+
+MODE: Base
+PURPOSE: Verify low-symbol 3 OAK and no 2 OAK payout.
+
+FULL_WINDOW:
+row 0 | LV1 | LV1 | LV1 | HV2 | HV3 | HV4
+row 1 | HV1 | LV2 | LV3 | LV4 | LV5 | LV6
+row 2 | HV2 | LV3 | LV4 | LV5 | LV6 | HV5
+row 3 | HV3 | LV4 | LV5 | LV6 | HV4 | HV5
+
+ACTIVE_WINDOW:
+row 0 | LV1 | LV1 | LV1 | HV2 | HV3 | HV4
+row 1 | HV1 | LV2 | LV3 | LV4 | LV5 | LV6
+row 2 | HV2 | LV3 | LV4 | LV5 | LV6 | HV5
+row 3 | HV3 | LV4 | LV5 | LV6 | HV4 | HV5
+
+EXPECTED:
+- LV1 kind = 3.
+- LV1 ways count = 1.
+- LV1 paytable factor = 10 before unresolved payout-unit scaling.
+- LV1 2 OAK is not a paying tier.
+
+## TC-004 Multiple Ways Count
+
+MODE: Base
+PURPOSE: Verify ways count multiplies matching positions across consecutive reels.
+
+FULL_WINDOW:
+row 0 | HV2 | HV2 | HV2 | HV2 | LV1 | LV2
+row 1 | LV1 | HV2 | LV3 | HV2 | LV5 | LV6
+row 2 | LV2 | LV3 | HV2 | LV6 | HV4 | HV5
+row 3 | LV3 | LV4 | LV5 | LV6 | HV3 | HV4
+
+ACTIVE_WINDOW:
+row 0 | HV2 | HV2 | HV2 | HV2 | LV1 | LV2
+row 1 | LV1 | HV2 | LV3 | HV2 | LV5 | LV6
+row 2 | LV2 | LV3 | HV2 | LV6 | HV4 | HV5
+row 3 | LV3 | LV4 | LV5 | LV6 | HV3 | HV4
+
+EXPECTED:
+- HV2 matching counts by reel = 1, 2, 2, 2.
+- HV2 kind = 4.
+- HV2 ways count = 8.
+- HV2 paytable factor per way = 30 before unresolved payout-unit scaling.
+
+## TC-005 WILD Substitution
+
+MODE: Base
+PURPOSE: Verify WILD substitutes for standard symbols.
+
+FULL_WINDOW:
+row 0 | HV2 | WILD | WILD | HV2 | LV1 | LV2
+row 1 | HV1 | LV3  | LV4  | LV5 | LV6 | HV3
+row 2 | LV1 | LV4  | LV5  | LV6 | HV4 | HV5
+row 3 | LV2 | LV5  | LV6  | HV3 | HV4 | HV5
+
+ACTIVE_WINDOW:
+row 0 | HV2 | WILD | WILD | HV2 | LV1 | LV2
+row 1 | HV1 | LV3  | LV4  | LV5 | LV6 | HV3
+row 2 | LV1 | LV4  | LV5  | LV6 | HV4 | HV5
+row 3 | LV2 | LV5  | LV6  | HV3 | HV4 | HV5
+
+EXPECTED:
+- WILD symbols on reels 2 and 3 may substitute for HV2.
+- HV2 kind = 4.
+- HV2 ways count = 1.
+- HV2 paytable factor = 30 before unresolved payout-unit scaling.
+
+## TC-006 WILD Does Not Substitute For SCATTER
+
+MODE: Base
+PURPOSE: Verify WILD is not counted as SCATTER.
+
+FULL_WINDOW:
+row 0 | SCATTER | WILD | SCATTER | HV1 | HV2 | HV3
+row 1 | HV1    | LV2  | LV3     | LV4 | LV5 | LV6
+row 2 | HV2    | LV3  | LV4     | LV5 | LV6 | HV4
+row 3 | HV3    | LV4  | LV5     | LV6 | HV4 | HV5
+
+ACTIVE_WINDOW:
+row 0 | SCATTER | WILD | SCATTER | HV1 | HV2 | HV3
+row 1 | HV1    | LV2  | LV3     | LV4 | LV5 | LV6
+row 2 | HV2    | LV3  | LV4     | LV5 | LV6 | HV4
+row 3 | HV3    | LV4  | LV5     | LV6 | HV4 | HV5
+
+EXPECTED:
+- SCATTER count = 2.
+- WILD is not counted as SCATTER.
+- No SCATTER payout.
+- No feature trigger.
+
+## TC-007 Base SCATTER Feature Trigger
+
+MODE: Base
+PURPOSE: Verify anywhere SCATTER count and base-game feature selection trigger.
+
+FULL_WINDOW:
+row 0 | SCATTER | HV1 | HV2     | HV3 | HV4 | HV5
+row 1 | LV1     | LV2 | SCATTER | LV3 | LV4 | LV5
+row 2 | LV2     | LV3 | LV4     | LV5 | LV6 | HV1
+row 3 | LV3     | LV4 | LV5     | LV6 | HV2 | SCATTER
+
+ACTIVE_WINDOW:
+row 0 | SCATTER | HV1 | HV2     | HV3 | HV4 | HV5
+row 1 | LV1     | LV2 | SCATTER | LV3 | LV4 | LV5
+row 2 | LV2     | LV3 | LV4     | LV5 | LV6 | HV1
+row 3 | LV3     | LV4 | LV5     | LV6 | HV2 | SCATTER
+
+EXPECTED:
+- SCATTER count = 3.
+- SCATTER paytable factor = 20 before unresolved payout-unit scaling.
+- Feature selection is offered.
+- Free Spins option award = 8 spins.
+- Blitz Spins option award = 3 spins.
+
+## TC-008 COLLECT Accumulates COR Values
+
+MODE: Base
+PURPOSE: Verify one COLLECT collects all visible COR and jackpot-bearing COR values.
+
+COR_VALUE_ASSIGNMENTS:
+- row 0 reel 2 COR = 1x total bet
+- row 2 reel 5 COR = 2.5x total bet
+- row 1 reel 6 COR = Mini jackpot = 10x total bet
+
+FULL_WINDOW:
+row 0 | COLLECT | COR | HV2 | HV3 | HV4 | HV5
+row 1 | LV1     | LV2 | LV3 | LV4 | LV5 | COR
+row 2 | LV2     | LV3 | LV4 | LV5 | COR | HV1
+row 3 | LV3     | LV4 | LV5 | LV6 | HV2 | HV3
+
+ACTIVE_WINDOW:
+row 0 | COLLECT | COR | HV2 | HV3 | HV4 | HV5
+row 1 | LV1     | LV2 | LV3 | LV4 | LV5 | COR
+row 2 | LV2     | LV3 | LV4 | LV5 | COR | HV1
+row 3 | LV3     | LV4 | LV5 | LV6 | HV2 | HV3
+
+EXPECTED:
+- COLLECT count = 1.
+- Collected COR value = 13.5x total bet.
+- Jackpot collected: Mini.
+- COR payout bucket is separate from ways and SCATTER wins.
+
+## TC-009 Two COLLECT Symbols Independently Accumulate Same CORs
+
+MODE: Base
+PURPOSE: Verify each COLLECT independently collects all visible COR symbols.
+
+COR_VALUE_ASSIGNMENTS:
+- row 0 reel 2 COR = 1x total bet
+- row 2 reel 4 COR = 4x total bet
+
+FULL_WINDOW:
+row 0 | COLLECT | COR | HV2 | HV3 | HV4 | COLLECT
+row 1 | LV1     | LV2 | LV3 | LV4 | LV5 | HV1
+row 2 | LV2     | LV3 | LV4 | COR | LV6 | HV2
+row 3 | LV3     | LV4 | LV5 | LV6 | HV2 | HV3
+
+ACTIVE_WINDOW:
+row 0 | COLLECT | COR | HV2 | HV3 | HV4 | COLLECT
+row 1 | LV1     | LV2 | LV3 | LV4 | LV5 | HV1
+row 2 | LV2     | LV3 | LV4 | COR | LV6 | HV2
+row 3 | LV3     | LV4 | LV5 | LV6 | HV2 | HV3
+
+EXPECTED:
+- COLLECT count = 2.
+- Each COLLECT accumulates 5x total bet.
+- Total COR payout = 10x total bet.
+
+## TC-010 Free Spins WILD Multipliers
+
+MODE: Free Spins
+PURPOSE: Verify all visible WILD multipliers apply to non-SCATTER wins.
+
+WILD_MULTIPLIERS:
+- row 0 reel 2 WILD = 2x
+- row 0 reel 4 WILD = 5x
+
+FULL_WINDOW:
+row 0 | HV1 | WILD | HV1 | WILD | LV2 | LV3
+row 1 | LV1 | LV2  | LV3 | LV4  | LV5 | LV6
+row 2 | LV2 | LV3  | LV4 | LV5  | LV6 | HV2
+row 3 | LV3 | LV4  | LV5 | LV6  | HV3 | HV4
+
+ACTIVE_WINDOW:
+row 0 | HV1 | WILD | HV1 | WILD | LV2 | LV3
+row 1 | LV1 | LV2  | LV3 | LV4  | LV5 | LV6
+row 2 | LV2 | LV3  | LV4 | LV5  | LV6 | HV2
+row 3 | LV3 | LV4  | LV5 | LV6  | HV3 | HV4
+
+EXPECTED:
+- HV1 kind = 4.
+- HV1 ways count = 1.
+- Pre-multiplier HV1 paytable factor = 40.
+- Total WILD multiplier = 10x.
+- Final non-SCATTER factor = 400 before unresolved payout-unit scaling.
+
+## TC-011 Free Spins SCATTER Retrigger Is Not WILD-Multiplied
+
+MODE: Free Spins
+PURPOSE: Verify Free Spins SCATTER retrigger and SCATTER win exclusion from WILD multiplier.
+
+WILD_MULTIPLIERS:
+- row 0 reel 2 WILD = 3x
+
+FULL_WINDOW:
+row 0 | SCATTER | WILD | SCATTER | HV1 | HV2 | HV3
+row 1 | LV1     | LV2  | LV3     | LV4 | LV5 | LV6
+row 2 | LV2     | LV3  | LV4     | LV5 | LV6 | HV4
+row 3 | LV3     | LV4  | LV5     | LV6 | HV4 | HV5
+
+ACTIVE_WINDOW:
+row 0 | SCATTER | WILD | SCATTER | HV1 | HV2 | HV3
+row 1 | LV1     | LV2  | LV3     | LV4 | LV5 | LV6
+row 2 | LV2     | LV3  | LV4     | LV5 | LV6 | HV4
+row 3 | LV3     | LV4  | LV5     | LV6 | HV4 | HV5
+
+EXPECTED:
+- SCATTER count = 2.
+- Additional Free Spins awarded = 5.
+- WILD multiplier does not apply to SCATTER win.
+
+## TC-012 Blitz Spins Guaranteed COR And COLLECT Resolution
+
+MODE: Blitz Spins
+PURPOSE: Verify Blitz Spins collect behavior with only COR, jackpot-bearing COR, and COLLECT symbols.
+
+COR_VALUE_ASSIGNMENTS:
+- row 0 reel 2 COR = 0.5x total bet
+- row 1 reel 3 COR = 3x total bet
+- row 2 reel 5 COR = Minor jackpot = 25x total bet
+
+FULL_WINDOW:
+row 0 | COLLECT | COR | COR | COR | COR | COLLECT
+row 1 | COR     | COR | COR | COR | COR | COR
+row 2 | COR     | COR | COR | COR | COR | COR
+row 3 | COR     | COR | COR | COR | COR | COR
+
+ACTIVE_WINDOW:
+row 0 | COLLECT | COR | COR | COR | COR | COLLECT
+row 1 | COR     | COR | COR | COR | COR | COR
+row 2 | COR     | COR | COR | COR | COR | COR
+row 3 | COR     | COR | COR | COR | COR | COR
+
+EXPECTED:
+- Window contains only allowed Blitz symbols: COR and COLLECT.
+- COLLECT count = 2.
+- Each COLLECT accumulates assigned visible value = 28.5x total bet.
+- Total assigned COR payout = 57x total bet.
+- Jackpot collected: Minor.
+- Screen resets before the next Blitz Spin.
+
+## TC-013 Feature Completion Paths
+
+MODE: Feature State
+PURPOSE: Verify feature exit conditions without inventing additional rewards.
+
+FULL_WINDOW:
+row 0 | HV1 | HV2 | HV3 | HV4 | HV5 | LV1
+row 1 | LV2 | LV3 | LV4 | LV5 | LV6 | HV2
+row 2 | LV3 | LV4 | LV5 | LV6 | HV3 | HV4
+row 3 | LV4 | LV5 | LV6 | HV5 | LV1 | LV2
+
+ACTIVE_WINDOW:
+row 0 | HV1 | HV2 | HV3 | HV4 | HV5 | LV1
+row 1 | LV2 | LV3 | LV4 | LV5 | LV6 | HV2
+row 2 | LV3 | LV4 | LV5 | LV6 | HV3 | HV4
+row 3 | LV4 | LV5 | LV6 | HV5 | LV1 | LV2
+
+EXPECTED:
+- Free Spins exits when all awarded and retriggered spins are exhausted.
+- Blitz Spins exits when all awarded spins are exhausted.
+- Blitz Spins has no retrigger in the source rules.
+- Feature completion returns to payout completion, then idle.
+

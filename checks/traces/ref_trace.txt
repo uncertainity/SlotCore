@@ -1,0 +1,199 @@
+//GLOBAL
+
+enum Symbol{
+    HV1,HV2,HV3,HV4,HV5,LV1,LV2,LV3,LV4,LV5,WILD,SCATTER,COR,COLLECT
+}
+
+Symbol symbolArray[] = {HV1, HV2, HV3, HV4, HV5, LV1, LV2, LV3, LV4, LV5};
+NO_OF_SYMBOLS = 8;
+SYMBOL_COUNT = 8;
+
+NO_OF_REELS=6;
+NO_OF_ROWS=4;
+
+
+enum Symbol* BG1_Reels;
+enum Symbol* BG2_Reels;
+enum Symbol* FG1_Reels;
+
+vector<int> BG1_ReelSize;
+vector<int> BG2_ReelSize;
+vector<int> FG1_ReelSize;
+
+//PSUEDOCODE
+generatePayWindow(Symbol* ReelSet[],vector<int>ReelSize){
+    // generate a NO_OF_ROWSxNO_OF_REELS shaped pay pay_window
+    return pay_window
+}
+
+additionalCOR(vector<vector<Symbol>>& pay_window){
+    //checks if additional COR symbols needs to be placed in the pay window based on probTable.corTrigger
+    //if additional CORs to be the placed, the number of CORs are taken from probTable.numCorWeight
+    //additional CORs can't be placed on existing COLLECT, SCATTER or WILD
+}
+
+waysWinCalculationWithMultiplier(vector<vector<Symbol>> &pay_window){
+    //normal ways win calculation as mentioned in ./referrenceLibrary/cpp/reflib.cpp
+    //multipliers are assigned to the weights 
+    //The multipliers on WILDs multiply individually to the win whether WILD is in the participating win or not.
+}
+
+waysWinCalculation(vector<vector<Symbol>> &pay_window){
+    //normal ways win calculation as mentioned in ./referrenceLibrary/cpp/reflib.cpp
+}
+
+FreeGameFeature_1(num_of_free_spins){
+    current spins = 0;
+    session_win = 0;
+    //no collect or COR symbols appears during this feaure.
+    while current_spins < num_of_free_spins{
+        pay_window = generatePayWindow(FG1_Reels,FG1_ReelSize);
+        //put multipliers on WILDs
+        //evaluate with waysWinCalculationWithMultiplier()
+        // win is added session_win
+        //current_spins ++ 
+        //Check for retriggers where 2, 3, 4, 5 or 6 Scatters awards 5, 8, 12, 20, 30 additional Free games.
+ 
+    }
+    return session_win;
+}
+
+FreeGameFeature_2(num_of_free_spins){
+    current_spins = 0;
+    session_win = 0;
+    while current_spins < num_of_free_spins{
+        //check how many collect symbols to put (COLLECT is put only in REEL 1 or REEL 6 and it can only be 1 or 2)
+        //each reel can have only one COLLECT symbol
+        //for all positions beside COLLECT we put COR in all other positions from the probTable.freeGameCOROccur
+        //If no COR appears on the screen, add 1 COR. (Forcing condition)
+        //then we select the value of the CORs from the probTable.goodCORTable or probTable.badCORTable
+        //Good table will be used exactly for one COR per each spin and Bad table will be used for all other CORs.
+    }
+}
+
+runOneSpin(){
+    //check which Reelset to use to generate the base game pay window using probTable.ReelsetWeights
+    //generate paywindow using either generatePayWindow(BG1_Reels,BG1_ReelSize) or generatePayWindow(BG2_Reels,BG2_ReelSize)
+    //calculate win from waysWinCalculation.
+    //if 3 or more Scatters appear on the Base game window, feature will be triggered.
+    //if free_game is triggered, we choose which free_game to trigger.
+    //if FreeGameFeature_1 is selected, depending on the number of Scatters, 8, 12, 20 and 30 Free games are awarded for 3, 4, 5 and 6 Scatters, respectively.
+    //if FreeGameFeature_2 is selected, Depending on the number of Scatters, 3, 4, 6 and 8 Blitz spins are awarded by 3, 4, 5 and 6 Scatters, respectively.
+}
+
+struct probTable{
+    //all the prob tables are stored here.
+}
+
+
+if no free game triggers
+//TRACE 
+->runOneSpin
+    Global/Struct probTable.ReelsetWeights: std::vector<int,std::allocator<int>> shape[2]
+    ->generatePayWindow
+        input Reelset: Symbol** shape:[1]
+        input ReelSize: std:"vector<int,std::allocator<int>> shape:[5]
+        Global/Struct NO_OF_ROWS: int shape:[1]
+        Global/Struct NO_OF_REELS: int shape:[1]
+        output pay_window: std::vector<std::vector<symbol,std::allocator<Symbol>>,std::allocator<std::vector<Symbol, std::allocator<Symbol>>>> shape:[4x6]
+    <-generatePayWindow
+    ->additionalCOR
+        input pay_window: std::vector<std::vector<symbol,std::allocator<Symbol>>,std::allocator<std::vector<Symbol, std::allocator<Symbol>>>> shape:[4x6]
+        Global/Struct probTable.corTrigger: std::vector<int,std::allocator<int>> shape:[2]
+        Global/Struct probTable.numCorWeight: std::vector<int,std::allocator<int>> shape:[5]
+        output pay_window: std::vector<std::vector<symbol,std::allocator<Symbol>>,std::allocator<std::vector<Symbol, std::allocator<Symbol>>>> shape:[4x6]
+    <-additionalCOR
+    ->waysWinCalculation
+        input input pay_window: std::vector<std::vector<symbol,std::allocator<Symbol>>,std::allocator<std::vector<Symbol, std::allocator<Symbol>>>> shape:[4x6]
+        Global/Struct PayTable: int[9][6] shape:[9x6]
+        Global/Struct NO_OF_SYMBOLS: int shape:[1]
+        output win:int shape:[1]
+    <-waysWinCalculation
+    output total_win:int shape:[1]
+<-runOneSpin
+
+if freegame feature 1 triggers
+//TRACE
+->runOneSpin
+    Global/Struct probTable.ReelsetWeights: std::vector<int,std::allocator<int>> shape[2]
+    ->generatePayWindow
+        input Reelset: Symbol** shape:[1]
+        input ReelSize: std:"vector<int,std::allocator<int>> shape:[5]
+        Global/Struct NO_OF_ROWS: int shape:[1]
+        Global/Struct NO_OF_REELS: int shape:[1]
+        output pay_window: std::vector<std::vector<symbol,std::allocator<Symbol>>,std::allocator<std::vector<Symbol, std::allocator<Symbol>>>> shape:[4x6]
+    <-generatePayWindow
+    ->additionalCOR
+        input pay_window: std::vector<std::vector<symbol,std::allocator<Symbol>>,std::allocator<std::vector<Symbol, std::allocator<Symbol>>>> shape:[4x6]
+        Global/Struct probTable.corTrigger: std::vector<int,std::allocator<int>> shape:[2]
+        Global/Struct probTable.numCorWeight: std::vector<int,std::allocator<int>> shape:[5]
+        output pay_window: std::vector<std::vector<symbol,std::allocator<Symbol>>,std::allocator<std::vector<Symbol, std::allocator<Symbol>>>> shape:[4x6]
+    <-additionalCOR
+    ->waysWinCalculation
+        input pay_window: std::vector<std::vector<symbol,std::allocator<Symbol>>,std::allocator<std::vector<Symbol, std::allocator<Symbol>>>> shape:[4x6]
+        Global/Struct PayTable: int[9][6] shape:[9x6]
+        Global/Struct NO_OF_SYMBOLS: int shape:[1]
+        output win:int shape:[1]
+    <-waysWinCalculation
+    ->FreeGameFeature_1
+        ->generatePayWindow
+            input Reelset: Symbol** shape:[1]
+            input ReelSize: std:"vector<int,std::allocator<int>> shape:[5]
+            Global/Struct NO_OF_ROWS: int shape:[1]
+            Global/Struct NO_OF_REELS: int shape:[1]
+            output pay_window: std::vector<std::vector<symbol,std::allocator<Symbol>>,std::allocator<std::vector<Symbol, std::allocator<Symbol>>>> shape:[4x6]
+        <-generatePayWindow
+        ->waysWinCalculationWithMultiplier
+            input pay_window: std::vector<std::vector<symbol,std::allocator<Symbol>>,std::allocator<std::vector<Symbol, std::allocator<Symbol>>>> shape:[4x6]
+            Global/Struct probTable.wildMult: std::vector<int,std::allocator<int>> shape:[4]
+            output session_win: int shape:[1]
+        <-waysWinCalculationWithMultiplier
+    <-FreeGameFeature_1
+<-runOneSpin
+
+if freegame feature 2 triggers
+//TRACE
+->runOneSpin
+    Global/Struct probTable.ReelsetWeights: std::vector<int,std::allocator<int>> shape[2]
+    ->generatePayWindow
+        input Reelset: Symbol** shape:[1]
+        input ReelSize: std:"vector<int,std::allocator<int>> shape:[5]
+        Global/Struct NO_OF_ROWS: int shape:[1]
+        Global/Struct NO_OF_REELS: int shape:[1]
+        output pay_window: std::vector<std::vector<symbol,std::allocator<Symbol>>,std::allocator<std::vector<Symbol, std::allocator<Symbol>>>> shape:[4x6]
+    <-generatePayWindow
+    ->additionalCOR
+        input pay_window: std::vector<std::vector<symbol,std::allocator<Symbol>>,std::allocator<std::vector<Symbol, std::allocator<Symbol>>>> shape:[4x6]
+        Global/Struct probTable.corTrigger: std::vector<int,std::allocator<int>> shape:[2]
+        Global/Struct probTable.numCorWeight: std::vector<int,std::allocator<int>> shape:[5]
+        output pay_window: std::vector<std::vector<symbol,std::allocator<Symbol>>,std::allocator<std::vector<Symbol, std::allocator<Symbol>>>> shape:[4x6]
+    <-additionalCOR
+    ->waysWinCalculation
+        input pay_window: std::vector<std::vector<symbol,std::allocator<Symbol>>,std::allocator<std::vector<Symbol, std::allocator<Symbol>>>> shape:[4x6]
+        Global/Struct PayTable: int[9][6] shape:[9x6]
+        Global/Struct NO_OF_SYMBOLS: int shape:[1]
+        output win:int shape:[1]
+    <-waysWinCalculation
+    ->FreeGameFeature_2
+        input grid_window: std::vector<std::vector<symbol,std::allocator<Symbol>>,std::allocator<std::vector<Symbol, std::allocator<Symbol>>>> shape:[4x6]
+        Global/Struct probTable.freeGamenumCollect: std::vector<int,std::allocator<int>> shape:[2]
+        Global/Struct probTable.freeGameCOROccur: std::vector<int,std::allocator<int>> shape:[2]
+        Global/Struct probTable.goodCORTable: std::vector<int,std::allocator<int>> shape:[22]
+        Global/Struct probTable.badCORTable: std::vector<int,std::allocator<int>> shape:[22]
+        Global/Struct probTable.CORValues: std::vector<float,std::allocator<float>> shape:[22]
+        output: session_win: int shape:[1]
+    <-FreeGameFeature_2
+    output: total_win: int shape[1]
+<-runOneSpin
+
+
+
+        
+         
+
+
+
+
+        
+        
+    

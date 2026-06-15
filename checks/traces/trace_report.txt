@@ -1,0 +1,12 @@
+Trace Validation Report
+=======================
+
+=== test_core: TC-011 Free Spins retrigger adds five spins ===FAIL
+=== test_core: Trace call order and shapes ===PASS
+=== run_forced_window: CASE_EDGE_001 runOneSpin none ===PASS
+=== run_forced_window: CASE_EDGE_002 runOneSpin one below trigger ===PASS
+=== run_forced_window: CASE_EDGE_003 runOneSpin FreeGameFeature_1 ===FAIL
+=== run_forced_window: CASE_EDGE_004 runOneSpin FreeGameFeature_2 ===FAIL
+=== run_forced_window: CASE_EDGE_010 FreeGameFeature_1 retrigger boundary ===FAIL
+=== run_forced_window: CASE_EDGE_011 FreeGameFeature_2 multi-spin ===FAIL
+=== run_forced_window: CASE_EDGE_012 runOneSpin collect no COR ===PASS

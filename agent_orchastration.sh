@@ -115,7 +115,7 @@ planner(){
 
 planner_verifier(){
     run_codex \
-    "tester" \
+    "planner_verifier" \
     "./agentprompts/run_specification_validation.txt"
 
     check_file "${REPORTS_DIR}/planner_verifier_report.md"
@@ -201,6 +201,7 @@ tester(){
 }
 
 
+
 interactive_pass() {
     while grep -q "\[BLOCKER\]" "${REPORTS_DIR}/escalation.md"; do
 
@@ -226,6 +227,19 @@ Press Enter when ready...
     log "All blockers are removed."
 }
 
+## This is a more flexible version of inetaractive pass for resolving [AMBIGUITY] or [WARNING].
+review_pass(){
+    run_codex \
+            "interactive pass" \
+            "./agentprompts/interactive_pass.txt"
+        
+    append_interactive_pass
+    : > "./agentprompts/interactive_pass.txt"
+
+    echo "Review Pass is Completed."
+    log "Review Pass is Completed."
+
+}
 
 consensus_loop() {
     local max_attempts=5
@@ -269,6 +283,21 @@ generate_test_trace(){
     check_file "${TRACES_DIR}/test_traces.txt"
 }
 
+trace_validation(){
+    local FILE="${TRACES_DIR}/trace_report.txt"
+    if [[ ! -s "$FILE" ]]; then
+        echo "[MISSING] run g++ checks/traces/trace_validator.cpp reference/cpp/trace_checker.cpp -std=c++17 -o checks/traces/trace_validator ->
+        checks/traces/trace_validator to create the file."
+        exit 1
+    fi
+    run_codex \
+            "trace validation" \
+            "./agentprompts/run_trace_validation.txt"
+    check_file "${REPORTS_DIR}/trace_validation.md"
+
+
+}
+
 
 usage() {
     cat <<EOF
@@ -283,6 +312,7 @@ Commands:
   simulator-gate        Run simulator + human gate
   coder                 Run coder only
   interactive-pass      Run human interactive blocker pass
+  review-pass           Run normal human interactive discussion
   tester                Run tester only
   consensus             Run simulator -> coder -> tester consensus loop
 EOF
@@ -290,7 +320,17 @@ EOF
 
 main_pipeline() {
     planner_verification_loop
+
+    if grep -q "\[BLOCKER\]" "${REPORTS_DIR}/escalation.md"; then
+        interactive_pass
+    fi
+
     simulator_human_gate
+
+    if grep -q "\[BLOCKER\]" "${REPORTS_DIR}/escalation.md"; then
+        interactive_pass
+    fi
+
     coder
 
     if grep -q "\[BLOCKER\]" "${REPORTS_DIR}/escalation.md"; then
@@ -299,6 +339,7 @@ main_pipeline() {
     
     consensus_loop
     generate_test_trace
+    run_trace_validation
 
     echo "Full SlotCore pipeline completed successfully." 
     log "Full SlotCore pipeline completed successfully."
@@ -340,6 +381,10 @@ case "$cmd" in
         interactive_pass
         ;;
 
+    review-pass)
+        review_pass
+        ;;
+
     tester)
         tester
         ;;
@@ -350,6 +395,10 @@ case "$cmd" in
 
     generate-test-trace)
         generate_test_trace
+        ;;
+
+    trace-validation)
+        trace_validation
         ;;
 
     ""|-h|--help|help)

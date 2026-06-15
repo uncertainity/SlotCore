@@ -1,0 +1,3264 @@
+{
+  "schema_version": "simulator_design.v1",
+  "stage": "Simulator Design",
+  "generated_on": "2026-06-14",
+  "authority": "JSON schema is authoritative; Markdown schema is explanatory.",
+  "inputs_consumed": [
+    "summary.md",
+    "AGENTS.md",
+    "skills/simulator_design.md",
+    "artifacts/plan/game_flow.md",
+    "artifacts/plan/game_flow.json",
+    "checks/reports/escalation.md",
+    "checks/reports/planner_verifier_report.md",
+    "checks/generated_tests/proposed_test_cases.txt",
+    "reference/cpp/trace.cpp",
+    "reference/cpp/reflib.cpp",
+    "specs/game_rules/* listed only",
+    "specs/math_models/* listed only"
+  ],
+  "trace_verification": {
+    "source_trace_file_requested": [
+      "checks/traces/ref_trace.txt",
+      "checks/traces/trace_ref.txt"
+    ],
+    "source_trace_file_found": false,
+    "verification_status": "blocked_missing_trace_file",
+    "corrected_trace_ref_generated": false,
+    "format_reference": "reference/cpp/trace.cpp Trace emits ->function, indented input/output/Global/Struct lines, and <- function markers.",
+    "canonical_scenarios": [
+      {
+        "name": "base_spin_no_feature",
+        "trace": [
+          "->runOneSpin",
+          "  input wager: WagerConfig shape:[1]",
+          "  input feature_choice: FeatureChoice|null shape:[1]",
+          "  input rng: RngSource shape:[1]",
+          "  ->selectBaseReelset",
+          "  <- selectBaseReelset",
+          "  ->generatePayWindow",
+          "    output pay_window: PayWindow shape:[4x6]",
+          "  <- generatePayWindow",
+          "  ->injectAdditionalCOR",
+          "    input pay_window: PayWindow shape:[4x6]",
+          "    output augmented_window: PayWindow shape:[4x6]",
+          "  <- injectAdditionalCOR",
+          "  ->evaluateBaseWindow",
+          "    ->evaluateWaysWins",
+          "    <- evaluateWaysWins",
+          "    ->countScatters",
+          "    <- countScatters",
+          "    ->evaluateScatterWin",
+          "    <- evaluateScatterWin",
+          "    ->evaluateCollect",
+          "    <- evaluateCollect",
+          "  <- evaluateBaseWindow",
+          "  output spin_result: SpinResult shape:[1]",
+          "<- runOneSpin"
+        ]
+      },
+      {
+        "name": "base_to_free_spins",
+        "trace": [
+          "->runOneSpin",
+          "  ->resolveFeatureSelection",
+          "  <- resolveFeatureSelection",
+          "  ->runFreeSpins",
+          "    ->generatePayWindow",
+          "    <- generatePayWindow",
+          "    ->assignFreeSpinWildMultipliers",
+          "    <- assignFreeSpinWildMultipliers",
+          "    ->evaluateWaysWins",
+          "    <- evaluateWaysWins",
+          "    ->countScatters",
+          "    <- countScatters",
+          "    ->evaluateScatterWin",
+          "    <- evaluateScatterWin",
+          "  <- runFreeSpins",
+          "<- runOneSpin"
+        ]
+      },
+      {
+        "name": "base_to_blitz_spins",
+        "trace": [
+          "->runOneSpin",
+          "  ->resolveFeatureSelection",
+          "  <- resolveFeatureSelection",
+          "  ->runBlitzSpins",
+          "    ->buildBlitzWindow",
+          "    <- buildBlitzWindow",
+          "    ->assignCORValues",
+          "    <- assignCORValues",
+          "    ->evaluateCollect",
+          "    <- evaluateCollect",
+          "  <- runBlitzSpins",
+          "<- runOneSpin"
+        ]
+      }
+    ]
+  },
+  "symbols": {
+    "normalization": {
+      "PIC1": "HV1",
+      "PIC2": "HV2",
+      "PIC3": "HV3",
+      "PIC4": "HV4",
+      "PIC5": "HV5",
+      "ACE": "LV1",
+      "KING": "LV2",
+      "QUEEN": "LV3",
+      "JACK": "LV4",
+      "TEN": "LV5",
+      "NINE": "LV6",
+      "SCAT": "SCATTER",
+      "COIN": "COR"
+    },
+    "standard": [
+      "HV1",
+      "HV2",
+      "HV3",
+      "HV4",
+      "HV5",
+      "LV1",
+      "LV2",
+      "LV3",
+      "LV4",
+      "LV5",
+      "LV6"
+    ],
+    "wild": {
+      "symbol": "WILD",
+      "substitutes_for": [
+        "HV1",
+        "HV2",
+        "HV3",
+        "HV4",
+        "HV5",
+        "LV1",
+        "LV2",
+        "LV3",
+        "LV4",
+        "LV5",
+        "LV6"
+      ],
+      "does_not_substitute_for": [
+        "SCATTER",
+        "COR",
+        "COLLECT"
+      ],
+      "base_reels": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "free_spin_reels": [
+        2,
+        3,
+        4
+      ]
+    },
+    "scatter": {
+      "symbol": "SCATTER",
+      "pays_anywhere": true
+    },
+    "coin": {
+      "symbol": "COR",
+      "values_x_total_bet": [
+        0.5,
+        1,
+        1.5,
+        2,
+        2.5,
+        3,
+        3.5,
+        4,
+        5,
+        6,
+        7,
+        7.5,
+        8,
+        9,
+        10,
+        12.5,
+        25,
+        50,
+        125,
+        250,
+        500,
+        2000
+      ]
+    },
+    "collect": {
+      "symbol": "COLLECT",
+      "allowed_reels": [
+        1,
+        6
+      ],
+      "active_in": [
+        "base_game",
+        "blitz_spins"
+      ]
+    },
+    "jackpots": {
+      "Mini": 10,
+      "Minor": 25,
+      "Major": 250,
+      "Grand": 2000
+    }
+  },
+  "symbol_set_canonical": [
+    "HV1",
+    "HV2",
+    "HV3",
+    "HV4",
+    "HV5",
+    "LV1",
+    "LV2",
+    "LV3",
+    "LV4",
+    "LV5",
+    "LV6",
+    "WILD",
+    "SCATTER",
+    "COR",
+    "COLLECT"
+  ],
+  "global_constants": {
+    "GAME_NAME": "Vegas Blitz",
+    "NO_OF_REELS": 6,
+    "NO_OF_ROWS": 4,
+    "WAYS": 4096,
+    "MINIMUM_BET_FIXED_COINS": 20,
+    "BASE_BET_FROM_PARSHEET": 20,
+    "MAXIMUM_BET": null,
+    "COIN_VALUE": null,
+    "DENOMINATION": null,
+    "VISIBLE_WINDOW_EXTRACTION": "start_idx is top visible symbol; row r uses (start_idx + r) % reel_length; pay_window[row][reel] row-major",
+    "DIRECT_SCATTER_WIN_POLICY": "No direct SCATTER win is awarded when SCATTER wins are not mentioned, per 2026-06-14 human review."
+  },
+  "reelsets": {
+    "B1": {
+      "reel_1": [
+        "LV2",
+        "LV4",
+        "LV3",
+        "HV2",
+        "HV1",
+        "LV2",
+        "LV4",
+        "LV2",
+        "LV3",
+        "LV4",
+        "LV6",
+        "COLLECT",
+        "LV2",
+        "LV3",
+        "HV3",
+        "LV2",
+        "LV3",
+        "HV1",
+        "LV4",
+        "LV2",
+        "LV2",
+        "HV2",
+        "LV4",
+        "HV1",
+        "LV2",
+        "LV4",
+        "LV3",
+        "LV4",
+        "SCATTER",
+        "LV2",
+        "HV4",
+        "LV3",
+        "HV5",
+        "LV4",
+        "LV5",
+        "HV5",
+        "LV3",
+        "HV1",
+        "LV6",
+        "LV2",
+        "LV4",
+        "LV3",
+        "LV4",
+        "LV4",
+        "HV1",
+        "LV2",
+        "HV3",
+        "LV3",
+        "LV2",
+        "HV1",
+        "LV3",
+        "LV4",
+        "LV3",
+        "LV4",
+        "HV1",
+        "LV2",
+        "HV4",
+        "LV2",
+        "LV3",
+        "LV4",
+        "HV1",
+        "LV2",
+        "LV3",
+        "LV2",
+        "LV4",
+        "LV3",
+        "HV1",
+        "LV4",
+        "LV2",
+        "SCATTER",
+        "LV3",
+        "LV4",
+        "LV6",
+        "LV3",
+        "LV2",
+        "LV3",
+        "HV1",
+        "HV1",
+        "HV1",
+        "HV2",
+        "LV3",
+        "LV4",
+        "LV2",
+        "LV5",
+        "HV1",
+        "LV1",
+        "LV2",
+        "COR",
+        "COR"
+      ],
+      "reel_2": [
+        "HV5",
+        "LV1",
+        "LV6",
+        "HV1",
+        "HV1",
+        "HV1",
+        "LV5",
+        "HV5",
+        "HV5",
+        "LV3",
+        "LV1",
+        "COR",
+        "COR",
+        "HV3",
+        "LV1",
+        "LV3",
+        "HV2",
+        "HV3",
+        "LV4",
+        "HV5",
+        "LV5",
+        "LV1",
+        "HV5",
+        "HV2",
+        "LV1",
+        "HV5",
+        "LV5",
+        "WILD",
+        "LV1",
+        "HV5",
+        "HV5",
+        "LV5",
+        "LV1",
+        "HV4",
+        "HV5",
+        "LV5",
+        "LV1",
+        "HV5",
+        "LV2",
+        "HV5",
+        "LV5",
+        "SCATTER",
+        "LV1",
+        "LV5",
+        "LV5",
+        "HV5",
+        "LV5",
+        "WILD",
+        "LV5",
+        "LV1",
+        "HV5",
+        "LV5",
+        "LV5",
+        "LV1",
+        "LV5",
+        "HV4",
+        "LV5",
+        "HV5",
+        "LV1",
+        "HV5",
+        "HV5",
+        "LV1",
+        "LV5",
+        "LV1",
+        "HV3",
+        "HV2",
+        "LV1",
+        "LV5",
+        "LV1",
+        "LV5",
+        "HV5",
+        "LV1",
+        "HV1",
+        "LV1",
+        "LV5",
+        "LV1",
+        "HV5",
+        "LV5",
+        "LV5",
+        "LV1",
+        "LV5",
+        "HV5"
+      ],
+      "reel_3": [
+        "LV4",
+        "HV2",
+        "HV4",
+        "LV4",
+        "LV4",
+        "HV2",
+        "LV5",
+        "LV5",
+        "HV3",
+        "LV4",
+        "LV6",
+        "LV5",
+        "LV5",
+        "LV3",
+        "SCATTER",
+        "LV4",
+        "LV5",
+        "HV1",
+        "HV4",
+        "LV5",
+        "LV6",
+        "LV5",
+        "LV5",
+        "HV4",
+        "HV1",
+        "SCATTER",
+        "LV5",
+        "LV4",
+        "HV3",
+        "LV4",
+        "HV4",
+        "LV5",
+        "LV4",
+        "HV4",
+        "LV5",
+        "HV4",
+        "LV5",
+        "HV4",
+        "HV4",
+        "LV3",
+        "LV5",
+        "LV5",
+        "HV4",
+        "LV5",
+        "WILD",
+        "LV4",
+        "HV4",
+        "LV5",
+        "HV4",
+        "LV6",
+        "LV1",
+        "LV5",
+        "LV5",
+        "HV4",
+        "HV4",
+        "HV2",
+        "HV4",
+        "LV3",
+        "LV3",
+        "HV1",
+        "LV2",
+        "HV4",
+        "HV5",
+        "LV6",
+        "LV4",
+        "HV2",
+        "HV4",
+        "LV4",
+        "LV4",
+        "HV2",
+        "LV5",
+        "LV5",
+        "SCATTER",
+        "HV3",
+        "LV4",
+        "LV6",
+        "LV5",
+        "LV5",
+        "LV3",
+        "HV1",
+        "HV1",
+        "HV1",
+        "HV4",
+        "LV5",
+        "SCATTER",
+        "LV5",
+        "LV5",
+        "HV4",
+        "HV1",
+        "LV5",
+        "LV4",
+        "HV3",
+        "LV4",
+        "HV4",
+        "LV5",
+        "WILD",
+        "HV4",
+        "LV5",
+        "HV4",
+        "LV5",
+        "HV4",
+        "HV4",
+        "LV3",
+        "LV5",
+        "LV5",
+        "HV4",
+        "LV5",
+        "WILD",
+        "LV4",
+        "HV4",
+        "LV5",
+        "HV4",
+        "LV6",
+        "LV1",
+        "LV5",
+        "LV5",
+        "HV4",
+        "HV4",
+        "HV2",
+        "HV4",
+        "LV3",
+        "LV3",
+        "HV1",
+        "LV2",
+        "HV4",
+        "HV5",
+        "LV6",
+        "COR",
+        "COR",
+        "COR"
+      ],
+      "reel_4": [
+        "HV1",
+        "HV1",
+        "HV1",
+        "LV2",
+        "LV5",
+        "LV2",
+        "LV3",
+        "LV5",
+        "LV1",
+        "WILD",
+        "LV5",
+        "LV2",
+        "LV5",
+        "LV3",
+        "LV6",
+        "LV6",
+        "LV5",
+        "LV3",
+        "LV5",
+        "LV2",
+        "HV1",
+        "LV6",
+        "LV3",
+        "LV5",
+        "HV1",
+        "HV5",
+        "HV4",
+        "HV3",
+        "HV3",
+        "SCATTER",
+        "HV3",
+        "HV3",
+        "LV5",
+        "LV5",
+        "HV2",
+        "LV5",
+        "LV5",
+        "HV3",
+        "LV1",
+        "LV5",
+        "LV1",
+        "LV4",
+        "HV1",
+        "LV1",
+        "LV1",
+        "LV5",
+        "LV1",
+        "WILD",
+        "LV5",
+        "LV1",
+        "LV1",
+        "LV5",
+        "HV3",
+        "LV1",
+        "LV1",
+        "HV1",
+        "LV5",
+        "HV2",
+        "LV2",
+        "HV3",
+        "LV3",
+        "COR",
+        "COR",
+        "COR",
+        "LV1"
+      ],
+      "reel_5": [
+        "LV2",
+        "LV2",
+        "HV5",
+        "HV3",
+        "HV3",
+        "LV3",
+        "LV3",
+        "LV1",
+        "HV4",
+        "HV3",
+        "LV5",
+        "LV5",
+        "LV5",
+        "WILD",
+        "HV2",
+        "HV2",
+        "HV3",
+        "LV1",
+        "LV1",
+        "LV4",
+        "HV5",
+        "LV6",
+        "HV1",
+        "LV1",
+        "LV1",
+        "LV3",
+        "LV2",
+        "HV4",
+        "HV5",
+        "LV1",
+        "SCATTER",
+        "LV5",
+        "LV5",
+        "HV1",
+        "HV4",
+        "HV4",
+        "LV5",
+        "HV4",
+        "HV3",
+        "LV1",
+        "LV1",
+        "HV5",
+        "HV4",
+        "HV4",
+        "HV5",
+        "HV3",
+        "LV3",
+        "LV5",
+        "HV3",
+        "HV1",
+        "LV1",
+        "HV5",
+        "HV2",
+        "HV3",
+        "LV1",
+        "LV4",
+        "HV1",
+        "HV1",
+        "HV1",
+        "LV4",
+        "HV2",
+        "LV2",
+        "LV4",
+        "HV5",
+        "LV3",
+        "HV1",
+        "WILD",
+        "LV2",
+        "LV2",
+        "HV5",
+        "LV3",
+        "HV2",
+        "HV2",
+        "LV5",
+        "LV5",
+        "HV4",
+        "HV3",
+        "HV5",
+        "LV2",
+        "LV2",
+        "COR",
+        "COR",
+        "COR"
+      ],
+      "reel_6": [
+        "COR",
+        "LV3",
+        "COLLECT",
+        "HV4",
+        "HV3",
+        "HV5",
+        "LV5",
+        "COR",
+        "COR",
+        "HV2",
+        "HV2",
+        "LV5",
+        "LV3",
+        "COLLECT",
+        "HV3",
+        "LV3",
+        "LV5",
+        "HV3",
+        "HV1",
+        "HV5",
+        "HV4",
+        "HV3",
+        "SCATTER",
+        "HV4",
+        "LV1",
+        "HV5",
+        "HV4",
+        "HV4",
+        "LV1",
+        "SCATTER",
+        "LV1",
+        "HV4",
+        "HV5",
+        "LV2",
+        "HV3",
+        "HV3",
+        "HV5",
+        "LV5",
+        "HV1",
+        "HV1",
+        "HV1",
+        "LV2",
+        "HV3",
+        "LV1",
+        "LV5",
+        "LV6",
+        "LV1",
+        "LV4",
+        "WILD",
+        "HV3",
+        "HV4",
+        "LV1",
+        "LV5",
+        "HV1",
+        "LV1",
+        "HV4",
+        "HV1",
+        "LV1",
+        "LV1",
+        "HV3",
+        "HV3",
+        "HV3",
+        "LV1",
+        "HV1",
+        "LV1",
+        "LV5",
+        "HV2",
+        "LV4",
+        "LV1",
+        "HV5",
+        "HV1",
+        "LV6",
+        "LV2",
+        "LV2",
+        "LV2",
+        "HV3",
+        "HV2",
+        "LV1",
+        "WILD",
+        "LV3",
+        "LV2",
+        "HV5"
+      ]
+    },
+    "B2": {
+      "reel_1": [
+        "HV1",
+        "LV1",
+        "LV2",
+        "LV4",
+        "LV1",
+        "HV3",
+        "LV6",
+        "LV6",
+        "HV3",
+        "LV4",
+        "HV1",
+        "LV6",
+        "HV5",
+        "HV1",
+        "LV1",
+        "LV4",
+        "LV1",
+        "HV3",
+        "LV3",
+        "LV6",
+        "LV6",
+        "HV4",
+        "HV3",
+        "LV4",
+        "HV1",
+        "LV5"
+      ],
+      "reel_2": [
+        "HV2",
+        "LV3",
+        "LV2",
+        "LV2",
+        "LV5",
+        "HV2",
+        "HV4",
+        "HV5",
+        "LV3",
+        "LV5",
+        "HV4",
+        "HV5",
+        "LV1",
+        "LV4",
+        "HV2",
+        "LV3",
+        "LV2",
+        "LV2",
+        "LV5",
+        "LV6",
+        "HV2",
+        "HV4",
+        "HV5",
+        "LV3",
+        "LV5"
+      ],
+      "reel_3": [
+        "LV1",
+        "LV2",
+        "LV4",
+        "LV1",
+        "HV3",
+        "LV6",
+        "LV6",
+        "HV3",
+        "LV4",
+        "HV1",
+        "LV6",
+        "HV5",
+        "HV1",
+        "LV1",
+        "HV2",
+        "LV4",
+        "LV1",
+        "HV3",
+        "LV3",
+        "LV6",
+        "LV6",
+        "HV4",
+        "HV3",
+        "LV4",
+        "HV1",
+        "LV5"
+      ],
+      "reel_4": [
+        "HV2",
+        "LV3",
+        "LV2",
+        "LV2",
+        "LV5",
+        "HV2",
+        "HV4",
+        "HV5",
+        "LV3",
+        "LV5",
+        "HV4",
+        "HV5",
+        "HV1",
+        "LV1",
+        "LV4",
+        "HV2",
+        "LV3",
+        "LV2",
+        "HV3",
+        "LV2",
+        "LV5",
+        "LV6",
+        "HV2",
+        "HV4",
+        "HV5",
+        "LV3",
+        "LV5"
+      ],
+      "reel_5": [
+        "HV1",
+        "LV1",
+        "LV2",
+        "LV4",
+        "LV1",
+        "HV3",
+        "LV6",
+        "LV6",
+        "HV3",
+        "LV4",
+        "HV1",
+        "LV6",
+        "HV5",
+        "HV1",
+        "LV1",
+        "HV2",
+        "LV4",
+        "LV1",
+        "HV3",
+        "LV3",
+        "LV6",
+        "LV6",
+        "HV4",
+        "HV3",
+        "LV4",
+        "HV1",
+        "LV5"
+      ],
+      "reel_6": [
+        "HV2",
+        "LV3",
+        "LV2",
+        "LV2",
+        "LV5",
+        "HV2",
+        "HV4",
+        "HV5",
+        "LV3",
+        "LV5",
+        "HV4",
+        "HV5",
+        "HV1",
+        "LV1",
+        "LV4",
+        "HV2",
+        "LV3",
+        "LV2",
+        "HV3",
+        "LV2",
+        "LV5",
+        "LV6",
+        "HV2",
+        "HV4",
+        "HV5",
+        "LV3",
+        "LV5"
+      ]
+    },
+    "F1": {
+      "reel_1": [
+        "HV2",
+        "LV2",
+        "LV3",
+        "HV3",
+        "HV1",
+        "LV2",
+        "HV4",
+        "HV3",
+        "LV4",
+        "LV2",
+        "LV3",
+        "HV3",
+        "LV4",
+        "HV2",
+        "LV2",
+        "LV4",
+        "LV3",
+        "HV3",
+        "HV2",
+        "LV2",
+        "LV1",
+        "LV6",
+        "LV3",
+        "LV4",
+        "HV1",
+        "HV2",
+        "HV3",
+        "HV4",
+        "LV5",
+        "LV2",
+        "LV4",
+        "LV3",
+        "HV1",
+        "HV2",
+        "HV5",
+        "LV2",
+        "LV4",
+        "LV3",
+        "LV2",
+        "LV6",
+        "HV2",
+        "LV4",
+        "LV3",
+        "LV4",
+        "HV1",
+        "LV2",
+        "HV2",
+        "LV1",
+        "LV3",
+        "LV4",
+        "HV1",
+        "LV2",
+        "LV3",
+        "HV5",
+        "LV2",
+        "LV3",
+        "HV2",
+        "LV4",
+        "LV2",
+        "LV6",
+        "LV3",
+        "LV4",
+        "LV2",
+        "HV3",
+        "LV2",
+        "LV3",
+        "LV6",
+        "LV4",
+        "LV3",
+        "HV2",
+        "LV4",
+        "LV4",
+        "HV4",
+        "LV3",
+        "LV2",
+        "LV3",
+        "LV6",
+        "LV4",
+        "LV3",
+        "HV5",
+        "LV3",
+        "LV4",
+        "LV2",
+        "LV4",
+        "LV3",
+        "HV2",
+        "HV1",
+        "LV1",
+        "LV4",
+        "LV2",
+        "LV3",
+        "LV4",
+        "HV2",
+        "LV2",
+        "LV2",
+        "HV3",
+        "LV4",
+        "LV2",
+        "LV3",
+        "HV3",
+        "LV4",
+        "LV2",
+        "HV4",
+        "LV3",
+        "LV4",
+        "HV2",
+        "LV2",
+        "LV4",
+        "LV3",
+        "LV4",
+        "LV6",
+        "LV2",
+        "LV1",
+        "LV3",
+        "LV3",
+        "LV4",
+        "LV2",
+        "LV5",
+        "HV1",
+        "LV6",
+        "LV5",
+        "LV2",
+        "LV4",
+        "LV3",
+        "LV4",
+        "HV1",
+        "HV2",
+        "LV4",
+        "LV4",
+        "LV2",
+        "LV3",
+        "LV3",
+        "HV1",
+        "LV4",
+        "LV2",
+        "SCATTER",
+        "LV3",
+        "LV4",
+        "HV1",
+        "HV3",
+        "LV2",
+        "LV3",
+        "HV1",
+        "SCATTER"
+      ],
+      "reel_2": [
+        "LV1",
+        "LV6",
+        "LV1",
+        "LV5",
+        "SCATTER",
+        "LV1",
+        "LV4",
+        "HV1",
+        "LV1",
+        "LV4",
+        "LV1",
+        "WILD",
+        "LV5",
+        "LV1",
+        "LV4",
+        "LV2",
+        "LV4",
+        "HV2",
+        "HV4",
+        "HV2",
+        "LV6",
+        "LV4",
+        "HV4",
+        "HV1",
+        "HV5",
+        "LV3",
+        "LV3",
+        "LV1",
+        "LV5",
+        "WILD",
+        "LV4",
+        "LV1",
+        "LV5",
+        "HV1",
+        "LV6",
+        "HV5",
+        "SCATTER",
+        "HV1",
+        "LV1",
+        "HV3",
+        "HV2",
+        "LV1",
+        "LV1",
+        "HV1",
+        "LV1",
+        "HV5",
+        "LV1",
+        "HV4",
+        "HV2",
+        "LV1",
+        "HV5",
+        "HV2",
+        "HV1",
+        "HV3",
+        "HV4",
+        "HV2",
+        "LV5",
+        "LV5",
+        "HV4",
+        "HV2",
+        "HV1",
+        "LV4",
+        "HV4",
+        "LV4",
+        "HV5",
+        "LV3",
+        "HV1",
+        "LV1",
+        "LV5",
+        "LV3",
+        "WILD",
+        "LV1",
+        "HV4",
+        "LV5",
+        "HV1",
+        "HV5",
+        "HV4",
+        "HV1",
+        "SCATTER",
+        "HV3",
+        "HV2",
+        "LV1",
+        "LV1",
+        "HV1",
+        "LV1",
+        "HV5",
+        "LV1",
+        "HV4",
+        "LV4",
+        "LV1",
+        "HV5"
+      ],
+      "reel_3": [
+        "LV4",
+        "HV5",
+        "LV3",
+        "LV4",
+        "LV6",
+        "WILD",
+        "LV2",
+        "LV3",
+        "LV4",
+        "HV4",
+        "HV1",
+        "LV4",
+        "HV5",
+        "SCATTER",
+        "HV3",
+        "HV2",
+        "LV4",
+        "LV6",
+        "HV4",
+        "HV4",
+        "HV4",
+        "LV5",
+        "HV1",
+        "HV2",
+        "LV5",
+        "LV4",
+        "LV5",
+        "LV4",
+        "LV6",
+        "LV5",
+        "LV3",
+        "HV4",
+        "LV5",
+        "HV4",
+        "LV3",
+        "HV3",
+        "HV4",
+        "LV2",
+        "HV1",
+        "LV5",
+        "LV3",
+        "LV5",
+        "HV4",
+        "LV5",
+        "HV2",
+        "HV1",
+        "HV4",
+        "LV4",
+        "HV3",
+        "LV4",
+        "LV6",
+        "LV2",
+        "SCATTER",
+        "HV4",
+        "LV2",
+        "LV3",
+        "LV5",
+        "WILD",
+        "LV6",
+        "LV2",
+        "LV5",
+        "HV4",
+        "LV1",
+        "HV3",
+        "LV4",
+        "HV5",
+        "HV4",
+        "LV4",
+        "HV2",
+        "LV4",
+        "HV4",
+        "HV1",
+        "LV4",
+        "HV5",
+        "HV2",
+        "HV3",
+        "HV2",
+        "LV4",
+        "HV1",
+        "LV6",
+        "LV2",
+        "LV5",
+        "WILD",
+        "LV1",
+        "LV4",
+        "LV6",
+        "LV5",
+        "HV1",
+        "HV2",
+        "HV4",
+        "LV5",
+        "HV4",
+        "LV3",
+        "HV3",
+        "HV4",
+        "LV2",
+        "HV1",
+        "HV1",
+        "HV4",
+        "LV4",
+        "HV5"
+      ],
+      "reel_4": [
+        "HV1",
+        "HV3",
+        "LV6",
+        "LV5",
+        "HV1",
+        "HV5",
+        "LV5",
+        "SCATTER",
+        "HV1",
+        "HV2",
+        "HV4",
+        "HV3",
+        "LV5",
+        "HV5",
+        "HV4",
+        "HV2",
+        "LV6",
+        "LV5",
+        "LV4",
+        "WILD",
+        "LV3",
+        "LV1",
+        "LV4",
+        "LV1",
+        "LV1",
+        "SCATTER",
+        "HV4",
+        "LV1",
+        "LV4",
+        "HV1",
+        "HV5",
+        "LV1",
+        "HV2",
+        "LV2",
+        "LV3",
+        "LV6",
+        "WILD",
+        "LV2",
+        "LV1",
+        "LV5",
+        "HV1",
+        "LV1",
+        "HV3",
+        "HV4",
+        "LV5",
+        "HV2",
+        "LV4",
+        "HV1",
+        "HV3",
+        "HV4",
+        "HV5",
+        "LV1",
+        "LV5",
+        "LV4",
+        "LV6",
+        "WILD",
+        "LV1",
+        "LV4",
+        "LV5",
+        "LV6"
+      ],
+      "reel_5": [
+        "LV2",
+        "HV2",
+        "HV5",
+        "HV3",
+        "LV3",
+        "HV1",
+        "LV1",
+        "HV4",
+        "SCATTER",
+        "LV5",
+        "LV4",
+        "HV1",
+        "HV3",
+        "HV2",
+        "HV2",
+        "HV1",
+        "LV1",
+        "LV2",
+        "LV4",
+        "HV5",
+        "HV1",
+        "HV5",
+        "HV4",
+        "HV3",
+        "LV5",
+        "HV1",
+        "SCATTER",
+        "HV2",
+        "LV1",
+        "HV5",
+        "HV1",
+        "HV4",
+        "HV2",
+        "HV3",
+        "LV3",
+        "LV5",
+        "HV3",
+        "HV1",
+        "LV1",
+        "HV5",
+        "HV2",
+        "HV3",
+        "LV1",
+        "LV4",
+        "LV6",
+        "LV2",
+        "HV1",
+        "LV4",
+        "HV2",
+        "LV2",
+        "LV4",
+        "HV5",
+        "LV3",
+        "HV4",
+        "HV1",
+        "LV2",
+        "LV2",
+        "HV5",
+        "LV3",
+        "HV2",
+        "HV2",
+        "LV5",
+        "LV5",
+        "HV4",
+        "HV1",
+        "LV5",
+        "LV5",
+        "LV5",
+        "LV4",
+        "HV3",
+        "LV3",
+        "LV3",
+        "HV4",
+        "LV2",
+        "HV1",
+        "HV1",
+        "LV2",
+        "LV3",
+        "HV3",
+        "LV3",
+        "HV2",
+        "HV5",
+        "LV3",
+        "SCATTER",
+        "HV2",
+        "HV4",
+        "HV1",
+        "HV5",
+        "HV2",
+        "HV5",
+        "HV1",
+        "HV2",
+        "LV3",
+        "LV5",
+        "LV5",
+        "HV3",
+        "HV1",
+        "HV3",
+        "LV3",
+        "HV1",
+        "HV2",
+        "LV3",
+        "LV1",
+        "HV4",
+        "HV3",
+        "HV1",
+        "HV3",
+        "HV3",
+        "LV2",
+        "HV1",
+        "LV6",
+        "LV1",
+        "HV5",
+        "HV4",
+        "LV5",
+        "LV3",
+        "HV1",
+        "HV3",
+        "HV2",
+        "HV1",
+        "LV3",
+        "HV5",
+        "LV5",
+        "HV4",
+        "LV5",
+        "HV4",
+        "LV5",
+        "LV3",
+        "HV1",
+        "HV2",
+        "LV3",
+        "HV3",
+        "HV3",
+        "LV2",
+        "HV1",
+        "HV5",
+        "HV2",
+        "HV3",
+        "HV4",
+        "HV5",
+        "LV1",
+        "HV1",
+        "HV2",
+        "HV1",
+        "LV5",
+        "HV3",
+        "LV2",
+        "LV6",
+        "HV4",
+        "LV5",
+        "HV2",
+        "HV5",
+        "HV1",
+        "HV4",
+        "HV2",
+        "HV1",
+        "HV1",
+        "HV3",
+        "LV5",
+        "LV2",
+        "LV5",
+        "LV3",
+        "HV1",
+        "HV2",
+        "LV3",
+        "LV5",
+        "HV3"
+      ],
+      "reel_6": [
+        "HV4",
+        "LV3",
+        "HV2",
+        "LV1",
+        "HV3",
+        "HV5",
+        "LV5",
+        "HV1",
+        "HV3",
+        "HV2",
+        "HV2",
+        "LV5",
+        "LV3",
+        "LV6",
+        "HV3",
+        "LV3",
+        "LV5",
+        "HV3",
+        "HV1",
+        "HV5",
+        "HV4",
+        "HV3",
+        "LV1",
+        "HV2",
+        "LV1",
+        "HV5",
+        "HV3",
+        "HV4",
+        "LV1",
+        "LV6",
+        "LV1",
+        "HV4",
+        "HV5",
+        "SCATTER",
+        "HV3",
+        "HV5",
+        "LV5",
+        "HV1",
+        "HV2",
+        "HV4",
+        "HV3",
+        "LV1",
+        "LV5",
+        "HV1",
+        "LV1",
+        "LV4",
+        "HV2",
+        "HV3",
+        "HV4",
+        "LV1",
+        "LV5",
+        "HV1",
+        "LV1",
+        "HV4",
+        "LV6",
+        "LV1",
+        "LV1",
+        "HV3",
+        "HV3",
+        "HV3",
+        "LV1",
+        "HV1",
+        "LV1",
+        "LV5",
+        "HV2",
+        "LV4",
+        "LV1",
+        "HV5",
+        "HV1",
+        "HV5",
+        "LV1",
+        "LV1",
+        "LV1",
+        "HV3",
+        "HV2",
+        "LV1",
+        "LV1",
+        "LV1",
+        "HV1",
+        "HV5",
+        "LV5",
+        "HV4",
+        "LV4",
+        "HV5",
+        "LV1",
+        "LV1",
+        "HV1",
+        "HV3",
+        "LV5",
+        "HV3",
+        "HV1",
+        "HV5",
+        "LV5",
+        "HV3",
+        "HV5",
+        "LV5",
+        "HV1",
+        "HV5",
+        "HV3",
+        "LV1",
+        "LV6",
+        "HV3",
+        "HV5",
+        "LV1",
+        "HV3",
+        "HV4",
+        "HV5",
+        "LV1",
+        "HV4",
+        "LV1",
+        "HV5",
+        "HV4",
+        "HV4",
+        "LV1",
+        "LV1",
+        "LV4",
+        "HV4",
+        "HV5",
+        "SCATTER",
+        "HV3",
+        "HV4",
+        "LV6",
+        "HV2",
+        "HV3",
+        "HV4",
+        "HV5",
+        "HV3",
+        "HV5",
+        "HV4",
+        "HV2",
+        "HV3",
+        "HV5",
+        "HV4",
+        "HV3",
+        "HV1",
+        "HV1",
+        "HV5",
+        "LV1",
+        "HV3",
+        "HV5",
+        "HV5",
+        "HV4",
+        "HV3",
+        "LV1",
+        "HV4",
+        "HV3",
+        "LV2",
+        "LV2",
+        "HV4",
+        "LV4",
+        "HV5",
+        "LV1",
+        "HV4",
+        "HV3",
+        "LV2",
+        "HV4",
+        "HV3",
+        "HV5",
+        "HV3",
+        "HV2",
+        "LV2",
+        "HV5",
+        "HV4",
+        "SCATTER",
+        "HV3",
+        "HV5",
+        "HV5",
+        "HV4",
+        "LV5",
+        "HV2",
+        "HV1"
+      ]
+    }
+  },
+  "reel_sizes": {
+    "B1": {
+      "reel_1": 89,
+      "reel_2": 82,
+      "reel_3": 130,
+      "reel_4": 65,
+      "reel_5": 83,
+      "reel_6": 82
+    },
+    "B2": {
+      "reel_1": 26,
+      "reel_2": 25,
+      "reel_3": 26,
+      "reel_4": 27,
+      "reel_5": 27,
+      "reel_6": 27
+    },
+    "F1": {
+      "reel_1": 144,
+      "reel_2": 91,
+      "reel_3": 101,
+      "reel_4": 60,
+      "reel_5": 167,
+      "reel_6": 171
+    }
+  },
+  "probability_tables": {
+    "base_reelset_selection_weights": {
+      "B1": 58,
+      "B2": 42
+    },
+    "additional_cor_trigger_weights": {
+      "yes": 1,
+      "no": 9
+    },
+    "additional_cor_count_weights": {
+      "1": 240,
+      "2": 200,
+      "3": 150,
+      "4": 100,
+      "5": 80
+    },
+    "base_cor_value_weights_x_bet": {
+      "0.5": 7000,
+      "1": 6000,
+      "1.5": 6000,
+      "2": 5000,
+      "2.5": 3000,
+      "3": 3000,
+      "3.5": 2500,
+      "4": 2000,
+      "5": 1000,
+      "6": 1000,
+      "7": 1000,
+      "7.5": 100,
+      "8": 100,
+      "9": 50,
+      "10": 50,
+      "12.5": 50,
+      "25": 30,
+      "50": 20,
+      "125": 10,
+      "250": 10,
+      "500": 5,
+      "2000": 1
+    },
+    "free_spins_wild_multiplier_weights": {
+      "2": 480,
+      "3": 545,
+      "5": 360
+    },
+    "blitz_collect_count_weights": {
+      "1": 75,
+      "2": 25
+    },
+    "blitz_cor_occurrence_weights_per_available_position": {
+      "yes": 26,
+      "no": 74
+    },
+    "blitz_good_cor_value_weights": {
+      "0.5": 0,
+      "1": 0,
+      "1.5": 0,
+      "2": 0,
+      "2.5": 0,
+      "3": 0,
+      "3.5": 0,
+      "4": 606,
+      "5": 893,
+      "6": 600,
+      "7": 600,
+      "7.5": 500,
+      "8": 500,
+      "9": 500,
+      "10": 500,
+      "12.5": 400,
+      "25": 300,
+      "50": 100,
+      "125": 30,
+      "250": 10,
+      "500": 10,
+      "2000": 3
+    },
+    "blitz_bad_cor_value_weights": {
+      "0.5": 17500,
+      "1": 7000,
+      "1.5": 3000,
+      "2": 2500,
+      "2.5": 2000,
+      "3": 2000,
+      "3.5": 1500,
+      "4": 1000,
+      "5": 1000,
+      "6": 500,
+      "7": 500,
+      "7.5": 100,
+      "8": 100,
+      "9": 50,
+      "10": 50,
+      "12.5": 50,
+      "25": 30,
+      "50": 20,
+      "125": 10,
+      "250": 0,
+      "500": 0,
+      "2000": 0
+    }
+  },
+  "paytables": {
+    "normalized_factors": {
+      "HV1": {
+        "2": 20,
+        "3": 30,
+        "4": 40,
+        "5": 50,
+        "6": 100
+      },
+      "HV2": {
+        "2": 10,
+        "3": 20,
+        "4": 30,
+        "5": 40,
+        "6": 50
+      },
+      "HV3": {
+        "2": 10,
+        "3": 20,
+        "4": 30,
+        "5": 40,
+        "6": 50
+      },
+      "HV4": {
+        "2": 4,
+        "3": 16,
+        "4": 24,
+        "5": 30,
+        "6": 40
+      },
+      "HV5": {
+        "2": 4,
+        "3": 16,
+        "4": 24,
+        "5": 30,
+        "6": 40
+      },
+      "LV1": {
+        "3": 10,
+        "4": 20,
+        "5": 24,
+        "6": 30
+      },
+      "LV2": {
+        "3": 10,
+        "4": 20,
+        "5": 24,
+        "6": 30
+      },
+      "LV3": {
+        "3": 8,
+        "4": 16,
+        "5": 20,
+        "6": 24
+      },
+      "LV4": {
+        "3": 8,
+        "4": 16,
+        "5": 20,
+        "6": 24
+      },
+      "LV5": {
+        "3": 6,
+        "4": 10,
+        "5": 16,
+        "6": 20
+      },
+      "LV6": {
+        "3": 6,
+        "4": 10,
+        "5": 16,
+        "6": 20
+      },
+      "SCATTER": {
+        "3": 20,
+        "4": 40,
+        "5": 60,
+        "6": 100
+      }
+    },
+    "scatter_table_retained_for_traceability": {
+      "3": 20,
+      "4": 40,
+      "5": 60,
+      "6": 100
+    },
+    "scatter_direct_award_policy": "zero direct win unless human review later reinstates SCATTER paytable awards"
+  },
+  "core_data_structures": {
+    "SymbolId": "enum/string canonical Planner label",
+    "SymbolCell": "symbol plus optional cor_value_x_bet, jackpot_name, wild_multiplier",
+    "PayWindow": "row-major 4x6 matrix addressed as [row][reel]",
+    "ReelStrip": "ordered list of SymbolId for one reel",
+    "ReelSet": "six ReelStrip objects keyed reel_1..reel_6",
+    "WeightedTable": "map of outcome to non-negative integer weight",
+    "WinBuckets": "line_win_factor, scatter_win_factor, cor_win_x_bet, feature_win_x_bet, total_win",
+    "RngSource": "deterministic injectable source for weighted choice, reel stop choice, and position sampling"
+  },
+  "state_objects": [
+    {
+      "name": "idle",
+      "source": "planner.states"
+    },
+    {
+      "name": "bet_placed",
+      "source": "planner.states"
+    },
+    {
+      "name": "base_spin_started",
+      "source": "planner.states"
+    },
+    {
+      "name": "base_window_generated",
+      "source": "planner.states"
+    },
+    {
+      "name": "base_window_augmented",
+      "source": "planner.states"
+    },
+    {
+      "name": "base_wins_evaluated",
+      "source": "planner.states"
+    },
+    {
+      "name": "collect_evaluated",
+      "source": "planner.states"
+    },
+    {
+      "name": "feature_selection",
+      "source": "planner.states"
+    },
+    {
+      "name": "free_spins_active",
+      "source": "planner.states"
+    },
+    {
+      "name": "blitz_spins_active",
+      "source": "planner.states"
+    },
+    {
+      "name": "feature_complete",
+      "source": "planner.states"
+    },
+    {
+      "name": "payout_complete",
+      "source": "planner.states"
+    },
+    {
+      "name": "BaseGameState",
+      "entry": "bet placed",
+      "exit": "payout complete or feature selection",
+      "stored_data": [
+        "selected_reelset",
+        "stops",
+        "pay_window",
+        "win_buckets",
+        "scatter_count"
+      ]
+    },
+    {
+      "name": "FreeSpinState",
+      "entry": "feature_choice=free_spins",
+      "exit": "remaining_spins=0",
+      "stored_data": [
+        "remaining_spins",
+        "awarded_spins",
+        "feature_win",
+        "wild_multiplier_window"
+      ]
+    },
+    {
+      "name": "BlitzSpinState",
+      "entry": "feature_choice=blitz_spins",
+      "exit": "awarded Blitz spins exhausted",
+      "stored_data": [
+        "remaining_spins",
+        "current_blitz_window",
+        "feature_win"
+      ]
+    }
+  ],
+  "function_contracts": [
+    {
+      "name": "runOneSpin",
+      "purpose": "Resolve one paid base spin and any selected feature branch.",
+      "inputs": [
+        {
+          "name": "wager",
+          "shape": "[1]",
+          "type": "WagerConfig"
+        },
+        {
+          "name": "feature_choice",
+          "shape": "[1]",
+          "type": "FeatureChoice|null"
+        },
+        {
+          "name": "rng",
+          "shape": "[1]",
+          "type": "RngSource"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "spin_result",
+          "shape": "[1]",
+          "type": "SpinResult"
+        }
+      ],
+      "global_dependencies": [
+        "MINIMUM_BET_FIXED_COINS",
+        "BASE_BET_FROM_PARSHEET",
+        "BASE_REELSET_SELECTION_WEIGHTS",
+        "FEATURE_SELECTION_AWARDS"
+      ],
+      "pseudocode": [
+        "validate wager against known minimum bet; do not enforce missing maximum or denomination",
+        "select base reelset using B1/B2 weights",
+        "generate base pay window",
+        "apply optional base COR injection",
+        "evaluate base ways, scatter count, and collect wins",
+        "if base scatter count >= 3, require feature_choice and execute selected feature award",
+        "aggregate win buckets and return SpinResult"
+      ],
+      "emits_events": [
+        "SpinStarted",
+        "PayoutCalculated"
+      ]
+    },
+    {
+      "name": "selectBaseReelset",
+      "purpose": "Select B1 or B2 for a base spin.",
+      "inputs": [
+        {
+          "name": "rng",
+          "shape": "[1]",
+          "type": "RngSource"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "reelset_name",
+          "shape": "[1]",
+          "type": "string"
+        }
+      ],
+      "global_dependencies": [
+        "BASE_REELSET_SELECTION_WEIGHTS"
+      ],
+      "pseudocode": [
+        "weighted choice over B1=58 and B2=42"
+      ],
+      "emits_events": [
+        "ReelsetSelected"
+      ]
+    },
+    {
+      "name": "generatePayWindow",
+      "purpose": "Build a visible window from a named reelset and reel stop positions.",
+      "inputs": [
+        {
+          "name": "reelset_name",
+          "shape": "[1]",
+          "type": "string"
+        },
+        {
+          "name": "rng_or_forced_stops",
+          "shape": "[6]",
+          "type": "RngSource|int[6]"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "pay_window",
+          "shape": "[4x6]",
+          "type": "PayWindow"
+        },
+        {
+          "name": "stops",
+          "shape": "[6]",
+          "type": "int[6]"
+        }
+      ],
+      "global_dependencies": [
+        "NO_OF_REELS",
+        "NO_OF_ROWS",
+        "REELSETS",
+        "REEL_SIZES",
+        "VISIBLE_WINDOW_EXTRACTION"
+      ],
+      "pseudocode": [
+        "for each reel choose or accept a stop index in [0, reel_size-1]",
+        "treat stop index as top visible symbol",
+        "fill rows downward with (stop_index + row) mod reel_length",
+        "store row-major as pay_window[row][reel]"
+      ],
+      "emits_events": [
+        "WindowGenerated"
+      ]
+    },
+    {
+      "name": "injectAdditionalCOR",
+      "purpose": "Optionally add extra COR symbols to the base-game window.",
+      "inputs": [
+        {
+          "name": "pay_window",
+          "shape": "[4x6]",
+          "type": "PayWindow"
+        },
+        {
+          "name": "rng",
+          "shape": "[1]",
+          "type": "RngSource"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "augmented_window",
+          "shape": "[4x6]",
+          "type": "PayWindow"
+        }
+      ],
+      "global_dependencies": [
+        "ADDITIONAL_COR_TRIGGER_WEIGHTS",
+        "ADDITIONAL_COR_COUNT_WEIGHTS",
+        "BASE_COR_VALUE_WEIGHTS_X_BET"
+      ],
+      "pseudocode": [
+        "choose trigger yes/no with weights 1/9",
+        "if no, return unchanged window",
+        "if yes, choose added COR count by weights",
+        "sample eligible positions excluding existing COLLECT, WILD, or SCATTER",
+        "assign each added COR a value from base COR value weights"
+      ],
+      "emits_events": [
+        "WindowAugmented"
+      ]
+    },
+    {
+      "name": "evaluateBaseWindow",
+      "purpose": "Evaluate all base-game win buckets after final base window is known.",
+      "inputs": [
+        {
+          "name": "pay_window",
+          "shape": "[4x6]",
+          "type": "PayWindow"
+        },
+        {
+          "name": "total_bet",
+          "shape": "[1]",
+          "type": "number"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "base_evaluation",
+          "shape": "[1]",
+          "type": "BaseEvaluation"
+        }
+      ],
+      "global_dependencies": [
+        "PAYTABLE_NORMALIZED",
+        "STANDARD_SYMBOLS",
+        "WILD_RULES",
+        "SCATTER_RULES",
+        "COLLECT_RULES"
+      ],
+      "pseudocode": [
+        "evaluate ways wins",
+        "count SCATTER symbols",
+        "set direct scatter win to zero per human review when SCATTER wins are not mentioned",
+        "evaluate collect bucket if COLLECT and COR/jackpot-bearing COR are visible",
+        "return line, scatter, COR, and trigger metadata"
+      ],
+      "emits_events": [
+        "WinEvaluated",
+        "CollectEvaluated"
+      ]
+    },
+    {
+      "name": "evaluateWaysWins",
+      "purpose": "Evaluate 4096-way left-to-right standard-symbol wins.",
+      "inputs": [
+        {
+          "name": "pay_window",
+          "shape": "[4x6]",
+          "type": "PayWindow"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "ways_result",
+          "shape": "[1]",
+          "type": "WaysResult"
+        }
+      ],
+      "global_dependencies": [
+        "PAYTABLE_NORMALIZED",
+        "STANDARD_SYMBOLS",
+        "WILD_SUBSTITUTION"
+      ],
+      "pseudocode": [
+        "for each standard symbol, count matching or WILD symbols on consecutive reels from reel 1",
+        "stop at first reel with zero matches",
+        "if matched kind has a paytable tier, ways = product of per-reel match counts",
+        "add paytable factor times ways to line win factor",
+        "WILD substitutes only for standard symbols"
+      ],
+      "emits_events": [
+        "WaysEvaluated"
+      ]
+    },
+    {
+      "name": "countScatters",
+      "purpose": "Count SCATTER symbols anywhere in a window.",
+      "inputs": [
+        {
+          "name": "pay_window",
+          "shape": "[4x6]",
+          "type": "PayWindow"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "scatter_count",
+          "shape": "[1]",
+          "type": "int"
+        }
+      ],
+      "global_dependencies": [
+        "SCATTER_SYMBOL"
+      ],
+      "pseudocode": [
+        "count cells equal to SCATTER; WILD never substitutes for SCATTER"
+      ],
+      "emits_events": []
+    },
+    {
+      "name": "evaluateScatterWin",
+      "purpose": "Resolve direct SCATTER payout bucket.",
+      "inputs": [
+        {
+          "name": "scatter_count",
+          "shape": "[1]",
+          "type": "int"
+        },
+        {
+          "name": "mode",
+          "shape": "[1]",
+          "type": "GameMode"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "scatter_win_factor",
+          "shape": "[1]",
+          "type": "number"
+        }
+      ],
+      "global_dependencies": [
+        "HUMAN_REVIEW_SCATTER_NO_DIRECT_WIN"
+      ],
+      "pseudocode": [
+        "return zero direct SCATTER win when SCATTER wins are not mentioned; keep scatter count for triggers and retriggers"
+      ],
+      "emits_events": []
+    },
+    {
+      "name": "evaluateCollect",
+      "purpose": "Evaluate COLLECT/COR collection in base game or Blitz Spins.",
+      "inputs": [
+        {
+          "name": "pay_window",
+          "shape": "[4x6]",
+          "type": "PayWindow"
+        },
+        {
+          "name": "mode",
+          "shape": "[1]",
+          "type": "GameMode"
+        },
+        {
+          "name": "total_bet",
+          "shape": "[1]",
+          "type": "number"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "collect_result",
+          "shape": "[1]",
+          "type": "CollectResult"
+        }
+      ],
+      "global_dependencies": [
+        "COLLECT_ALLOWED_REELS",
+        "COLLECT_ACTIVE_MODES",
+        "JACKPOT_VALUES_X_BET"
+      ],
+      "pseudocode": [
+        "if mode not base_game or blitz_spins return zero",
+        "find COLLECT cells on reel 1 and reel 6",
+        "find all visible COR and jackpot-bearing COR cells",
+        "for each COLLECT independently sum all COR and jackpot values",
+        "multiply collected x-bet sum by total bet for payout amount"
+      ],
+      "emits_events": [
+        "CollectEvaluated"
+      ]
+    },
+    {
+      "name": "resolveFeatureSelection",
+      "purpose": "Map base scatter count and player choice to a feature award.",
+      "inputs": [
+        {
+          "name": "scatter_count",
+          "shape": "[1]",
+          "type": "int"
+        },
+        {
+          "name": "feature_choice",
+          "shape": "[1]",
+          "type": "FeatureChoice"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "feature_award",
+          "shape": "[1]",
+          "type": "FeatureAward"
+        }
+      ],
+      "global_dependencies": [
+        "FEATURE_SELECTION_AWARDS"
+      ],
+      "pseudocode": [
+        "require scatter_count in 3..6",
+        "select free_spins or blitz_spins award from table",
+        "do not resolve Buy Bonus because scope is ambiguous"
+      ],
+      "emits_events": [
+        "FeatureTriggered"
+      ]
+    },
+    {
+      "name": "runFreeSpins",
+      "purpose": "Resolve the Free Spins feature.",
+      "inputs": [
+        {
+          "name": "initial_spins",
+          "shape": "[1]",
+          "type": "int"
+        },
+        {
+          "name": "rng",
+          "shape": "[1]",
+          "type": "RngSource"
+        },
+        {
+          "name": "total_bet",
+          "shape": "[1]",
+          "type": "number"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "feature_result",
+          "shape": "[1]",
+          "type": "FeatureResult"
+        }
+      ],
+      "global_dependencies": [
+        "F1_REELSET",
+        "FREE_SPINS_RETRIGGER_AWARDS",
+        "WILD_MULTIPLIER_WEIGHTS"
+      ],
+      "pseudocode": [
+        "while remaining spins > 0 generate F1 window",
+        "assign multipliers to visible WILD symbols using weights 2/3/5",
+        "evaluate ways and scatter count",
+        "multiply non-scatter line wins by product of all visible WILD multipliers",
+        "do not multiply scatter bucket",
+        "add retrigger spins for 2 or more SCATTER",
+        "exit when no spins remain"
+      ],
+      "emits_events": [
+        "FeatureSpinStarted",
+        "FeatureCompleted"
+      ]
+    },
+    {
+      "name": "assignFreeSpinWildMultipliers",
+      "purpose": "Assign multipliers to Free Spins WILD symbols.",
+      "inputs": [
+        {
+          "name": "pay_window",
+          "shape": "[4x6]",
+          "type": "PayWindow"
+        },
+        {
+          "name": "rng",
+          "shape": "[1]",
+          "type": "RngSource"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "wild_multiplier_window",
+          "shape": "[4x6]",
+          "type": "number matrix"
+        }
+      ],
+      "global_dependencies": [
+        "WILD_MULTIPLIER_WEIGHTS"
+      ],
+      "pseudocode": [
+        "for each WILD cell choose multiplier by weights 2=480, 3=545, 5=360",
+        "non-WILD cells have neutral multiplier 1"
+      ],
+      "emits_events": []
+    },
+    {
+      "name": "runBlitzSpins",
+      "purpose": "Resolve the Blitz Spins feature.",
+      "inputs": [
+        {
+          "name": "initial_spins",
+          "shape": "[1]",
+          "type": "int"
+        },
+        {
+          "name": "rng",
+          "shape": "[1]",
+          "type": "RngSource"
+        },
+        {
+          "name": "total_bet",
+          "shape": "[1]",
+          "type": "number"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "feature_result",
+          "shape": "[1]",
+          "type": "FeatureResult"
+        }
+      ],
+      "global_dependencies": [
+        "BLITZ_COLLECT_COUNT_WEIGHTS",
+        "BLITZ_COR_OCCURRENCE_WEIGHTS",
+        "BLITZ_GOOD_COR_VALUE_WEIGHTS",
+        "BLITZ_BAD_COR_VALUE_WEIGHTS"
+      ],
+      "pseudocode": [
+        "for each awarded spin create an empty 4x6 Blitz window",
+        "place 1 or 2 COLLECT symbols on reel 1 and/or reel 6 with max one per reel",
+        "for every non-COLLECT position resolve COR yes/no",
+        "if zero COR were placed, force one COR",
+        "assign exactly one COR value from Good table and all remaining COR values from Bad table",
+        "evaluate collect",
+        "reset screen for next spin",
+        "no retriggers"
+      ],
+      "emits_events": [
+        "FeatureSpinStarted",
+        "FeatureCompleted"
+      ]
+    },
+    {
+      "name": "buildBlitzWindow",
+      "purpose": "Construct one Blitz Spins window.",
+      "inputs": [
+        {
+          "name": "rng",
+          "shape": "[1]",
+          "type": "RngSource"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "pay_window",
+          "shape": "[4x6]",
+          "type": "PayWindow"
+        }
+      ],
+      "global_dependencies": [
+        "BLITZ_SYMBOL_SET",
+        "BLITZ_COLLECT_COUNT_WEIGHTS",
+        "BLITZ_COR_OCCURRENCE_WEIGHTS"
+      ],
+      "pseudocode": [
+        "choose collect count 1 or 2",
+        "place COLLECT only on reel 1 and/or reel 6, max one per reel",
+        "resolve COR on non-COLLECT cells",
+        "force one COR if none appears"
+      ],
+      "emits_events": []
+    },
+    {
+      "name": "assignCORValues",
+      "purpose": "Assign x-bet values to COR symbols for a mode.",
+      "inputs": [
+        {
+          "name": "pay_window",
+          "shape": "[4x6]",
+          "type": "PayWindow"
+        },
+        {
+          "name": "mode",
+          "shape": "[1]",
+          "type": "GameMode"
+        },
+        {
+          "name": "rng",
+          "shape": "[1]",
+          "type": "RngSource"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "valued_window",
+          "shape": "[4x6]",
+          "type": "PayWindow"
+        }
+      ],
+      "global_dependencies": [
+        "BASE_COR_VALUE_WEIGHTS_X_BET",
+        "BLITZ_GOOD_COR_VALUE_WEIGHTS",
+        "BLITZ_BAD_COR_VALUE_WEIGHTS",
+        "JACKPOT_VALUES_X_BET"
+      ],
+      "pseudocode": [
+        "base/injected COR values use base value weights",
+        "Blitz uses Good table exactly once per spin and Bad table for all other CORs",
+        "jackpot-bearing COR values use the same x-bet values as jackpot constants"
+      ],
+      "emits_events": []
+    }
+  ],
+  "pseudocode": {
+    "runOneSpin": [
+      "validate wager against known minimum bet; do not enforce missing maximum or denomination",
+      "select base reelset using B1/B2 weights",
+      "generate base pay window",
+      "apply optional base COR injection",
+      "evaluate base ways, scatter count, and collect wins",
+      "if base scatter count >= 3, require feature_choice and execute selected feature award",
+      "aggregate win buckets and return SpinResult"
+    ],
+    "selectBaseReelset": [
+      "weighted choice over B1=58 and B2=42"
+    ],
+    "generatePayWindow": [
+      "for each reel choose or accept a stop index in [0, reel_size-1]",
+      "treat stop index as top visible symbol",
+      "fill rows downward with (stop_index + row) mod reel_length",
+      "store row-major as pay_window[row][reel]"
+    ],
+    "injectAdditionalCOR": [
+      "choose trigger yes/no with weights 1/9",
+      "if no, return unchanged window",
+      "if yes, choose added COR count by weights",
+      "sample eligible positions excluding existing COLLECT, WILD, or SCATTER",
+      "assign each added COR a value from base COR value weights"
+    ],
+    "evaluateBaseWindow": [
+      "evaluate ways wins",
+      "count SCATTER symbols",
+      "set direct scatter win to zero per human review when SCATTER wins are not mentioned",
+      "evaluate collect bucket if COLLECT and COR/jackpot-bearing COR are visible",
+      "return line, scatter, COR, and trigger metadata"
+    ],
+    "evaluateWaysWins": [
+      "for each standard symbol, count matching or WILD symbols on consecutive reels from reel 1",
+      "stop at first reel with zero matches",
+      "if matched kind has a paytable tier, ways = product of per-reel match counts",
+      "add paytable factor times ways to line win factor",
+      "WILD substitutes only for standard symbols"
+    ],
+    "countScatters": [
+      "count cells equal to SCATTER; WILD never substitutes for SCATTER"
+    ],
+    "evaluateScatterWin": [
+      "return zero direct SCATTER win when SCATTER wins are not mentioned; keep scatter count for triggers and retriggers"
+    ],
+    "evaluateCollect": [
+      "if mode not base_game or blitz_spins return zero",
+      "find COLLECT cells on reel 1 and reel 6",
+      "find all visible COR and jackpot-bearing COR cells",
+      "for each COLLECT independently sum all COR and jackpot values",
+      "multiply collected x-bet sum by total bet for payout amount"
+    ],
+    "resolveFeatureSelection": [
+      "require scatter_count in 3..6",
+      "select free_spins or blitz_spins award from table",
+      "do not resolve Buy Bonus because scope is ambiguous"
+    ],
+    "runFreeSpins": [
+      "while remaining spins > 0 generate F1 window",
+      "assign multipliers to visible WILD symbols using weights 2/3/5",
+      "evaluate ways and scatter count",
+      "multiply non-scatter line wins by product of all visible WILD multipliers",
+      "do not multiply scatter bucket",
+      "add retrigger spins for 2 or more SCATTER",
+      "exit when no spins remain"
+    ],
+    "assignFreeSpinWildMultipliers": [
+      "for each WILD cell choose multiplier by weights 2=480, 3=545, 5=360",
+      "non-WILD cells have neutral multiplier 1"
+    ],
+    "runBlitzSpins": [
+      "for each awarded spin create an empty 4x6 Blitz window",
+      "place 1 or 2 COLLECT symbols on reel 1 and/or reel 6 with max one per reel",
+      "for every non-COLLECT position resolve COR yes/no",
+      "if zero COR were placed, force one COR",
+      "assign exactly one COR value from Good table and all remaining COR values from Bad table",
+      "evaluate collect",
+      "reset screen for next spin",
+      "no retriggers"
+    ],
+    "buildBlitzWindow": [
+      "choose collect count 1 or 2",
+      "place COLLECT only on reel 1 and/or reel 6, max one per reel",
+      "resolve COR on non-COLLECT cells",
+      "force one COR if none appears"
+    ],
+    "assignCORValues": [
+      "base/injected COR values use base value weights",
+      "Blitz uses Good table exactly once per spin and Bad table for all other CORs",
+      "jackpot-bearing COR values use the same x-bet values as jackpot constants"
+    ]
+  },
+  "call_graph": [
+    {
+      "caller": "runOneSpin",
+      "callees": [
+        "selectBaseReelset",
+        "generatePayWindow",
+        "injectAdditionalCOR",
+        "evaluateBaseWindow",
+        "resolveFeatureSelection",
+        "runFreeSpins|runBlitzSpins"
+      ]
+    },
+    {
+      "caller": "evaluateBaseWindow",
+      "callees": [
+        "evaluateWaysWins",
+        "countScatters",
+        "evaluateScatterWin",
+        "evaluateCollect"
+      ]
+    },
+    {
+      "caller": "runFreeSpins",
+      "callees": [
+        "generatePayWindow",
+        "assignFreeSpinWildMultipliers",
+        "evaluateWaysWins",
+        "countScatters",
+        "evaluateScatterWin"
+      ]
+    },
+    {
+      "caller": "runBlitzSpins",
+      "callees": [
+        "buildBlitzWindow",
+        "assignCORValues",
+        "evaluateCollect"
+      ]
+    },
+    {
+      "caller": "injectAdditionalCOR",
+      "callees": [
+        "assignCORValues"
+      ]
+    }
+  ],
+  "execution_traces": {
+    "source_trace_file_requested": [
+      "checks/traces/ref_trace.txt",
+      "checks/traces/trace_ref.txt"
+    ],
+    "source_trace_file_found": false,
+    "verification_status": "blocked_missing_trace_file",
+    "corrected_trace_ref_generated": false,
+    "format_reference": "reference/cpp/trace.cpp Trace emits ->function, indented input/output/Global/Struct lines, and <- function markers.",
+    "canonical_scenarios": [
+      {
+        "name": "base_spin_no_feature",
+        "trace": [
+          "->runOneSpin",
+          "  input wager: WagerConfig shape:[1]",
+          "  input feature_choice: FeatureChoice|null shape:[1]",
+          "  input rng: RngSource shape:[1]",
+          "  ->selectBaseReelset",
+          "  <- selectBaseReelset",
+          "  ->generatePayWindow",
+          "    output pay_window: PayWindow shape:[4x6]",
+          "  <- generatePayWindow",
+          "  ->injectAdditionalCOR",
+          "    input pay_window: PayWindow shape:[4x6]",
+          "    output augmented_window: PayWindow shape:[4x6]",
+          "  <- injectAdditionalCOR",
+          "  ->evaluateBaseWindow",
+          "    ->evaluateWaysWins",
+          "    <- evaluateWaysWins",
+          "    ->countScatters",
+          "    <- countScatters",
+          "    ->evaluateScatterWin",
+          "    <- evaluateScatterWin",
+          "    ->evaluateCollect",
+          "    <- evaluateCollect",
+          "  <- evaluateBaseWindow",
+          "  output spin_result: SpinResult shape:[1]",
+          "<- runOneSpin"
+        ]
+      },
+      {
+        "name": "base_to_free_spins",
+        "trace": [
+          "->runOneSpin",
+          "  ->resolveFeatureSelection",
+          "  <- resolveFeatureSelection",
+          "  ->runFreeSpins",
+          "    ->generatePayWindow",
+          "    <- generatePayWindow",
+          "    ->assignFreeSpinWildMultipliers",
+          "    <- assignFreeSpinWildMultipliers",
+          "    ->evaluateWaysWins",
+          "    <- evaluateWaysWins",
+          "    ->countScatters",
+          "    <- countScatters",
+          "    ->evaluateScatterWin",
+          "    <- evaluateScatterWin",
+          "  <- runFreeSpins",
+          "<- runOneSpin"
+        ]
+      },
+      {
+        "name": "base_to_blitz_spins",
+        "trace": [
+          "->runOneSpin",
+          "  ->resolveFeatureSelection",
+          "  <- resolveFeatureSelection",
+          "  ->runBlitzSpins",
+          "    ->buildBlitzWindow",
+          "    <- buildBlitzWindow",
+          "    ->assignCORValues",
+          "    <- assignCORValues",
+          "    ->evaluateCollect",
+          "    <- evaluateCollect",
+          "  <- runBlitzSpins",
+          "<- runOneSpin"
+        ]
+      }
+    ]
+  },
+  "feature_architecture": {
+    "collect": {
+      "trigger": "COLLECT visible on reel 1 and/or reel 6 while COR or jackpot-bearing COR is visible",
+      "active_modes": [
+        "base_game",
+        "blitz_spins"
+      ],
+      "exit": "after all visible COR values are independently collected by each COLLECT"
+    },
+    "feature_selection": {
+      "trigger": "3 or more SCATTER in base game",
+      "options": [
+        "free_spins",
+        "blitz_spins"
+      ],
+      "awards": {
+        "3": {
+          "free_spins": 8,
+          "blitz_spins": 3
+        },
+        "4": {
+          "free_spins": 12,
+          "blitz_spins": 4
+        },
+        "5": {
+          "free_spins": 20,
+          "blitz_spins": 6
+        },
+        "6": {
+          "free_spins": 30,
+          "blitz_spins": 8
+        }
+      }
+    },
+    "free_spins": {
+      "reelset": "F1",
+      "initial_awards_by_scatter_count": {
+        "3": 8,
+        "4": 12,
+        "5": 20,
+        "6": 30
+      },
+      "retrigger_awards_by_scatter_count": {
+        "2": 5,
+        "3": 8,
+        "4": 12,
+        "5": 20,
+        "6": 30
+      },
+      "wild_multiplier_weights": {
+        "2": 480,
+        "3": 545,
+        "5": 360
+      },
+      "multiplier_rule": "All WILD multipliers on the screen multiply together and apply to non-scatter wins whether or not the WILD participates.",
+      "exclusions": [
+        "COR and COLLECT do not appear",
+        "WILD multiplier does not apply to SCATTER wins"
+      ],
+      "exit": "when all free spins including retriggers are exhausted"
+    },
+    "blitz_spins": {
+      "initial_awards_by_scatter_count": {
+        "3": 3,
+        "4": 4,
+        "5": 6,
+        "6": 8
+      },
+      "screen_symbols": [
+        "COR",
+        "jackpot-bearing_COR",
+        "COLLECT"
+      ],
+      "guarantees": [
+        "at least 1 COR",
+        "at least 1 COLLECT"
+      ],
+      "collect_count_weights": {
+        "1": 75,
+        "2": 25
+      },
+      "cor_occurrence_weights_per_available_position": {
+        "yes": 26,
+        "no": 74
+      },
+      "cor_value_tables": {
+        "good_weights": {
+          "0.5": 0,
+          "1": 0,
+          "1.5": 0,
+          "2": 0,
+          "2.5": 0,
+          "3": 0,
+          "3.5": 0,
+          "4": 606,
+          "5": 893,
+          "6": 600,
+          "7": 600,
+          "7.5": 500,
+          "8": 500,
+          "9": 500,
+          "10": 500,
+          "12.5": 400,
+          "25": 300,
+          "50": 100,
+          "125": 30,
+          "250": 10,
+          "500": 10,
+          "2000": 3
+        },
+        "bad_weights": {
+          "0.5": 17500,
+          "1": 7000,
+          "1.5": 3000,
+          "2": 2500,
+          "2.5": 2000,
+          "3": 2000,
+          "3.5": 1500,
+          "4": 1000,
+          "5": 1000,
+          "6": 500,
+          "7": 500,
+          "7.5": 100,
+          "8": 100,
+          "9": 50,
+          "10": 50,
+          "12.5": 50,
+          "25": 30,
+          "50": 20,
+          "125": 10,
+          "250": 0,
+          "500": 0,
+          "2000": 0
+        }
+      },
+      "value_assignment_rule": "Good table is used exactly for one COR per spin; Bad table is used for all other CORs.",
+      "exit": "when awarded Blitz spins are exhausted",
+      "retrigger": "none specified"
+    },
+    "buy_bonus": {
+      "status": "ambiguous_in_scope",
+      "reason": "Parsheet contains Buy Bonus costs, RTPs, and feature entry tables, but DOCX rules do not describe Buy Bonus availability or UI rules.",
+      "bet_details": {
+        "4": {
+          "cost_x_game_bet": 80,
+          "option_1": "12 FS",
+          "option_2": "4 spins"
+        },
+        "5": {
+          "cost_x_game_bet": 95,
+          "option_1": "20 FS",
+          "option_2": "6 spins"
+        },
+        "6": {
+          "cost_x_game_bet": 110,
+          "option_1": "30 FS",
+          "option_2": "8 spins"
+        }
+      },
+      "free_game_option_note": "Buy Bonus FG sheet maps 4/5/6 scatters to 12/20/30 FS and uses BB F2/BB F3/BB F4 reelsets depending on scatter count.",
+      "blitz_option_tables": {
+        "collect_count_weights_by_option": {
+          "4_scatters": {
+            "1": 75,
+            "2": 25
+          },
+          "5_scatters": {
+            "1": 80,
+            "2": 20
+          },
+          "6_scatters": {
+            "1": 80,
+            "2": 20
+          }
+        },
+        "cor_occurrence_weights_by_option": {
+          "4_scatters": {
+            "yes": 20,
+            "no": 80
+          },
+          "5_scatters": {
+            "yes": 18,
+            "no": 82
+          },
+          "6_scatters": {
+            "yes": 18,
+            "no": 82
+          }
+        },
+        "cor_value_tables_by_option": {
+          "4_scatters": {
+            "values_x_bet": [
+              "0.5",
+              "1",
+              "1.5",
+              "2",
+              "2.5",
+              "3",
+              "3.5",
+              "4",
+              "5",
+              "6",
+              "7",
+              "7.5",
+              "8",
+              "9",
+              "10",
+              "12.5",
+              "25",
+              "50",
+              "125",
+              "250",
+              "500",
+              "2000"
+            ],
+            "good_weights": {
+              "0.5": 0,
+              "1": 0,
+              "1.5": 0,
+              "2": 0,
+              "2.5": 0,
+              "3": 0,
+              "3.5": 0,
+              "4": 1100,
+              "5": 1000,
+              "6": 600,
+              "7": 500,
+              "7.5": 500,
+              "8": 500,
+              "9": 500,
+              "10": 400,
+              "12.5": 400,
+              "25": 300,
+              "50": 100,
+              "125": 30,
+              "250": 10,
+              "500": 10,
+              "2000": 3
+            },
+            "bad_weights": {
+              "0.5": 4000000,
+              "1": 4000000,
+              "1.5": 1500000,
+              "2": 700000,
+              "2.5": 2000,
+              "3": 2000,
+              "3.5": 1000,
+              "4": 500,
+              "5": 500,
+              "6": 100,
+              "7": 50,
+              "7.5": 50,
+              "8": 50,
+              "9": 25,
+              "10": 25,
+              "12.5": 15,
+              "25": 8,
+              "50": 2,
+              "125": 1,
+              "250": 0,
+              "500": 0,
+              "2000": 0
+            }
+          },
+          "5_scatters": {
+            "values_x_bet": [
+              "0.5",
+              "1",
+              "1.5",
+              "2",
+              "2.5",
+              "3",
+              "3.5",
+              "4",
+              "5",
+              "6",
+              "7",
+              "7.5",
+              "8",
+              "9",
+              "10",
+              "12.5",
+              "25",
+              "50",
+              "125",
+              "250",
+              "500",
+              "2000"
+            ],
+            "good_weights": {
+              "0.5": 0,
+              "1": 0,
+              "1.5": 0,
+              "2": 0,
+              "2.5": 0,
+              "3": 0,
+              "3.5": 0,
+              "4": 2400,
+              "5": 800,
+              "6": 500,
+              "7": 500,
+              "7.5": 400,
+              "8": 300,
+              "9": 300,
+              "10": 200,
+              "12.5": 100,
+              "25": 100,
+              "50": 100,
+              "125": 30,
+              "250": 10,
+              "500": 10,
+              "2000": 1
+            },
+            "bad_weights": {
+              "0.5": 4000000,
+              "1": 4000000,
+              "1.5": 1500000,
+              "2": 700000,
+              "2.5": 1000,
+              "3": 1000,
+              "3.5": 1000,
+              "4": 500,
+              "5": 500,
+              "6": 100,
+              "7": 50,
+              "7.5": 50,
+              "8": 50,
+              "9": 25,
+              "10": 25,
+              "12.5": 15,
+              "25": 8,
+              "50": 2,
+              "125": 1,
+              "250": 0,
+              "500": 0,
+              "2000": 0
+            }
+          },
+          "6_scatters": {
+            "values_x_bet": [
+              "0.5",
+              "1",
+              "1.5",
+              "2",
+              "2.5",
+              "3",
+              "3.5",
+              "4",
+              "5",
+              "6",
+              "7",
+              "7.5",
+              "8",
+              "9",
+              "10",
+              "12.5",
+              "25",
+              "50",
+              "125",
+              "250",
+              "500",
+              "2000"
+            ],
+            "good_weights": {
+              "0.5": 0,
+              "1": 0,
+              "1.5": 0,
+              "2": 0,
+              "2.5": 0,
+              "3": 0,
+              "3.5": 0,
+              "4": 4800,
+              "5": 400,
+              "6": 500,
+              "7": 500,
+              "7.5": 400,
+              "8": 300,
+              "9": 300,
+              "10": 200,
+              "12.5": 100,
+              "25": 100,
+              "50": 100,
+              "125": 30,
+              "250": 10,
+              "500": 10,
+              "2000": 1
+            },
+            "bad_weights": {
+              "0.5": 8000000,
+              "1": 5000000,
+              "1.5": 1500000,
+              "2": 700000,
+              "2.5": 1000,
+              "3": 1000,
+              "3.5": 1000,
+              "4": 500,
+              "5": 500,
+              "6": 100,
+              "7": 50,
+              "7.5": 50,
+              "8": 50,
+              "9": 25,
+              "10": 25,
+              "12.5": 15,
+              "25": 8,
+              "50": 2,
+              "125": 1,
+              "250": 0,
+              "500": 0,
+              "2000": 0
+            }
+          }
+        }
+      }
+    }
+  },
+  "event_flow": [
+    "SpinStarted",
+    "ReelsetSelected",
+    "WindowGenerated",
+    "WindowAugmented",
+    "WinEvaluated",
+    "CollectEvaluated",
+    "FeatureTriggered",
+    "FeatureSpinStarted",
+    "FeatureCompleted",
+    "PayoutCalculated"
+  ],
+  "oracle_test_mapping": {
+    "generatePayWindow": [
+      "TC-001"
+    ],
+    "evaluateWaysWins": [
+      "TC-002",
+      "TC-003",
+      "TC-004",
+      "TC-005"
+    ],
+    "countScatters": [
+      "TC-006",
+      "TC-007",
+      "TC-011"
+    ],
+    "resolveFeatureSelection": [
+      "TC-007"
+    ],
+    "evaluateCollect": [
+      "TC-008",
+      "TC-009",
+      "TC-012"
+    ],
+    "runFreeSpins": [
+      "TC-010",
+      "TC-011",
+      "TC-013"
+    ],
+    "runBlitzSpins": [
+      "TC-012",
+      "TC-013"
+    ]
+  },
+  "known_issues": [
+    "Required trace file checks/traces/ref_trace.txt / trace_ref.txt is absent; trace verification could not be performed.",
+    "Buy Bonus remains ambiguous and must not be implemented as player-facing unless human review confirms scope.",
+    "Maximum bet, denomination, jackpot-frequency tolerances, and volatility/feature-frequency pass/fail thresholds remain unspecified."
+  ],
+  "escalations_added": [
+    "[BLOCKER] Simulator Design could not verify trace_ref.txt/ref_trace.txt because no trace file exists in checks/traces."
+  ]
+}
